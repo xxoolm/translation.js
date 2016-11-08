@@ -1,33 +1,34 @@
 var fs = require('fs')
 var coveralls = require('coveralls')
-var lcov_path = require('path').resolve(process.cwd(), 'coverage/lcov.info')
+var lcovPath = require('path').resolve(process.cwd(), 'coverage/lcov.info')
 
 if (process.env.TRAVIS) {
   send()
 }
 
 // 下面的代码全都来自 [karma-coveralls](https://github.com/caitp/karma-coveralls/blob/1.1.2/lib/index.js)
-
 function send () {
   coveralls.getBaseOptions(function (err, options) {
+    if (err) throw err
     options.filepath = '.'
-    coveralls.convertLcovToCoveralls(fs.readFileSync(lcov_path, 'utf8').toString(), options, function (err, postData) {
+    coveralls.convertLcovToCoveralls(fs.readFileSync(lcovPath, 'utf8').toString(), options, function (err, postData) {
+      if (err) throw err
       coveralls.sendToCoveralls(postData, function (err, response, body) {
         console.info('正在上传...')
-        send_to_coveralls(err, response, body)
+        sendToCoveralls(err, response, body)
       })
     })
   })
 }
 
-function send_to_coveralls (err, response, body) {
+function sendToCoveralls (err, response, body) {
+  if (err) throw err
   // check coveralls.io for issues, they send 200 even when down for maintenance :-\
   var isJSON
   try {
     JSON.parse(body)
     isJSON = true
-  }
-  catch (e) {
+  } catch (e) {
     isJSON = false
   }
   if (!response) {

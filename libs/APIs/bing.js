@@ -8,14 +8,12 @@
  */
 
 var superagent = require('superagent')
+var invertObj = require('../utils/invert')
 var custom2standard = {
   cn: 'zh-CN',
   en: 'en'
 }
-var standard2custom = {
-  'zh-cn': 'cn',
-  en: 'en'
-}
+var standard2custom = invertObj(custom2standard)
 
 /**
  * 在自定义语种与标准语种之间转换，默认会将标准语种转换为自定义语种
@@ -24,7 +22,7 @@ var standard2custom = {
  * @return {String}
  */
 function langTransform (lang, invert) {
-  return (invert ? custom2standard : standard2custom )[lang.toLowerCase()] || null
+  return (invert ? custom2standard : standard2custom)[lang] || null
 }
 
 /**
@@ -91,8 +89,7 @@ p.transform = function (responseText, queryObj) {
       obj.error = error
       return obj
     }
-  }
-  catch (e) {}
+  } catch (e) {}
 
   // 尝试获取详细释义
   try {
@@ -109,14 +106,12 @@ p.transform = function (responseText, queryObj) {
       d.push(s)
     })
     obj.detailed = d
-  }
-  catch (e) {}
+  } catch (e) {}
 
   // 尝试获取翻译结果
   try {
     obj.result = [ROOT.SMT.R.$.replace(/\{\d+#|\$\d+\}/g, '')]
-  }
-  catch (e) {}
+  } catch (e) {}
 
   if (!obj.detailed && !obj.result) {
     obj.error = '必应翻译不支持此语种。'

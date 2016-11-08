@@ -1,6 +1,4 @@
-'use strict';
-
-var Bing = require('../lib/APIs/bing')
+var Bing = require('./APIs/bing')
 var bing = new Bing()
 var nock = require('nock')
 

@@ -9,7 +9,7 @@
     "test": "istanbul cover test-runner.js",
     "lint": "eslint --ignore-pattern '/dist/' --ignore-pattern '/coverage/' \"**/*.js\"",
     "prepublish": "npm run build",
-    "posttest": "node test/upload-to-coveralls"
+    "posttest": "node tests/upload-to-coveralls"
   },
   "keywords": [
     "translate"

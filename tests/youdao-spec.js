@@ -1,4 +1,4 @@
-var YouDao = require('../lib/APIs/youdao')
+var YouDao = require('./APIs/youdao')
 var youdao = new YouDao({ apiKey: '1361128838', keyFrom: 'chrome' })
 var nock = require('nock')
 
@@ -10,35 +10,35 @@ describe('有道翻译', function () {
   it('在初始化时若没有提供API Key及 key from则应该报错', function () {
     var pass = 0
     try {
+      // eslint-disable-next-line no-new
       new YouDao()
-    }
-    catch (e) {
+    } catch (e) {
       pass += 1
     }
 
     try {
+      // eslint-disable-next-line no-new
       new YouDao({ apiKey: 'xxx' })
-    }
-    catch (e) {
+    } catch (e) {
       pass += 1
     }
 
     try {
+      // eslint-disable-next-line no-new
       new YouDao({ keyFrom: 'xxx' })
-    }
-    catch (e) {
+    } catch (e) {
       pass += 1
     }
 
     try {
+      // eslint-disable-next-line no-new
       new YouDao({ apiKey: 'xxx', keyFrom: 'xxx' })
-    }
-    catch (e) {
+    } catch (e) {
       pass += 1
     }
 
     if (pass !== 3) {
-      fail('没有API Key时应该报错')
+      fail('没有 API Key 时应该报错')
     }
   })
 
@@ -90,9 +90,8 @@ describe('有道翻译', function () {
 
   describe('的 transform 方法', function () {
     it('在有道接口返回错误码时会 resolve error', function () {
-      var rawRes = {
-        errorCode: 20
-      }, result = youdao.transform(rawRes, { text: 'test' })
+      var rawRes = { errorCode: 20 }
+      var result = youdao.transform(rawRes, { text: 'test' })
 
       expect(result).toEqual(jasmine.objectContaining({
         text: 'test',
@@ -109,7 +108,8 @@ describe('有道翻译', function () {
           explains: ['解释一', '解释二']
         },
         translation: ['翻译结果']
-      }, result = youdao.transform(rawRes, { text: 'test' })
+      }
+      var result = youdao.transform(rawRes, { text: 'test' })
 
       expect(result).toEqual({
         text: 'test',

@@ -20,15 +20,37 @@
 
 ### 自定义翻译接口
 
-如果某一个翻译接口没有被添加，你也可以很方便的自定义翻译接口。欢迎提交 PR 添加更多翻译接口！
+如果某一个翻译接口没有被添加，你也可以很方便的自定义翻译接口。欢迎提交 PR 添加更多翻译接口！详情见[自定义接口](/docs/API-spec.md)。
+
+## 安装
+
+### 在 Node.js 或 Webpack 中
+
+先使用 NPM 安装：
+
+```
+npm install translation.js -S
+```
+
+然后：
+
+```js
+var tjs = require('translation.js')
+```
+
+### 使用 `&lt;script&gt;` 标签：
+
+```html
+<!-- translation.js 依赖 superagent -->
+<script src="https://unpkg.com/superagent/superagent.js"></script>
+<script src="https://unpkg.com/translation.js/dist/translation.js"></script>
+<script>alert(window.tjs)</script>
+```
 
 ## 使用示例
 
 ```js
-// 获取 tjs 对象
-var tjs = require('translation.js')
-
-// 内置了下面这些翻译接口
+// tjs 内置了下面这些翻译接口
 tjs.add(new tjs.BaiDu())
 tjs.add(new tjs.Google())
 tjs.add(new tjs.GoogleCN())
@@ -44,7 +66,7 @@ tjs
     console.log(errMsg)
   })
 
-// 获取这段文本的语音地址
+// 使用百度翻译获取文本的语音地址
 tjs
   .audio({ api: 'BaiDu', text: 'test' })
   .then(function (audioUrl) {
@@ -71,24 +93,6 @@ translation.js 内置了五种翻译接口：[有道翻译](http://fanyi.youdao.
 
 另外，谷歌翻译与谷歌国内翻译返回的结果是完全一样的，只有一点不同：谷歌翻译需要翻墙使用，而谷歌国内翻译不需要。
 
-## 自定义翻译接口
-
- 1. 参照 [lib/youdao.js](https://github.com/Selection-Translator/translation.js/blob/master/lib/youdao.js) 写你自己的翻译接口构造函数。
- 2. 将你的构造函数设置为 translation.js 的一个属性：`Translation.YourAPI = YourAPI;`
- 3. 创建你的翻译接口实例：`const t = new Translation; t.create('YourAPI');`
-
-然后你就可以调用自己的翻译接口了：`t.translate({ api: 'YourAPI', text:'test' });`
-
-## 在浏览器中使用
-
-载入 [browser/translation.js](https://github.com/Selection-Translator/translation.js/blob/master/browser/translation.js) ，构造函数会定义为全局变量 `Translation`。
-
-**注意**：内置的翻译接口都不支持 [CORS](https://developer.mozilla.org/en-US/docs/Web/HTTP/Access_control_CORS)，请确保浏览器端的运行环境允许跨域，例如你可以在 [Chrome 扩展程序](https://developer.chrome.com/extensions) 中使用。
-
 ## 许可
 
 [MIT](https://github.com/Selection-Translator/translation.js/blob/master/LICENSE.md)
-
-## One More Thing...
-
-这个项目原本是[划词翻译](https://github.com/Selection-Translator/crx-selection-translate)的一部分，被用于统一翻译接口的调用方式；在开发 v6.0 版的划词翻译中，我想扩展它的功能，然后发现它完全可以被抽离出来单独维护——于是我就这么做了 :)

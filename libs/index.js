@@ -79,12 +79,12 @@ p.call = function (method, queryObj) {
     var a = instances.shift()
     instances.push(a)
     a[method](queryObj).then(function (resultObj) {
-      if ('translate' === method) {
+      if (method === 'translate') {
         resultObj.api = a
       }
       resolve(resultObj)
     }, function (superAgentError) {
-      if (null === superAgentError) {
+      if (superAgentError == null) {
         return reject()
       }
       reject(analyzeErrorType(superAgentError))

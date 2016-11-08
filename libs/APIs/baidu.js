@@ -3,6 +3,7 @@
  */
 
 var superagent = require('superagent')
+var invertObj = require('../utils/invert')
 
 // http://api.fanyi.baidu.com/api/trans/product/apidoc#languageList
 var standard2custom = {
@@ -25,9 +26,9 @@ var standard2custom = {
   de: 'de',
   it: 'it',
   zh: 'zh',
-  'zh-cn': 'zh',
-  'zh-tw': 'cht',
-  'zh-hk': 'yue',
+  'zh-CN': 'zh',
+  'zh-TW': 'cht',
+  'zh-HK': 'yue',
   ja: 'jp',
   ko: 'kor',
   es: 'spa',
@@ -35,34 +36,7 @@ var standard2custom = {
   ar: 'ara'
 }
 
-var custom2standard = {
-  en: 'en',
-  th: 'th',
-  ru: 'ru',
-  pt: 'pt',
-  el: 'el',
-  nl: 'nl',
-  pl: 'pl',
-  bul: 'bg',
-  est: 'et',
-  dan: 'da',
-  fin: 'fi',
-  cs: 'cs',
-  rom: 'ro',
-  slo: 'sl',
-  swe: 'sv',
-  hu: 'hu',
-  de: 'de',
-  it: 'it',
-  zh: 'zh-CN',
-  cht: 'zh-TW',
-  yue: 'zh-HK',
-  jp: 'ja',
-  kor: 'ko',
-  spa: 'es',
-  fra: 'fr',
-  ara: 'ar'
-};
+var custom2standard = invertObj(standard2custom)
 
 /**
  * 百度翻译构造函数
@@ -79,8 +53,8 @@ function BaiDu () {
  * @param {Boolean} [invert] - 但如果 invert 为真值，则会将自定义语种转换为标准语种
  * @return {String}
  */
-var langResolve = BaiDu.resolve = function (lang, invert) {
-  return (invert ? custom2standard : standard2custom)[lang.toLowerCase()] || null
+function langResolve (lang, invert) {
+  return (invert ? custom2standard : standard2custom)[lang] || null
 }
 
 var p = BaiDu.prototype
@@ -135,10 +109,10 @@ p.transform = function (rawRes, queryObj) {
 
   // 源语种、目标语种与在线翻译地址
   try {
-    var trans_result = rawRes.trans_result || {}
-    obj.from = langResolve(trans_result.from, true)
-    obj.to = langResolve(trans_result.to, true)
-    obj.linkToResult = this.link + '#auto/' + (trans_result.to || 'auto') + '/' + queryObj.text
+    var transResult = rawRes.trans_result || {}
+    obj.from = langResolve(transResult.from, true)
+    obj.to = langResolve(transResult.to, true)
+    obj.linkToResult = this.link + '#auto/' + (transResult.to || 'auto') + '/' + queryObj.text
   } catch (e) {}
 
   // 详细释义
@@ -190,7 +164,7 @@ p.detect = function (queryObj) {
         if (err) return reject(err)
 
         var body = res.body
-        if (0 === body.error) {
+        if (body.error === 0) {
           var lang = langResolve(body.lan, true)
           if (lang) return resolve(lang)
         }

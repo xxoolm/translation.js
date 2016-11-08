@@ -1,10 +1,9 @@
-const jasmine = new (require( 'jasmine' ))();
-jasmine.loadConfig( {
-    "spec_dir" : "test" ,
-    "spec_files" : [
-      "**/*-spec.js"
-    ] ,
-    "helpers" : []
-  }
-);
-jasmine.execute();
+const jasmine = new (require('jasmine'))()
+jasmine.loadConfig({
+  spec_dir: 'tests',
+  spec_files: [
+    '**/*-spec.js'
+  ],
+  helpers: []
+})
+jasmine.execute()

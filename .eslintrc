@@ -1,0 +1,9 @@
+{
+  "env": {
+    "node": true,
+    "jasmine": true
+  },
+  "extends": [
+    "standard"
+  ]
+}

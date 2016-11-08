@@ -5,13 +5,10 @@ var request = require('superagent')
 
 /**
  * 谷歌翻译
- * @param [config]
- * @param [config.timeout]
  */
-function Google (config) {
-  this.timeout = (config || {}).timeout || 0
-
+function Google () {
   this.name = '谷歌翻译'
+  this.type = 'Google'
   this.link = 'https://translate.google.com'
   this.apiRoot = 'https://translate.googleapis.com'
 }
@@ -29,16 +26,16 @@ p.translate = function (queryObj) {
     request
       .get(this.apiRoot + '/translate_a/single')
       .query('client=gtx&sl=' + (queryObj.from || 'auto') + '&tl=' + (queryObj.to || 'auto') + '&hl=zh-CN&dt=t&dt=bd&ie=UTF-8&oe=UTF-8&dj=1&source=icon&q=' + encodeURI(queryObj.text))
-      //  , {
-      //  client : 'gtx' ,
-      //  sl : 'auto' , // 源语言
-      //  tl : queryObj.to || 'auto' , // 目标语言
-      //  hl : 'zh-CN' ,
-      //  dt : [ 't' , 'bd' ] , // 这个地方必须写成 &dt=t&dt=tl，所以没有用对象的方式声明
-      //  dj : 1 ,
-      //  source : 'icon' ,
-      //  q : queryObj.text
-      //} )
+      // {
+      //   client : 'gtx' ,
+      //   sl : 'auto' , // 源语言
+      //   tl : queryObj.to || 'auto' , // 目标语言
+      //   hl : 'zh-CN' ,
+      //   dt : [ 't' , 'bd' ] , // 这个地方必须写成 &dt=t&dt=tl，所以没有用对象的方式声明
+      //   dj : 1 ,
+      //   source : 'icon' ,
+      //   q : queryObj.text
+      // } )
       .timeout(that.timeout)
       .end(function (err, res) {
         if (err) {
@@ -69,26 +66,23 @@ p.transform = function (rawRes, queryObj) {
   if (typeof rawRes === 'string') {
     obj.error = '谷歌翻译发生了一个错误，可能是因为查询文本过长造成的。'
   } else {
-
     // 尝试获取详细释义
     try {
       var d = []
       rawRes.dict.forEach(function (v) {
-        d.push(v.pos + '：' + ( v.terms.slice(0, 3) || []).join(','))
-      });
+        d.push(v.pos + '：' + (v.terms.slice(0, 3) || []).join(','))
+      })
       obj.detailed = d
-    }
-    catch (e) {}
+    } catch (e) {}
 
     // 尝试取得翻译结果
     try {
       var result = []
       rawRes.sentences.forEach(function (v) {
         result.push(v.trans)
-      });
+      })
       obj.result = result
-    }
-    catch (e) {}
+    } catch (e) {}
 
     if (!obj.detailed && !obj.result) {
       obj.error = this.name + '没有返回翻译结果，请稍后重试。'

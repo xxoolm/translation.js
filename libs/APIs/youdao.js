@@ -9,6 +9,7 @@
  */
 
 var request = require('superagent')
+var invertObj = require('../utils/invert')
 var standard2custom = {
   en: 'eng',
   ja: 'jap',
@@ -17,17 +18,10 @@ var standard2custom = {
   ru: 'ru',
   es: 'es'
 }
-var custom2standard = {
-  eng: 'en',
-  jap: 'ja',
-  ko: 'ko',
-  fr: 'fr',
-  ru: 'ru',
-  es: 'es'
-}
+var custom2standard = invertObj(standard2custom)
 
 function langTransform (lang, invert) {
-  return (invert ? custom2standard : standard2custom )[lang.toLowerCase()] || null
+  return (invert ? custom2standard : standard2custom)[lang] || null
 }
 
 YouDao.resolve = langTransform
@@ -37,7 +31,6 @@ YouDao.resolve = langTransform
  * @param {Object} config
  * @param {String} config.apiKey
  * @param {String} config.keyFrom
- * @param {Number} [config.timeout=0] - 查询翻译结果或检测语言时的超时时间，单位毫秒，默认为零。
  */
 function YouDao (config) {
   if (!config || !config.apiKey || !config.keyFrom) {
@@ -46,10 +39,10 @@ function YouDao (config) {
 
   this.apiKey = config.apiKey
   this.keyFrom = config.keyFrom
-  this.timeout = config.timeout || 0
 
   this.name = '有道翻译'
   this.link = 'http://fanyi.youdao.com/'
+  this.type = 'YouDao'
   this.errMsg = {
     20: '有道翻译服务一次性只能翻译200个字符',
     30: '有道翻译暂时无法翻译这段文本',
@@ -79,7 +72,6 @@ p.translate = function (queryObj) {
         version: '1.1',
         q: queryObj.text
       })
-      .timeout(that.timeout)
       .end(function (err, res) {
         if (err) {
           reject(err)
@@ -105,24 +97,21 @@ p.transform = function (rawRes, queryObj) {
 
   // rawRes 偶尔是 null
   if (rawRes) {
-    //如果有错误码则直接处理错误
-    if (0 !== rawRes.errorCode) {
+    // 如果有错误码则直接处理错误
+    if (rawRes.errorCode !== 0) {
       obj.error = this.errMsg[rawRes.errorCode]
     } else {
-
       // 详细释义
       try {
         var basic = rawRes.basic
         obj.detailed = basic.explains
         obj.phonetic = basic.phonetic
-      }
-      catch (e) {}
+      } catch (e) {}
 
       // 翻译结果
       try {
         obj.result = rawRes.translation
-      }
-      catch (e) {}
+      } catch (e) {}
     }
   }
 
