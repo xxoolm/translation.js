@@ -2,7 +2,7 @@ var pkg = require('./package.json')
 var webpack = require('webpack')
 
 module.exports = {
-  entry: './lib/index.js',
+  entry: './libs/index.js',
   output: {
     path: './dist',
     filename: 'translation.js',
