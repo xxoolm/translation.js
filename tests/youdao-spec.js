@@ -1,4 +1,4 @@
-var YouDao = require('./APIs/youdao')
+var YouDao = require('../libs/APIs/youdao')
 var youdao = new YouDao({ apiKey: '1361128838', keyFrom: 'chrome' })
 var nock = require('nock')
 

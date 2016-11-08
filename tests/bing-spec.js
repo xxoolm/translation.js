@@ -1,4 +1,4 @@
-var Bing = require('./APIs/bing')
+var Bing = require('../libs/APIs/bing')
 var bing = new Bing()
 var nock = require('nock')
 

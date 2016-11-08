@@ -1,3 +1,3 @@
-var BaiDu = require('./APIs/baidu')
+var BaiDu = require('../libs/APIs/baidu')
 
 require('./standard')(BaiDu)

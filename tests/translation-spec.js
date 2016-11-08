@@ -1,4 +1,4 @@
-var t = require('./index')
+var t = require('../libs/index')
 var nock = require('nock')
 
 nock.disableNetConnect()

@@ -9,7 +9,8 @@ var myAPI = {
   link: 'http://my.api.com', // 这个翻译接口的在线翻译地址，若没有则不写
   translate: function (queryObj) { return Promise.resolve(resultObj) }, // 翻译的方法，这个方法必需返回一个 Promise 对象，值为一个 result 对象。query 对象与 result 对象的定义见后文
   detect: function (queryObj) { return Promise.resolve('zh') }, // 检测文本语种的方法，这个方法必需返回一个 Promise 对象，值为一个字符串。如果是一个不支持的语种则返回 null
-  audio: function (queryObj) { return Promise.resolve('http://path.to/audio/url') } // 文本的在线音频的地址，这个方法必需返回一个 Promise 对象，值为一个字符串。如果不支持则返回 null
+  audio: function (queryObj) { return Promise.resolve('http://path.to/audio/url') // 文本的在线音频的地址，这个方法必需返回一个 Promise 对象，值为一个字符串。如果不支持则返回 null
+}
 ```
 
 > 以上这些属性与方法中，`detect()` 与 `audio()` 方法是可选的，但其它的都是必需有的。

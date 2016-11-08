@@ -38,7 +38,7 @@ npm install translation.js -S
 var tjs = require('translation.js')
 ```
 
-### 使用 `&lt;script&gt;` 标签：
+### 使用 `<script>` 标签
 
 ```html
 <!-- translation.js 依赖 superagent -->
