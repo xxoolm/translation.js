@@ -21,7 +21,7 @@ Google.ERROR = {
 
 var p = Google.prototype
 
-// from https://cloud.google.com/translate/docs/languages
+// ISO839-1 Code from https://cloud.google.com/translate/docs/languages
 var supportedLang = ['af', 'sq', 'am', 'ar', 'hy', 'az', 'eu', 'be', 'bn', 'bs', 'bg', 'ca', 'ceb', 'ny', 'zh-CN', 'zh-TW', 'co', 'hr', 'cs', 'da', 'nl', 'en', 'eo', 'et', 'tl', 'fi', 'fr', 'fy', 'gl', 'ka', 'de', 'el', 'gu', 'ht', 'ha', 'haw', 'iw', 'hi', 'hmn', 'hu', 'is', 'ig', 'id', 'ga', 'it', 'ja', 'jw', 'kn', 'kk', 'km', 'ko', 'ku', 'ky', 'lo', 'la', 'lv', 'lt', 'lb', 'mk', 'mg', 'ms', 'ml', 'mt', 'mi', 'mr', 'mn', 'my', 'ne', 'no', 'ps', 'fa', 'pl', 'pt', 'ma', 'ro', 'ru', 'sm', 'gd', 'sr', 'st', 'sn', 'sd', 'si', 'sk', 'sl', 'so', 'es', 'su', 'sw', 'sv', 'tg', 'ta', 'te', 'th', 'tr', 'uk', 'ur', 'uz', 'vi', 'cy', 'xh', 'yi', 'yo', 'zu']
 
 /**
@@ -56,8 +56,16 @@ p.translate = function (queryObj) {
 }
 
 /**
+ * Google 翻译返回的数据结构
+ * @typedef {Object} GoogleRes
+ * @property {{trans: String, orig: String, backend: Number}[]} sentences trans:翻译结果，orig:被翻译的字符串
+ * @property {{pos: String, terms: [], entry: []}} dict 查词结果，只有请求单个单词翻译时会有，
+ * 中翻英经常有，小语种经常没有
+ * @property {String} src - 翻译结果的源语种，ISO839-1 格式
+ */
+/**
  * 将谷歌翻译的数据转换为统一格式
- * @param rawRes
+ * @param {GoogleRes} rawRes
  * @param queryObj
  * @returns {{}}
  */
@@ -65,7 +73,6 @@ p.transform = function (rawRes, queryObj) {
   var obj = {
     text: queryObj.text,
     to: queryObj.to || 'auto',
-    from: rawRes.src,
     response: rawRes
   }
 
@@ -79,10 +86,14 @@ p.transform = function (rawRes, queryObj) {
       obj.detailed = rawRes.dict.map(function (v) {
         return v.pos + '：' + (v.terms.slice(0, 3) || []).join(',')
       })
+    } catch (e) {}
+    try {
       // 尝试取得翻译结果
-      obj.result = rawRes.sentences.filter(function (sentence) {
+      var sentences = rawRes.sentences.filter(function (sentence) {
         return sentence.trans !== queryObj.text
-      }).map(function (sentence) {
+      })
+      obj.from = isEmpty(sentences) ? null : rawRes.src
+      obj.result = sentences.map(function (sentence) {
         return sentence.trans
       })
     } catch (e) {}
@@ -100,23 +111,15 @@ p.transform = function (rawRes, queryObj) {
  * @returns {Promise}
  */
 p.detect = function (queryObj) {
-  var that = this
-  return new Promise(function (resolve, reject) {
-    var from = queryObj.from
+  var from = queryObj.from
+  if (from) {
+    return (supportedLang.indexOf(from) > -1) ? Promise.resolve(from) : Promise.reject(null)
+  }
 
-    if (from) {
-      if (supportedLang.indexOf(from) > -1) {
-        resolve(from)
-      } else {
-        reject(null)
-      }
-      return
-    }
-
-    that
-      .translate(queryObj)
-      .then(function (result) { return resolve(result.from) }, reject)
-  })
+  return this.translate(queryObj)
+    .then(function (result) {
+      return result.from
+    })
 }
 
 /**
