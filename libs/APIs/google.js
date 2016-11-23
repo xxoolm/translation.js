@@ -47,7 +47,7 @@ var supportedLang = ['af', 'sq', 'am', 'ar', 'hy', 'az', 'eu', 'be', 'bn', 'bs',
 p.translate = function (queryObj) {
   var that = this
   var acceptLanguage = queryObj.to
-    ? queryObj.to + (queryObj.to.indexOf('-') > -1 ? queryObj.to.split('-')[0] : '')
+    ? queryObj.to + (queryObj.to.indexOf('-') > -1 ? ',' + queryObj.to.split('-')[0] : '')
     : 'en'
   acceptLanguage += ';q=0.8,en;q=0.6'
   return new Promise(function (resolve, reject) {
