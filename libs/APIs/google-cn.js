@@ -6,6 +6,11 @@ function GoogleCN (config) {
   this.type = 'GoogleCN'
   this.link = 'https://translate.google.cn'
   this.audioRoot = this.link + '/translate_tts'
+  // To avoid browser same origin policy block request,
+  // use googleapis as apiRoot in browser
+  this.apiRoot = (typeof window === 'object' && window.window === window)
+    ? Google.API_URL
+    : this.link
 }
 
 GoogleCN.prototype = Object.create(Google.prototype)

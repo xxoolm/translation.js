@@ -4,19 +4,14 @@ var nock = require('nock')
 
 nock.disableNetConnect()
 
-var testObjects = [{
-  Class: Google
-}, {
-  Class: GoogleCN
-}]
+var testClass = [Google, GoogleCN]
+testClass.forEach(function (Class) {
+  var google = new Class()
 
-testObjects.forEach(function (testObj) {
-  var google = new testObj.Class()
+  require('./standard')(Class)
 
-  require('./standard')(testObj.Class)
-
-  describe('Google', function () {
-    const queryObj = {text: 'man', to: 'zh-CN'}
+  describe(google.type, function () {
+    const queryObj = {text: 'man', to: 'zh-TW'}
     const rawRes = {
       'sentences': [{
         'trans': '人',
@@ -74,6 +69,20 @@ testObjects.forEach(function (testObj) {
         'extended_srclangs': ['eo']
       }
     }
+
+    describe('的 构造函数：', function () {
+      it('在浏览器中会给 apiRoot 赋值为 Google.API_URL', function () {
+        global.window = {}
+        window.window = window
+        var google = new Class()
+        expect(google.apiRoot).toEqual(Google.API_URL)
+        delete global.window
+      })
+      it('在 Node 环境会给 apiRoot 赋值为 google.link', function () {
+        var google = new Class()
+        expect(google.apiRoot).toEqual(google.link)
+      })
+    })
 
     describe('的 translate 方法：', function () {
       it('在正常情况下会调用 transform 方法返回结果对象', function (done) {
@@ -140,10 +149,10 @@ testObjects.forEach(function (testObj) {
         var result = google.transform(rawRes, queryObj)
         expect(result).toEqual({
           text: queryObj.text,
-          to: 'zh-CN',
+          to: queryObj.to,
           from: 'en',
           response: rawRes,
-          linkToResult: google.link + '/#auto/zh-CN/' + queryObj.text,
+          linkToResult: google.link + '/#auto/' + queryObj.to + '/' + queryObj.text,
           detailed: ['noun：人,男子,鼓舞', 'verb：為配 ... 備人手'],
           result: ['人']
         })
