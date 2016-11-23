@@ -95,17 +95,20 @@ testObjects.forEach(function (testObj) {
       })
 
       it('在网络错误时应该被 reject', function (done) {
+        var errorMsg = 'some network error message'
         nock(google.link)
           .get(google.translatePath)
           .query(true)
-          .replyWithError('some network error message')
+          .replyWithError(errorMsg)
 
         google
           .translate({text: 'test'})
           .then(function () {
             fail('错误地进入了 resolve 分支')
             done()
-          }, function () {
+          }, function (e) {
+            expect(e instanceof Error).toBeTruthy()
+            expect(e.message).toEqual(errorMsg)
             done()
           })
       })
@@ -212,8 +215,9 @@ testObjects.forEach(function (testObj) {
             .get(google.translatePath)
             .query(true)
             .replyWithError(errorMsg)
-          google.detect(queryObj).then(function (r) {
-
+          google.detect(queryObj).then(function () {
+            fail('错误地进入了 resolve 分支')
+            done()
           }, function (e) {
             expect(e instanceof Error).toBeTruthy()
             expect(e.message).toEqual(errorMsg)
