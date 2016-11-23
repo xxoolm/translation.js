@@ -137,43 +137,15 @@ testObjects.forEach(function (testObj) {
       })
 
       it('在 Google 接口返回正确格式数据时，能正常转换', function () {
-        var queryObj = {text: 'tedious', to: 'zh-CN'}
-        var rawRes = {
-          'sentences': [{
-            'trans': '乏味',
-            'orig': 'tedious',
-            'backend': 2
-          }],
-          'dict': [{
-            'pos': 'adjective',
-            'terms': [
-              '乏味'
-            ],
-            'entry': [{
-              'word': '乏味',
-              'reverse_translation': ['tedious'],
-              'score': 0.095967084
-            }],
-            'base_form': 'tedious',
-            'pos_enum': 3
-          }],
-          'src': 'en',
-          'confidence': 1,
-          'ld_result': {
-            'srclangs': ['en'],
-            'srclangs_confidences': [1],
-            'extended_srclangs': ['en']
-          }
-        }
         var result = google.transform(rawRes, queryObj)
         expect(result).toEqual({
           text: queryObj.text,
           to: 'zh-CN',
           from: 'en',
           response: rawRes,
-          linkToResult: google.link + '/#auto/zh-CN/tedious',
-          detailed: ['adjective：乏味'],
-          result: ['乏味']
+          linkToResult: google.link + '/#auto/zh-CN/' + queryObj.text,
+          detailed: ['noun：人,男子,鼓舞', 'verb：為配 ... 備人手'],
+          result: ['人']
         })
       })
     })
