@@ -67,12 +67,12 @@ module.exports = function (Class) {
     describe('的 audio 方法', function () {
       // it( '若支持则返回语音地址字符串' )
 
-      it('不支持朗读或者不支持此查询对象的语种会 reject null', function (done) {
+      it('不支持朗读或者不支持此查询对象的语种会返回 null', function (done) {
         c.audio({ text: 'test', from: 'no this lang' }).then(function (url) {
           expect(url).toBeNull()
           done()
         }, function (e) {
-          fail('错误的进入了 reject 分支' + e.toString())
+          fail('错误地进入了 reject 分支' + e.toString())
           done()
         })
       })

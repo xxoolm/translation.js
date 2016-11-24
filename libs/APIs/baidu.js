@@ -177,7 +177,13 @@ p.detect = function (queryObj) {
 p.audio = function (queryObj) {
   return this
     .detect(queryObj)
-    .then(function (lang) { return 'http://fanyi.baidu.com/gettts?lan=' + langResolve(lang) + '&text=' + queryObj.text + '&spd=2&source=web' })
+    .then(function (lang) {
+      if (!lang) return null
+      var l = langResolve(lang)
+      return l
+        ? 'http://fanyi.baidu.com/gettts?lan=' + l + '&text=' + queryObj.text + '&spd=2&source=web'
+        : null
+    })
 }
 
 module.exports = BaiDu

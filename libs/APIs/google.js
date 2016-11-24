@@ -169,8 +169,9 @@ p.audio = function (queryObj) {
   var that = this
   return this.detect(queryObj)
     .then(function (lang) {
-      return encodeURI(that.audioRoot + '?ie=UTF-8&q=' +
-        encodeURIComponent(queryObj.text) + '&tl=' + lang + '&client=gtx')
+      return supportedLang.indexOf(lang) > -1
+        ? that.audioRoot + '?ie=UTF-8&q=' + encodeURIComponent(queryObj.text) + '&tl=' + lang + '&client=gtx'
+        : null
     })
 }
 

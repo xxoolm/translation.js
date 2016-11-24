@@ -141,7 +141,7 @@ p.detect = function (queryObj) {
  * @returns {Promise}
  */
 p.audio = function () {
-  return Promise.reject(null)
+  return Promise.resolve(null)
 }
 
 module.exports = Bing
