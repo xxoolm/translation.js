@@ -11,8 +11,8 @@ testClass.forEach(function (Class) {
   require('./standard')(Class)
 
   describe(google.type, function () {
-    const queryObj = {text: 'man', to: 'zh-TW'}
-    const rawRes = {
+    var queryObj = {text: 'man', to: 'zh-TW'}
+    var rawRes = {
       'sentences': [{
         'trans': '人',
         'orig': 'man',
@@ -54,8 +54,8 @@ testClass.forEach(function (Class) {
         'extended_srclangs': ['en']
       }
     }
-    const badQueryObj = {text: 'fdmmgilgnpjigdojojpjoooidkmcomcm', to: 'zh-CN'}
-    const rawBadRes = {
+    var badQueryObj = {text: 'fdmmgilgnpjigdojojpjoooidkmcomcm', to: 'zh-CN'}
+    var rawBadRes = {
       'sentences': [{
         'trans': badQueryObj.text,
         'orig': badQueryObj.text,
