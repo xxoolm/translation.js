@@ -72,11 +72,11 @@ testClass.forEach(function (Class) {
 
     describe('的 构造函数：', function () {
       it('在浏览器中会给 apiRoot 赋值为 Google.API_URL', function () {
-        global.window = {}
+        GLOBAL.window = {}
         window.window = window
         var google = new Class()
         expect(google.apiRoot).toEqual(Google.API_URL)
-        delete global.window
+        GLOBAL.window = undefined
       })
       it('在 Node 环境会给 apiRoot 赋值为 google.link', function () {
         var google = new Class()
