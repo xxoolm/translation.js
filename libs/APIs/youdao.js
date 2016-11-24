@@ -134,7 +134,7 @@ p.detect = function (queryObj) {
     if (langTransform(from)) {
       resolve(from)
     } else {
-      reject(null)
+      resolve(null)
     }
   })
 }

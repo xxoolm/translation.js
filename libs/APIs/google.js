@@ -90,12 +90,12 @@ p.translate = function (queryObj) {
  * Google 翻译返回的数据结构
  * @typedef {Object} GoogleRes
  * @property {String} src - 原字符串语种，ISO839-1 格式，如果 queryObj dt 为空，则返回 json 只有这一个字段
- * @property {Object[]}= sentences
+ * @property {Object[]} sentences
  * @property {{trans: String, orig: String, backend: Number}} sentences[0] trans:翻译结果，orig:被翻译的字符串
- * @property {{translit: String, src_translit: String}}= sentences[1] translit:翻译结果音标，src_translit:原字符串音标
- * @property {{pos: String, terms: String[], entry: Object[]}[]}= dict 查词结果，只有请求单个单词翻译时会有，
+ * @property {{translit: String, src_translit: String}} sentences[1] translit:翻译结果音标，src_translit:原字符串音标
+ * @property {{pos: String, terms: String[], entry: Object[]}[]} dict 查词结果，只有请求单个单词翻译时会有，
  * 中翻英经常有，小语种经常没有 pos:词性 terms:词语列表 entry:对每个词的详解
- * @property {{srclangs: String[], srclangs_confidences: Number[], extended_srclangs: String[]}}= ld_result
+ * @property {{srclangs: String[], srclangs_confidences: Number[], extended_srclangs: String[]}} ld_result
  */
 /**
  * 将谷歌翻译的数据转换为统一格式
@@ -151,12 +151,12 @@ p.transform = function (rawRes, queryObj) {
 p.detect = function (queryObj) {
   var from = queryObj.from
   if (from) {
-    return (supportedLang.indexOf(from) > -1) ? Promise.resolve(from) : Promise.reject(null)
+    return (supportedLang.indexOf(from) > -1) ? Promise.resolve(from) : Promise.resolve(null)
   }
 
   return this.translate(queryObj)
     .then(function (result) {
-      return result.from
+      return result.from ? Promise.resolve(result.from) : Promise.resolve(null)
     })
 }
 

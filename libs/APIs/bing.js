@@ -126,12 +126,12 @@ p.transform = function (responseText, queryObj) {
  * @returns {Promise}
  */
 p.detect = function (queryObj) {
-  return new Promise(function (resolve, reject) {
+  return new Promise(function (resolve) {
     var from = queryObj.from
     if (langTransform(from)) {
       resolve(from)
     } else {
-      reject(null)
+      resolve(null)
     }
   })
 }

@@ -47,11 +47,11 @@ module.exports = function (Class) {
           c.detect({
             text: 'test',
             from: 'no this lang'
-          }).then(function () {
-            fail('错误的进入了 resolve 分支')
+          }).then(function (lang) {
+            expect(lang).toBeNull()
             done()
           }, function (e) {
-            expect(e).toBeNull()
+            fail('错误的进入了 reject 分支' + e.toString())
             done()
           })
         })
@@ -68,11 +68,11 @@ module.exports = function (Class) {
       // it( '若支持则返回语音地址字符串' )
 
       it('不支持朗读或者不支持此查询对象的语种会 reject null', function (done) {
-        c.audio({ text: 'test', from: 'no this lang' }).then(function () {
-          fail('错误的进入了 resolve 分支')
+        c.audio({ text: 'test', from: 'no this lang' }).then(function (url) {
+          expect(url).toBeNull()
           done()
         }, function (e) {
-          expect(e).toBeNull()
+          fail('错误的进入了 reject 分支' + e.toString())
           done()
         })
       })

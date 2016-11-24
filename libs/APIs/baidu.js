@@ -149,12 +149,7 @@ p.detect = function (queryObj) {
     var from = queryObj.from
 
     if (from) {
-      if (langResolve(from)) {
-        resolve(from)
-      } else {
-        reject(null)
-      }
-      return
+      return resolve(langResolve(from) ? from : null)
     }
 
     superagent
@@ -169,7 +164,7 @@ p.detect = function (queryObj) {
           if (lang) return resolve(lang)
         }
 
-        reject(null)
+        resolve(null)
       })
   })
 }
