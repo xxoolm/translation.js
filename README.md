@@ -55,7 +55,7 @@ tjs.add(new tjs.BaiDu())
 tjs.add(new tjs.Google())
 tjs.add(new tjs.GoogleCN())
 tjs.add(new tjs.Bing())
-tjs.add(new tjs.YouDao({ key: 'xxx', keyFrom: 'xxx' }))
+tjs.add(new tjs.YouDao({ apiKey: 'xxx', keyFrom: 'xxx' }))
 
 // 使用有道翻译 'test'
 tjs

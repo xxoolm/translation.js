@@ -1,12 +1,19 @@
 var Google = require('./google')
 
 function GoogleCN (config) {
-  var google = new Google(config)
-  google.name = '谷歌翻译（国内）'
-  google.type = 'GoogleCN'
-  google.link = 'https://translate.google.cn'
-  google.apiRoot = 'https://translate.google.cn'
-  return google
+  Google.call(this, config)
+  this.name = '谷歌翻译（国内）'
+  this.type = 'GoogleCN'
+  this.link = 'https://translate.google.cn'
+  this.audioRoot = this.link + '/translate_tts'
+  // To avoid browser same origin policy block request,
+  // use googleapis as apiRoot in browser
+  this.apiRoot = (typeof window === 'object' && window.window === window)
+    ? Google.API_URL
+    : this.link
 }
+
+GoogleCN.prototype = Object.create(Google.prototype)
+GoogleCN.prototype.constructor = GoogleCN
 
 module.exports = GoogleCN

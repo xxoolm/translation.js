@@ -134,7 +134,7 @@ p.detect = function (queryObj) {
     if (langTransform(from)) {
       resolve(from)
     } else {
-      reject(null)
+      resolve(null)
     }
   })
 }
@@ -148,8 +148,11 @@ p.audio = function (queryObj) {
   return this
     .detect(queryObj)
     .then(function (lang) {
+      if (!lang) return null
       var l = langTransform(lang)
-      return 'http://tts.youdao.com/fanyivoice?keyfrom=fanyi%2Eweb%2Eindex&le=' + l + '&word=' + queryObj.text
+      return l
+        ? 'http://tts.youdao.com/fanyivoice?keyfrom=fanyi%2Eweb%2Eindex&le=' + l + '&word=' + queryObj.text
+        : null
     })
 }
 
