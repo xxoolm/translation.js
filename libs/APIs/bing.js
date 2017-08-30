@@ -43,26 +43,19 @@ var p = Bing.prototype
  */
 p.translate = function (queryObj) {
   var that = this
-  return new Promise(function (resolve, reject) {
-    superagent
-      .post('http://dict.bing.com.cn/io.aspx')
-      .type('form')
-      .send({
-        t: 'dict',
-        ut: 'default',
-        q: queryObj.text,
-        ulang: 'AUTO',
-        tlang: 'AUTO'
-      })
-      .timeout(that.timeout)
-      .end(function (err, res) {
-        if (err) {
-          reject(err)
-        } else {
-          resolve(that.transform(res.text, queryObj))
-        }
-      })
-  })
+  return superagent
+    .post('http://dict.bing.com.cn/io.aspx')
+    .type('form')
+    .send({
+      t: 'dict',
+      ut: 'default',
+      q: queryObj.text,
+      ulang: 'AUTO',
+      tlang: 'AUTO'
+    })
+    .then(function (res) {
+      return that.transform(res.text, queryObj)
+    })
 }
 
 /**
@@ -93,8 +86,7 @@ p.transform = function (responseText, queryObj) {
 
   // 尝试获取详细释义
   try {
-    var d = []
-    ROOT.DEF[0].SENS.forEach(function (v) {
+    obj.detailed = ROOT.DEF[0].SENS.map(function (v) {
       var s = v.$POS + '. '
       if (Array.isArray(v.SEN)) {
         v.SEN.forEach(function (j) {
@@ -103,9 +95,8 @@ p.transform = function (responseText, queryObj) {
       } else {
         s += v.SEN.D.$
       }
-      d.push(s)
+      return s
     })
-    obj.detailed = d
   } catch (e) {}
 
   // 尝试获取翻译结果
@@ -118,30 +109,6 @@ p.transform = function (responseText, queryObj) {
     obj.from = '' // 不支持的语种始终会被解析为 en，这是不正确的
   }
   return obj
-}
-
-/**
- * 使用必应翻译检测文本语种。
- * @param queryObj
- * @returns {Promise}
- */
-p.detect = function (queryObj) {
-  return new Promise(function (resolve) {
-    var from = queryObj.from
-    if (langTransform(from)) {
-      resolve(from)
-    } else {
-      resolve(null)
-    }
-  })
-}
-
-/**
- * 暂时找不到必应的语音播放的接口。它网页上的语音播放没有规律可循。
- * @returns {Promise}
- */
-p.audio = function () {
-  return Promise.resolve(null)
 }
 
 module.exports = Bing

@@ -55,8 +55,8 @@ describe('有道翻译', function () {
 
       spyOn(youdao, 'transform')
 
-      nock('https://fanyi.youdao.com')
-        .get('/openapi.do')
+      nock(youdao.apiRoot)
+        .get(YouDao.TRANSLATE_PATH)
         .query(true)
         .reply(200, rawRes)
 
@@ -65,8 +65,8 @@ describe('有道翻译', function () {
         .then(function (result) {
           expect(youdao.transform).toHaveBeenCalledWith(rawRes, { text: 'test' })
           done()
-        }, function () {
-          fail('错误的进入了 rejection 分支')
+        }, function (e) {
+          fail('错误的进入了 rejection 分支：' + e.toString())
           done()
         })
     })
@@ -96,7 +96,7 @@ describe('有道翻译', function () {
       expect(result).toEqual(jasmine.objectContaining({
         text: 'test',
         response: rawRes,
-        error: youdao.errMsg[20]
+        error: YouDao.ERROR[20]
       }))
     })
 

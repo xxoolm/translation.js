@@ -24,7 +24,17 @@ function langTransform (lang, invert) {
   return (invert ? custom2standard : standard2custom)[lang] || null
 }
 
-YouDao.resolve = langTransform
+var TRANSLATE_PATH = '/openapi.do'
+var ERROR = {
+  20: '有道翻译服务一次性只能翻译200个字符',
+  30: '有道翻译暂时无法翻译这段文本',
+  40: '有道翻译不支持这种语言',
+  50: 'api key被封禁',
+  60: '无词典结果'
+}
+
+YouDao.ERROR = ERROR
+YouDao.TRANSLATE_PATH = TRANSLATE_PATH
 
 /**
  * 有道翻译构造函数
@@ -39,17 +49,11 @@ function YouDao (config) {
 
   this.apiKey = config.apiKey
   this.keyFrom = config.keyFrom
+  this.apiRoot = 'https://fanyi.youdao.com'
 
   this.name = '有道翻译'
-  this.link = 'http://fanyi.youdao.com/'
+  this.link = 'http://fanyi.youdao.com'
   this.type = 'YouDao'
-  this.errMsg = {
-    20: '有道翻译服务一次性只能翻译200个字符',
-    30: '有道翻译暂时无法翻译这段文本',
-    40: '有道翻译不支持这种语言',
-    50: 'api key被封禁',
-    60: '无词典结果'
-  }
 }
 
 var p = YouDao.prototype
@@ -61,25 +65,19 @@ var p = YouDao.prototype
  */
 p.translate = function (queryObj) {
   var that = this
-  return new Promise(function (resolve, reject) {
-    request
-      .get('https://fanyi.youdao.com/openapi.do')
-      .query({
-        key: that.apiKey,
-        keyfrom: that.keyFrom,
-        type: 'data',
-        doctype: 'json',
-        version: '1.1',
-        q: queryObj.text
-      })
-      .end(function (err, res) {
-        if (err) {
-          reject(err)
-        } else {
-          resolve(that.transform(res.body, queryObj))
-        }
-      })
-  })
+  return request
+    .get(this.apiRoot + TRANSLATE_PATH)
+    .query({
+      key: that.apiKey,
+      keyfrom: that.keyFrom,
+      type: 'data',
+      doctype: 'json',
+      version: '1.1',
+      q: queryObj.text
+    })
+    .then(function (res) {
+      return that.transform(res.body, queryObj)
+    })
 }
 
 /**
@@ -92,14 +90,14 @@ p.transform = function (rawRes, queryObj) {
   var obj = {
     text: queryObj.text,
     response: rawRes,
-    linkToResult: 'http://fanyi.youdao.com/translate?i=' + queryObj.text
+    linkToResult: this.link + '/translate?i=' + queryObj.text
   }
 
   // rawRes 偶尔是 null
   if (rawRes) {
     // 如果有错误码则直接处理错误
     if (rawRes.errorCode !== 0) {
-      obj.error = this.errMsg[rawRes.errorCode]
+      obj.error = ERROR[rawRes.errorCode]
     } else {
       // 详细释义
       try {
@@ -123,37 +121,14 @@ p.transform = function (rawRes, queryObj) {
 }
 
 /**
- * 检测语种的方法，有道没有，所以若没有提供源语种就总是返回 null
- * @param {Query} queryObj
- * @returns {Promise}
- */
-p.detect = function (queryObj) {
-  return new Promise(function (resolve, reject) {
-    var from = queryObj.from
-
-    if (langTransform(from)) {
-      resolve(from)
-    } else {
-      resolve(null)
-    }
-  })
-}
-
-/**
  * 返回语音播放的 url
  * @param queryObj
  * @returns {Promise}
  */
 p.audio = function (queryObj) {
-  return this
-    .detect(queryObj)
-    .then(function (lang) {
-      if (!lang) return null
-      var l = langTransform(lang)
-      return l
-        ? 'http://tts.youdao.com/fanyivoice?keyfrom=fanyi%2Eweb%2Eindex&le=' + l + '&word=' + queryObj.text
-        : null
-    })
+  var lang = langTransform(queryObj.from)
+  if (!lang) return Promise.resolve(null)
+  return Promise.resolve('http://tts.youdao.com/fanyivoice?keyfrom=fanyi%2Eweb%2Eindex&le=' + lang + '&word=' + queryObj.text)
 }
 
 module.exports = YouDao

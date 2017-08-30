@@ -1,6 +1,10 @@
+var _Google = require('../libs/APIs/_google')
 var Google = require('../libs/APIs/google')
 var GoogleCN = require('../libs/APIs/google-cn')
 var nock = require('nock')
+
+var audioPath = _Google.AUDIO_PATH
+var translatePath = _Google.TRANSLATE_PATH
 
 nock.disableNetConnect()
 
@@ -11,7 +15,7 @@ testClass.forEach(function (Class) {
   require('./standard')(Class)
 
   describe(google.type, function () {
-    var queryObj = {text: 'man', to: 'zh-TW'}
+    var queryObj = { text: 'man', to: 'zh-TW' }
     var rawRes = {
       'sentences': [{
         'trans': '人',
@@ -54,7 +58,7 @@ testClass.forEach(function (Class) {
         'extended_srclangs': ['en']
       }
     }
-    var badQueryObj = {text: 'fdmmgilgnpjigdojojpjoooidkmcomcm', to: 'zh-CN'}
+    var badQueryObj = { text: 'fdmmgilgnpjigdojojpjoooidkmcomcm', to: 'zh-CN' }
     var rawBadRes = {
       'sentences': [{
         'trans': badQueryObj.text,
@@ -70,25 +74,12 @@ testClass.forEach(function (Class) {
       }
     }
 
-    describe('的 构造函数：', function () {
-      it('在浏览器中会给 apiRoot 赋值为 Google.API_URL', function () {
-        GLOBAL.window = {}
-        window.window = window
-        var google = new Class()
-        expect(google.apiRoot).toEqual(Google.API_URL)
-        GLOBAL.window = undefined
-      })
-      it('在 Node 环境会给 apiRoot 赋值为 google.link', function () {
-        var google = new Class()
-        expect(google.apiRoot).toEqual(google.link)
-      })
-    })
-
     describe('的 translate 方法：', function () {
       it('在正常情况下会调用 transform 方法返回结果对象', function (done) {
         spyOn(google, 'transform')
 
-        nock(google.link).get(google.translatePath)
+        nock(google.apiRoot)
+          .get(translatePath)
           .query(true)
           .reply(200, rawRes)
 
@@ -105,13 +96,13 @@ testClass.forEach(function (Class) {
 
       it('在网络错误时应该被 reject', function (done) {
         var errorMsg = 'some network error message'
-        nock(google.link)
-          .get(google.translatePath)
+        nock(google.apiRoot)
+          .get(translatePath)
           .query(true)
           .replyWithError(errorMsg)
 
         google
-          .translate({text: 'test'})
+          .translate({ text: 'test' })
           .then(function () {
             fail('错误地进入了 resolve 分支')
             done()
@@ -124,27 +115,6 @@ testClass.forEach(function (Class) {
     })
 
     describe('的 transform 方法：', function () {
-      it('在 Google 接口回复为错误信息字符串时，会返回带 Google.ERROR.UNKNOWN 的对象', function () {
-        var rawRes = 'Some error info'
-        var result = google.transform(rawRes, queryObj)
-
-        expect(result).toEqual(jasmine.objectContaining({
-          text: queryObj.text,
-          response: rawRes,
-          error: Google.ERROR.UNKNOWN
-        }))
-      })
-
-      it('在 Google 接口回复的对象没有翻译结果时，会返回带 Google.ERROR.NO_RESULT 的对象', function () {
-        var result = google.transform(rawBadRes, badQueryObj)
-
-        expect(result).toEqual(jasmine.objectContaining({
-          text: badQueryObj.text,
-          response: rawBadRes,
-          error: google.name + Google.ERROR.NO_RESULT
-        }))
-      })
-
       it('在 Google 接口返回正确格式数据时，能正常转换', function () {
         var result = google.transform(rawRes, queryObj)
         expect(result).toEqual({
@@ -163,7 +133,8 @@ testClass.forEach(function (Class) {
       describe('若查询对象没有 form 属性，', function () {
         it('若支持此语种，则会调用 translate 方法返回标准语种字符串', function (done) {
           spyOn(google, 'translate').and.callThrough()
-          nock(google.link).get(google.translatePath)
+          nock(google.apiRoot)
+            .get(translatePath)
             .query(true)
             .reply(200, rawRes)
 
@@ -178,7 +149,8 @@ testClass.forEach(function (Class) {
         })
 
         it('若不支持此语种则返回 null', function (done) {
-          nock(google.link).get(google.translatePath)
+          nock(google.apiRoot)
+            .get(translatePath)
             .query(true)
             .reply(200, rawBadRes)
           google.detect(badQueryObj).then(function (lang) {
@@ -192,8 +164,8 @@ testClass.forEach(function (Class) {
 
         it('若检测语种时发生网络错误则返回 SuperAgent 的错误对象', function (done) {
           var errorMsg = 'some network error message'
-          nock(google.link)
-            .get(google.translatePath)
+          nock(google.apiRoot)
+            .get(translatePath)
             .query(true)
             .replyWithError(errorMsg)
           google.detect(queryObj).then(function () {
@@ -210,9 +182,9 @@ testClass.forEach(function (Class) {
 
     describe('的 audio 方法：', function () {
       it('若支持此查询对象的语种则返回语音地址字符串', function (done) {
-        var queryObj = {text: 'test', from: 'es'}
+        var queryObj = { text: 'test', from: 'es' }
         google.audio(queryObj).then(function (url) {
-          expect(url).toBe(google.audioRoot + '?ie=UTF-8&q=test&tl=' + queryObj.from + '&client=gtx')
+          expect(url).toBe(google.link + audioPath + '?ie=UTF-8&q=test&tl=' + queryObj.from + '&client=gtx')
           done()
         }, function () {
           fail('错误地进入了 reject 分支')

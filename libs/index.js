@@ -5,6 +5,8 @@ var NETWORK_ERROR = 0
 // 详情见 http://visionmedia.github.io/superagent/#error-handling
 var SERVER_ERROR = 1
 
+var UNKNOWN_ERROR = 2
+
 function Translation () {
   this.APIs = {}
 }
@@ -69,35 +71,31 @@ p.detect = function (queryObj) {
  * @returns {Promise}
  */
 p.call = function (method, queryObj) {
-  var that = this
-  return new Promise(function (resolve, reject) {
-    var instances = that.APIs[queryObj.api]
-    if (!instances) {
-      return reject('没有注册 ' + queryObj.api + ' API。')
-    }
+  var instances = this.APIs[queryObj.api]
+  if (!instances) return Promise.reject('没有注册 ' + queryObj.api + ' API。')
 
-    var a = instances.shift()
-    instances.push(a)
-    a[method](queryObj).then(function (resultObj) {
-      if (method === 'translate') {
-        resultObj.api = a
-      }
-      resolve(resultObj)
+  var a = instances[0]
+  if (!a[method]) return Promise.reject(a.name + '不支持' + method + '方法。')
+
+  instances.push(instances.shift())
+
+  return a[method](queryObj)
+    .then(function (resultObj) {
+      if (method === 'translate') resultObj.api = a
+      return resultObj
     }, function (superAgentError) {
-      if (superAgentError == null) {
-        return reject()
-      }
-      reject(analyzeErrorType(superAgentError))
+      if (superAgentError == null) return Promise.reject(UNKNOWN_ERROR)
+      return Promise.reject(analyzeErrorType(superAgentError))
     })
-  })
 }
 
 var tjs = new Translation()
 
 tjs.NETWORK_ERROR = NETWORK_ERROR
 tjs.SERVER_ERROR = SERVER_ERROR
+tjs.UNKNOWN_ERROR = UNKNOWN_ERROR
 
-// 绑定内置构造函数
+// 绑定内置的翻译接口
 tjs.BaiDu = require('./APIs/baidu')
 tjs.YouDao = require('./APIs/youdao')
 tjs.Bing = require('./APIs/bing')

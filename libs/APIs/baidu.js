@@ -44,7 +44,7 @@ var custom2standard = invertObj(standard2custom)
 function BaiDu () {
   this.name = '百度翻译'
   this.type = 'BaiDu'
-  this.link = 'http://fanyi.baidu.com/'
+  this.link = 'http://fanyi.baidu.com'
 }
 
 /**
@@ -66,24 +66,18 @@ var p = BaiDu.prototype
  */
 p.translate = function (queryObj) {
   var that = this
-  return new Promise(function (resolve, reject) {
-    superagent
-      .get(that.link + '/v2transapi')
-      .query({
-        from: standard2custom[queryObj.from] || 'auto',
-        to: standard2custom[queryObj.to] || 'zh', // 非标准接口一定要提供目标语种
-        query: queryObj.text,
-        transtype: 'hash',
-        simple_means_flag: 3
-      })
-      .end(function (err, res) {
-        if (err) {
-          reject(err)
-        } else {
-          resolve(that.transform(res.body, queryObj))
-        }
-      })
-  })
+  return superagent
+    .get(this.link + '/v2transapi')
+    .query({
+      from: standard2custom[queryObj.from] || 'auto',
+      to: standard2custom[queryObj.to] || 'zh', // 非标准接口一定要提供目标语种
+      query: queryObj.text,
+      transtype: 'hash',
+      simple_means_flag: 3
+    })
+    .then(function (res) {
+      return that.transform(res.body, queryObj)
+    })
 }
 
 /**
@@ -117,11 +111,9 @@ p.transform = function (rawRes, queryObj) {
 
   // 详细释义
   try {
-    var detailed = []
-    rawRes.dict_result.simple_means.symbols[0].parts.forEach(function (v) {
-      detailed.push(v.part + ' ' + v.means.join('，'))
+    obj.detailed = rawRes.dict_result.simple_means.symbols[0].parts.map(function (v) {
+      return v.part + ' ' + v.means.join('，')
     })
-    obj.detailed = detailed
   } catch (e) {}
 
   // 翻译结果
@@ -139,34 +131,22 @@ p.transform = function (rawRes, queryObj) {
 }
 
 /**
- * 检测语种的方法， 返回的语种为百度自己格式的语种。
+ * 检测语种的方法
  * @param {Query} queryObj
  * @returns {Promise}
  */
 p.detect = function (queryObj) {
-  var that = this
-  return new Promise(function (resolve, reject) {
-    var from = queryObj.from
-
-    if (from) {
-      return resolve(langResolve(from) ? from : null)
-    }
-
-    superagent
-      .post(that.link + '/langdetect')
-      .send('query=' + queryObj.text.slice(0, 73))
-      .end(function (err, res) {
-        if (err) return reject(err)
-
-        var body = res.body
-        if (body.error === 0) {
-          var lang = langResolve(body.lan, true)
-          if (lang) return resolve(lang)
-        }
-
-        resolve(null)
-      })
-  })
+  return superagent
+    .post(this.link + '/langdetect')
+    .send('query=' + queryObj.text.slice(0, 73))
+    .then(function (res) {
+      var body = res.body
+      if (body.error === 0) {
+        var lang = langResolve(body.lan, true)
+        if (lang) return lang
+      }
+      return null
+    })
 }
 
 /**
@@ -175,13 +155,18 @@ p.detect = function (queryObj) {
  * @returns {Promise}
  */
 p.audio = function (queryObj) {
-  return this
-    .detect(queryObj)
+  var langPromise
+  if (queryObj.from) {
+    langPromise = Promise.resolve(langResolve(queryObj.from))
+  } else {
+    langPromise = this.detect(queryObj)
+  }
+  return langPromise
     .then(function (lang) {
       if (!lang) return null
       var l = langResolve(lang)
       return l
-        ? 'http://fanyi.baidu.com/gettts?lan=' + l + '&text=' + queryObj.text + '&spd=2&source=web'
+        ? this.link + '/gettts?lan=' + l + '&text=' + queryObj.text + '&spd=2&source=web'
         : null
     })
 }

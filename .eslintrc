@@ -1,4 +1,8 @@
 {
+  "parserOptions": {
+    "ecmaVersion": 5,
+    "sourceType": "module"
+  },
   "env": {
     "node": true,
     "jasmine": true
