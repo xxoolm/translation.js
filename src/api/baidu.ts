@@ -1,12 +1,12 @@
 import {
-  IAPIConstructor,
   ITranslateOptions,
   ITranslateResult,
   ILanguageList,
-  ISuperAgentResponseError
+  ISuperAgentResponseError,
+  TStringOrTranslateOptions
 } from '../Interfaces'
 import { ERROR_CODE } from '../constant'
-import { invert, transformSuperAgentError, TranslatorError, get } from '../utils'
+import { invert, transformSuperAgentError, TranslatorError, get, transformOptions } from '../utils'
 import { post } from 'superagent'
 
 // 百度语种检测接口返回的结构
@@ -95,124 +95,134 @@ const languageList: ILanguageList = {
 
 const languageListInvert = invert(languageList)
 
-export default class implements IAPIConstructor {
-  readonly id: string
-  readonly link: string
-  readonly name: string
+const link = 'https://fanyi.baidu.com/'
 
-  constructor () {
-    this.id = 'baidu'
-    this.link = 'https://fanyi.baidu.com'
-    this.name = '百度翻译'
-  }
+function detect (options: TStringOrTranslateOptions) {
+  const { text } = transformOptions(options)
 
-  translate (text: string, options: ITranslateOptions = {}) {
-    return new Promise((res, rej) => {
-      const { from } = options
-      if (from) {
-        res(from)
-      } else {
-        this.detect(text).then(res, rej)
+  return post(link + 'langdetect')
+    .send('query=' + text.slice(0, 73))
+    .then(res => {
+      const body = (res.body as IDetectResult)
+      if (body.error === 0) {
+        const iso689lang = languageListInvert[body.lan]
+        if (iso689lang) return iso689lang
       }
-    }).then((from: string) => {
-      const { to } = options
-      return post(this.link + '/v2transapi')
-        .type('form')
-        .send({
-          from: from && languageList[from] || 'auto',
-          to: to && languageList[to] || 'zh', // 非标准接口一定要提供目标语种
-          query: text,
-          transtype: 'hash',
-          simple_means_flag: 3
-        })
-    }).then(res => {
-      const body = (res.body as IResponse)
-
-      const transResult = body.trans_result
-      const baiduFrom = get(transResult, 'from', 'auto')
-      const baiduTo = get(transResult, 'to', 'auto')
-
-      const result: ITranslateResult = {
-        text,
-        raw: body,
-        link: this.link + `/#${baiduFrom}/${baiduTo}/${encodeURIComponent(text)}`,
-        from: languageListInvert[baiduFrom],
-        to: languageListInvert[baiduTo]
-      }
-
-      const symbols: IResponseSymbol = get(body, ['dict_result', 'simple_means', 'symbols', '0'])
-
-      if (symbols) {
-        // region 解析音标
-        const phonetic = []
-        const { ph_am, ph_en } = symbols
-        if (ph_am) {
-          phonetic.push({
-            name: '美',
-            ttsURI: this.audio(text, 'en') as string,
-            value: ph_am
-          })
-        }
-        if (ph_en) {
-          phonetic.push({
-            name: '英',
-            ttsURI: this.audio(text, 'en-GB') as string,
-            value: ph_en
-          })
-        }
-        if (phonetic.length) {
-          result.phonetic = phonetic
-        }
-        // endregion
-
-        // 解析词典数据
-        try {
-          result.dict = symbols.parts.map(part => {
-            return part.part + ' ' + part.means.join('；')
-          })
-        } catch (e) {}
-      }
-
-      // 解析普通的翻译结果
-      try {
-        result.result = transResult.data.map(d => d.dst)
-      } catch (e) {}
-
-      return result
+      throw new TranslatorError(ERROR_CODE.UNSUPPORT_LANG)
+    }, (error: ISuperAgentResponseError) => {
+      throw transformSuperAgentError(error)
     })
-  }
+}
 
-  detect (text: string) {
-    return post(this.link + '/langdetect')
-      .send('query=' + text.slice(0, 73))
-      .then(res => {
-        const body = (res.body as IDetectResult)
-        if (body.error === 0) {
-          const iso689lang = languageListInvert[body.lan]
-          if (iso689lang) return iso689lang
-        }
-        return Promise.reject(new TranslatorError(ERROR_CODE.API_UNABLE_DETECT_LANG))
-      }, (error: ISuperAgentResponseError) => {
-        return Promise.reject(transformSuperAgentError(error))
-      })
-  }
+function getAudioURI (text: string, lang: string) {
+  return link + `gettts?lan=${lang}&text=${encodeURIComponent(text)}&spd=3&source=web`
+}
 
-  /**
-   * 获取指定文本的网络语音地址
-   * @param {string} text
-   * @param {string} lan - 英标可以传 'en-GB'
-   * @param {number} speed
-   * @return {string|void}
-   */
-  audio (text: string, lan: string, speed = 3) {
-    let lang
-    if (lan === 'en-GB') {
-      lang = 'uk'
+/**
+ * 获取指定文本的网络语音地址
+ * @param {string} options
+ * @return {string|void}
+ */
+function audio (options: TStringOrTranslateOptions) {
+  const { text, from } = transformOptions(options)
+
+  return new Promise((res, rej) => {
+    if (from) {
+      if (from === 'en-GB') {
+        res('uk')
+      } else {
+        res(languageList[from])
+      }
     } else {
-      lang = languageList[lan]
+      detect(text).then(res, rej)
     }
+  }).then((lang: string) => {
     if (lang) {
-      return this.link + `/gettts?lan=${lang}&text=${encodeURIComponent(text)}&spd=${speed}&source=web`
+      return getAudioURI(text, lang)
     }
-  }
+    throw new TranslatorError(ERROR_CODE.UNSUPPORT_LANG)
+  })
+}
+
+function translate (options: TStringOrTranslateOptions) {
+  let { from, to, text } = transformOptions(options)
+
+  return new Promise((res, rej) => {
+    if (from) {
+      res(from)
+    } else {
+      detect(text).then(res, rej)
+    }
+  }).then((from: string) => {
+    return post(link + 'v2transapi')
+      .type('form')
+      .send({
+        from: from && languageList[from] || 'auto',
+        to: to && languageList[to] || 'zh', // 非标准接口一定要提供目标语种
+        query: text,
+        transtype: 'hash',
+        simple_means_flag: 3
+      })
+  }).then(res => {
+    const body = (res.body as IResponse)
+
+    const transResult = body.trans_result
+    const baiduFrom = get(transResult, 'from', 'auto')
+    const baiduTo = get(transResult, 'to', 'auto')
+
+    const result: ITranslateResult = {
+      text,
+      raw: body,
+      link: link + `#${baiduFrom}/${baiduTo}/${encodeURIComponent(text)}`,
+      from: languageListInvert[baiduFrom],
+      to: languageListInvert[baiduTo]
+    }
+
+    const symbols: IResponseSymbol = get(body, ['dict_result', 'simple_means', 'symbols', '0'])
+
+    if (symbols) {
+      // region 解析音标
+      const phonetic = []
+      const { ph_am, ph_en } = symbols
+      if (ph_am) {
+        phonetic.push({
+          name: '美',
+          ttsURI: getAudioURI(text, 'en'),
+          value: ph_am
+        })
+      }
+      if (ph_en) {
+        phonetic.push({
+          name: '英',
+          ttsURI: getAudioURI(text, 'en-GB'),
+          value: ph_en
+        })
+      }
+      if (phonetic.length) {
+        result.phonetic = phonetic
+      }
+      // endregion
+
+      // 解析词典数据
+      try {
+        result.dict = symbols.parts.map(part => {
+          return part.part + ' ' + part.means.join('；')
+        })
+      } catch (e) {}
+    }
+
+    // 解析普通的翻译结果
+    try {
+      result.result = transResult.data.map(d => d.dst)
+    } catch (e) {}
+
+    return result
+  })
+}
+
+export default {
+  id: 'baidu',
+  translate,
+  detect,
+  audio
 }

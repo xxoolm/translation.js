@@ -19,21 +19,29 @@ export interface ITranslateResult {
 }
 
 export interface ITranslateOptions {
+  readonly text: string
+  // 待翻译文本的源语种
   readonly from?: string
+  // 想将文本翻译成哪个语种
   readonly to?: string
+  // 想使用哪个 API 翻译这段文本
+  readonly api?: string
+  // 允许用户传入自定义的配置
   [other: string]: any
 }
 
-export interface IAPIConstructor {
-  readonly name: string // 翻译接口的中文名称
+export type TStringOrTranslateOptions = string | ITranslateOptions
+
+export interface IAPI {
   readonly id: string // 翻译接口的唯一标识符
-  readonly link: string // 翻译接口的在线网址
   // 翻译文本的方法
-  translate (text: string, options?: ITranslateOptions): Promise<ITranslateResult>
+  translate (options: string | ITranslateOptions): Promise<ITranslateResult>
   // 检测文本语种的方法
-  detect (text: string): Promise<string>
+  detect (options: string | ITranslateOptions): Promise<string>
   // 返回文本的在线音频地址的方法
-  audio (text: string, lang: string): string | void
+  audio (options: string | ITranslateOptions): Promise<string>
+
+  [other: string]: any
 }
 
 export interface IAnyObject {

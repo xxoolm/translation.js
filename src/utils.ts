@@ -1,4 +1,4 @@
-import { IAnyObject, ISuperAgentResponseError } from './interfaces'
+import { IAnyObject, ISuperAgentResponseError, ITranslateOptions } from './interfaces'
 import { ERROR_CODE } from './constant'
 
 /**
@@ -46,8 +46,8 @@ export function get (obj: any, pathArray: string | string[], defaultValue?: any)
 export class TranslatorError extends Error {
   readonly code: ERROR_CODE
 
-  constructor (code: ERROR_CODE) {
-    super()
+  constructor (code: ERROR_CODE, message?: string) {
+    super(message)
     this.code = code
   }
 }
@@ -60,4 +60,13 @@ export function transformSuperAgentError (error: ISuperAgentResponseError) {
   } else {
     return new TranslatorError(ERROR_CODE.API_SERVER_ERROR)
   }
+}
+
+export function transformOptions (options: string | ITranslateOptions) {
+  if (typeof options === 'string') {
+    return {
+      text: options
+    }
+  }
+  return options
 }
