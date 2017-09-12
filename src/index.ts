@@ -1,4 +1,4 @@
-import { IAPI, ITranslateOptions, ITranslateResult, TStringOrTranslateOptions } from './interfaces'
+import { IAPI, ITranslateResult, TStringOrTranslateOptions } from './interfaces'
 import baidu from './api/baidu'
 import { ERROR_CODE } from './constant'
 import { transformOptions, TranslatorError } from './utils'
@@ -34,7 +34,7 @@ function call (method: 'translate' | 'detect' | 'audio', options: TStringOrTrans
   const { api: apiID } = transformOptions(options)
   const api = getAPI(apiID || 'baidu')
   if (api) {
-    const func = api[(method as string)]
+    const func = api[method]
     if (func) {
       return func.call(api, options)
     } else {

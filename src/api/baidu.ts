@@ -1,5 +1,4 @@
 import {
-  ITranslateOptions,
   ITranslateResult,
   ILanguageList,
   ISuperAgentResponseError,
@@ -108,7 +107,7 @@ function detect (options: TStringOrTranslateOptions) {
         const iso689lang = languageListInvert[body.lan]
         if (iso689lang) return iso689lang
       }
-      throw new TranslatorError(ERROR_CODE.UNSUPPORT_LANG)
+      throw new TranslatorError(ERROR_CODE.UNSUPPORTED_LANG)
     }, (error: ISuperAgentResponseError) => {
       throw transformSuperAgentError(error)
     })
@@ -128,19 +127,21 @@ function audio (options: TStringOrTranslateOptions) {
 
   return new Promise((res, rej) => {
     if (from) {
-      if (from === 'en-GB') {
-        res('uk')
-      } else {
-        res(languageList[from])
-      }
+      res(from)
     } else {
       detect(text).then(res, rej)
+    }
+  }).then((from: string) => {
+    if (from === 'en-GB') {
+      return 'uk'
+    } else {
+      return languageList[from]
     }
   }).then((lang: string) => {
     if (lang) {
       return getAudioURI(text, lang)
     }
-    throw new TranslatorError(ERROR_CODE.UNSUPPORT_LANG)
+    throw new TranslatorError(ERROR_CODE.UNSUPPORTED_LANG)
   })
 }
 

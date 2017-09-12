@@ -1,4 +1,4 @@
-import { IAnyObject, ISuperAgentResponseError, ITranslateOptions } from './interfaces'
+import { IAnyObject, ISuperAgentResponseError, ITranslateOptions, TStringOrTranslateOptions } from './interfaces'
 import { ERROR_CODE } from './constant'
 
 /**
@@ -62,7 +62,7 @@ export function transformSuperAgentError (error: ISuperAgentResponseError) {
   }
 }
 
-export function transformOptions (options: string | ITranslateOptions) {
+export function transformOptions (options: TStringOrTranslateOptions) {
   if (typeof options === 'string') {
     return {
       text: options
