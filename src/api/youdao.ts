@@ -75,12 +75,8 @@ function translate (options: TStringOrTranslateOptions) {
     return Promise.reject(new TranslatorError(ERROR_CODE.UNSUPPORTED_LANG))
   }
 
-  return post(translateAPI)
+  const request = post(translateAPI)
     .type('form')
-    // 必须要设置 Referer 才能查询到数据，
-    // 由于浏览器不允许设置这个请求头，所以在扩展程序中需要用到 onBeforeSendHeaders 事件修改：
-    // https://developer.chrome.com/extensions/webRequest#event-onBeforeSendHeaders
-    .set('Referer', link)
     .send(sign(text))
     .send({
       i: text,
@@ -93,37 +89,46 @@ function translate (options: TStringOrTranslateOptions) {
       action: 'FY_BY_CLICKBUTTION',
       typoResult: 'true'
     })
-    .then(res => {
-      const body = res.body as IResponse
 
-      let [from, to] = body.type.split('2')
-      from = languageListInvert[from]
-      to = languageListInvert[to]
+  // 在 NodeJS 端才设置请求头，避免浏览器控制台输出错误信息
+  if (typeof window === 'undefined') {
+    // 必须要设置 Referer 才能查询到数据，
+    // 由于浏览器不允许设置这个请求头，所以在扩展程序中需要用到 onBeforeSendHeaders 事件修改：
+    // https://developer.chrome.com/extensions/webRequest#event-onBeforeSendHeaders
+    request.set('Referer', link)
+  }
 
-      const result: ITranslateResult = {
-        raw: body,
-        text,
-        from,
-        to
-      }
+  return request.then(res => {
+    const body = res.body as IResponse
 
-      const s = body.smartResult
+    let [from, to] = body.type.split('2')
+    from = languageListInvert[from]
+    to = languageListInvert[to]
 
-      if (s) {
-        result.link = `https://dict.youdao.com/search?q=${encodeURIComponent(text)}&keyfrom=fanyi.smartResult`
-        try {
-          result.dict = s.entries.filter(s => s).map(s => s.trim())
-        } catch (e) {}
-      } else {
-        result.link = `http://fanyi.youdao.com/translate?i=${encodeURIComponent(text)}`
-      }
+    const result: ITranslateResult = {
+      raw: body,
+      text,
+      from,
+      to
+    }
 
+    const s = body.smartResult
+
+    if (s) {
+      result.link = `https://dict.youdao.com/search?q=${encodeURIComponent(text)}&keyfrom=fanyi.smartResult`
       try {
-        result.result = body.translateResult.map(o => o.tgt.trim())
+        result.dict = s.entries.filter(s => s).map(s => s.trim())
       } catch (e) {}
+    } else {
+      result.link = `http://fanyi.youdao.com/translate?i=${encodeURIComponent(text)}`
+    }
 
-      return result
-    })
+    try {
+      result.result = body.translateResult.map(o => o.tgt.trim())
+    } catch (e) {}
+
+    return result
+  })
 }
 
 function detect (options: TStringOrTranslateOptions) {
