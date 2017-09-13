@@ -9,7 +9,7 @@ export interface IPhonetic {
 export interface ITranslateResult {
   text: string // 此次查询的文本
   raw: any // 翻译接口提供的原始的、未经转换的查询结果
-  link: string // 此翻译接口的在线查询地址
+  link?: string // 此翻译接口的在线查询地址
   from: string, // 由翻译接口提供的源语种，可能会与查询对象的 from 不同
   to: string, // 由翻译接口提供的目标语种，注意可能会与查询对象的 to 不同
   phonetic?: string | IPhonetic[], // 若有多个音标（例如美音和英音），则使用数组描述

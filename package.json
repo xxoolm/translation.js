@@ -21,7 +21,9 @@
     "build": "node build/build.js"
   },
   "dependencies": {
+    "@types/blueimp-md5": "^2.7.0",
     "@types/superagent": "^3.5.5",
+    "blueimp-md5": "^2.10.0",
     "superagent": "^3.6.0"
   },
   "devDependencies": {
