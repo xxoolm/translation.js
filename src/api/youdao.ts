@@ -1,5 +1,11 @@
 import { post } from 'superagent'
-import { ILanguageList, ITranslateResult, TStringOrTranslateOptions, ITranslateOptions } from '../interfaces'
+import {
+  ILanguageList,
+  ITranslateResult,
+  TStringOrTranslateOptions,
+  ITranslateOptions,
+  ISuperAgentResponseError
+} from '../interfaces'
 import { invert, transformSuperAgentError, TranslatorError, transformOptions } from '../utils'
 import { ERROR_CODE } from '../constant'
 
@@ -128,6 +134,8 @@ function translate (options: TStringOrTranslateOptions) {
     } catch (e) {}
 
     return result
+  }, (error: ISuperAgentResponseError) => {
+    throw transformSuperAgentError(error)
   })
 }
 
