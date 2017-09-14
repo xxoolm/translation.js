@@ -1,6 +1,7 @@
 import { IAPI, ITranslateResult, TStringOrTranslateOptions } from './interfaces'
 import baidu from './api/baidu'
 import youdao from './api/youdao'
+import google from './api/google'
 import { ERROR_CODE } from './constant'
 import { transformOptions, TranslatorError } from './utils'
 
@@ -12,6 +13,7 @@ const apis: IAPIS = {}
 
 add(baidu)
 add(youdao)
+add(google)
 
 function getAPI (id: string) {
   const apiArr = apis[id]
