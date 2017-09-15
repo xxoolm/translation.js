@@ -5,7 +5,7 @@ import {
   TStringOrTranslateOptions
 } from '../Interfaces'
 import { ERROR_CODE } from '../constant'
-import { invert, transformSuperAgentError, TranslatorError, get, transformOptions } from '../utils'
+import { invert, transformSuperAgentError, TranslatorError, getValue, transformOptions } from '../utils'
 import { post } from 'superagent'
 
 // 百度语种检测接口返回的结构
@@ -168,8 +168,8 @@ function translate (options: TStringOrTranslateOptions) {
     const body = (res.body as IResponse)
 
     const transResult = body.trans_result
-    const baiduFrom = get(transResult, 'from', 'auto')
-    const baiduTo = get(transResult, 'to', 'auto')
+    const baiduFrom = getValue(transResult, 'from', 'auto')
+    const baiduTo = getValue(transResult, 'to', 'auto')
 
     const result: ITranslateResult = {
       text,
@@ -179,7 +179,7 @@ function translate (options: TStringOrTranslateOptions) {
       to: languageListInvert[baiduTo]
     }
 
-    const symbols: IResponseSymbol = get(body, ['dict_result', 'simple_means', 'symbols', '0'])
+    const symbols: IResponseSymbol = getValue(body, ['dict_result', 'simple_means', 'symbols', '0'])
 
     if (symbols) {
       // region 解析音标

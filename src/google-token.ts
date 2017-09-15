@@ -11,23 +11,16 @@ const window = {
 }
 
 // region 复制过来的代码，做了一些修改确保 typescript 不会报错
-var yr = null
+var yr: any = null
 
-function sM (a) {
+function sM (a: any) {
   var b
   if (null !== yr)
     b = yr
   else {
-    b = wr(String.fromCharCode(84))
-    var c = wr(String.fromCharCode(75))
-    b = [b(), b()]
-    b[1] = c()
-    b = (yr = window[b.join(c())] || '') || ''
+    b = (yr = window.TKK || '') || ''
   }
-  var d1 = wr(String.fromCharCode(116))
-    , c  = wr(String.fromCharCode(107))
-    , d  = [d1(), d1()]
-  d[1] = c()
+  var d  = ['t', 'k']
   var c1 = '&' + d.join('') + '='
   d = b.split('.')
   b = Number(d[0]) || 0
@@ -54,13 +47,7 @@ function sM (a) {
   return c1 + (a.toString() + '.' + (a ^ b))
 }
 
-function wr (a) {
-  return function () {
-    return a
-  }
-}
-
-function xr (a, b) {
+function xr (a: any, b: any) {
   for (var c = 0; c < b.length - 2; c += 3) {
     var d  = b.charAt(c + 2)
       , d1 = 'a' <= d ? d.charCodeAt(0) - 87 : Number(d)
@@ -86,7 +73,9 @@ export default function (text: string, com: any) {
         if (match) {
           // 函数体不接收 ASCII 码，所以这里要手动转换一遍
           const code = match[1].replace(/\\x3d/g, '=').replace(/\\x27/g, '\'')
-          window.TKK = new Function(code)()
+          try {
+            window.TKK = new Function(code)()
+          } catch (e) {}
         }
         resolve()
       }, error => {

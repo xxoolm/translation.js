@@ -23,7 +23,7 @@ export function invert (obj: IAnyObject) {
  * @param defaultValue
  * @return {any}
  */
-export function get (obj: any, pathArray: string | string[], defaultValue?: any) {
+export function getValue (obj: any, pathArray: string | string[], defaultValue?: any) {
   if (obj == null) return defaultValue
 
   if (typeof pathArray === 'string') {
