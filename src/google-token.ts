@@ -11,6 +11,7 @@ const window = {
 }
 
 // region 复制过来的代码，做了一些修改确保 typescript 不会报错
+/* tslint:disable */
 var yr: any = null
 
 function sM (a: any) {
@@ -58,7 +59,7 @@ function xr (a: any, b: any) {
 }
 
 // endregion
-
+/* tslint:enable */
 export default function (text: string, com: any) {
   return new Promise((resolve, reject) => {
     const now = Math.floor(Date.now() / 3600000)

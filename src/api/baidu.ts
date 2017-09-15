@@ -1,4 +1,5 @@
 import {
+  ITranslateOptions, // tslint:disable-line:no-unused-variable
   ITranslateResult,
   ILanguageList,
   ISuperAgentResponseError,

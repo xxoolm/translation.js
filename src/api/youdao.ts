@@ -1,9 +1,9 @@
 import { post } from 'superagent'
 import {
+  ITranslateOptions, // tslint:disable-line:no-unused-variable
   ILanguageList,
   ITranslateResult,
   TStringOrTranslateOptions,
-  ITranslateOptions,
   ISuperAgentResponseError
 } from '../interfaces'
 import { invert, transformSuperAgentError, TranslatorError, transformOptions } from '../utils'
@@ -97,6 +97,7 @@ function translate (options: TStringOrTranslateOptions) {
     })
 
   // 在 NodeJS 端才设置请求头，避免浏览器控制台输出错误信息
+  // tslint:disable-next-line:strict-type-predicates
   if (typeof window === 'undefined') {
     // 必须要设置 Referer 才能查询到数据，
     // 由于浏览器不允许设置这个请求头，所以在扩展程序中需要用到 onBeforeSendHeaders 事件修改：

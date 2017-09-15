@@ -1,5 +1,9 @@
 import { get } from 'superagent'
-import { ITranslateOptions, ITranslateResult, TStringOrTranslateOptions } from '../interfaces'
+import {
+  ITranslateOptions, // tslint:disable-line:no-unused-variable
+  ITranslateResult,
+  TStringOrTranslateOptions
+} from '../interfaces'
 import { transformSuperAgentError, transformOptions } from '../utils'
 import getGoogleToken from '../google-token'
 
