@@ -95,12 +95,12 @@ const languageList: ILanguageList = {
 
 const languageListInvert = invert(languageList)
 
-const link = 'https://fanyi.baidu.com/'
+const link = 'https://fanyi.baidu.com'
 
 function detect (options: TStringOrTranslateOptions) {
   const { text } = transformOptions(options)
 
-  return post(link + 'langdetect')
+  return post(link + '/langdetect')
     .send('query=' + text.slice(0, 73))
     .then(res => {
       const body = (res.body as IDetectResult)
@@ -115,7 +115,7 @@ function detect (options: TStringOrTranslateOptions) {
 }
 
 function getAudioURI (text: string, lang: string) {
-  return link + `gettts?lan=${lang}&text=${encodeURIComponent(text)}&spd=3&source=web`
+  return link + `/gettts?lan=${lang}&text=${encodeURIComponent(text)}&spd=3&source=web`
 }
 
 /**
@@ -156,7 +156,7 @@ function translate (options: TStringOrTranslateOptions) {
       detect(text).then(res, rej)
     }
   }).then((from: string) => {
-    return post(link + 'v2transapi')
+    return post(link + '/v2transapi')
       .type('form')
       .send({
         from: from && languageList[from] || 'auto',
@@ -175,7 +175,7 @@ function translate (options: TStringOrTranslateOptions) {
     const result: ITranslateResult = {
       text,
       raw: body,
-      link: link + `#${baiduFrom}/${baiduTo}/${encodeURIComponent(text)}`,
+      link: link + `/#${baiduFrom}/${baiduTo}/${encodeURIComponent(text)}`,
       from: languageListInvert[baiduFrom],
       to: languageListInvert[baiduTo]
     }
