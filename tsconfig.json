@@ -1,6 +1,8 @@
 {
   "compilerOptions": {
-    "module": "es2015",
+    // `module` 是给 jasmine 设置的。
+    // rollup-plugin-typescript2 这个插件会强制将它设为 es2015
+    "module": "commonjs",
     "moduleResolution": "node",
     "strict": true,
     "declaration": true,
@@ -8,7 +10,7 @@
     "target": "es2015"
   },
   "include": [
-    "src/**/*",
-    "test/**/*"
+    "src/**/*.ts",
+    "test/**/*.ts"
   ]
 }

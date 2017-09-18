@@ -1,7 +1,8 @@
 /node_modules/
 /dist/
 /dev.js
-/.rpt2_cache/
+/.*/
+/coverage/
 .DS_Store
 /coverage/
 /declaration/
