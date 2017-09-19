@@ -50,9 +50,9 @@ const detectMockObj = {
 
 const mockTranslate = mock('https://fanyi.baidu.com', '/v2transapi', 'post', getBaiDuResponse())
 const mockDetect = mock('https://fanyi.baidu.com', '/langdetect', 'post', {
-    error: 0,
-    lan: 'zh'
-  })
+  error: 0,
+  lan: 'zh'
+})
 
 describe('百度翻译', () => {
   describe('的 translate 方法', () => {
@@ -161,6 +161,25 @@ describe('百度翻译', () => {
             .toBe('https://fanyi.baidu.com/gettts?lan=uk&text=test&spd=3&source=web')
           done()
         }, done.fail)
+    })
+  })
+
+  describe('的 detect 方法', () => {
+    it('若返回的结果不匹配百度支持的语种则报错', done => {
+      mockDetect({
+        response: {
+          error: 1
+        }
+      })
+
+      baidu
+        .detect('x')
+        .then(() => {
+          done.fail('没有报错')
+        }, error => {
+          expect(error.code).toBe(ERROR_CODE.UNSUPPORTED_LANG)
+          done()
+        })
     })
   })
 })

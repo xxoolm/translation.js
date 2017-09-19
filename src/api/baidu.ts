@@ -139,10 +139,7 @@ function audio (options: TStringOrTranslateOptions) {
     } else {
       lang = languageList[from]
     }
-    if (lang) {
-      return getAudioURI(text, lang)
-    }
-    throw new TranslatorError(ERROR_CODE.UNSUPPORTED_LANG, '百度翻译不支持这个语种')
+    return getAudioURI(text, lang)
   })
 }
 
