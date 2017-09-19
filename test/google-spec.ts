@@ -1,5 +1,6 @@
-import * as nock from 'nock'
+import mock from './utils/mock'
 import google from '../src/api/google'
+import { ERROR_CODE } from '../src/constant'
 
 function getResponse () {
   return [
@@ -681,25 +682,16 @@ function getResponse () {
   ]
 }
 
-function mockTranslate (com?: boolean) {
-  const scope = nock(`https://translate.google.${com ? 'com' : 'cn'}`)
+const fakeToken = ';TKK=eval(\'((function(){var a\x3d1404053479;var b\x3d2735121840;return 418275+\x27.\x27+(a+b)})())\');'
 
-  scope
-    .get('/translate_a/single')
-    .times(Infinity)
-    .query(true)
-    .reply(200, getResponse())
-
-  scope
-    .get('/')
-    .times(Infinity)
-    .reply(200, ';TKK=eval(\'((function(){var a\x3d1404053479;var b\x3d2735121840;return 418275+\x27.\x27+(a+b)})())\');')
-}
+const mockTranslate = mock('https://translate.google.cn', '/translate_a/single', 'get', getResponse())
+const mockToken = mock('https://translate.google.cn', '/', 'get', fakeToken)
 
 describe('谷歌翻译', () => {
   describe('的 translate 方法', () => {
     it('会尝试分析单词释义与一般结果', done => {
       mockTranslate()
+      mockToken()
 
       google
         .translate('test')
@@ -714,11 +706,40 @@ describe('谷歌翻译', () => {
           done()
         }, done.fail)
     })
+
+    it('网络出错时会正确报错', done => {
+      mockToken({ error: true })
+
+      google
+        .translate('x')
+        .then(() => {
+          done.fail('没有报错')
+        }, error => {
+          expect(error.code).toBe(ERROR_CODE.NETWORK_ERROR)
+          done()
+        })
+    })
+
+    it('网络出错时会正确报错', done => {
+      mockToken()
+      mockTranslate({ error: true })
+
+      google
+        .translate('x')
+        .then(() => {
+          done.fail('没有报错')
+        }, error => {
+          expect(error.code).toBe(ERROR_CODE.NETWORK_ERROR)
+          done()
+        })
+    })
   })
 
   describe('的 audio 方法', () => {
     it('会返回在线语音的 URI', done => {
+      mockToken()
       mockTranslate()
+
       google.audio({
         text: 'test',
         from: 'en'
@@ -729,11 +750,14 @@ describe('谷歌翻译', () => {
     })
 
     it('如果没有指定语种会尝试自动检测', done => {
+      mockToken({ times: 2 })
       mockTranslate()
+
       google
         .audio('test')
         .then(uri => {
-          expect(uri).toContain('https://translate.google.cn/translate_tts?ie=UTF-8&q=test&tl=en&total=1&idx=0&textlen=4')
+          expect(uri)
+            .toContain('https://translate.google.cn/translate_tts?ie=UTF-8&q=test&tl=en&total=1&idx=0&textlen=4')
           done()
         }, done.fail)
     })

@@ -12,6 +12,9 @@ export default function (host: string, path: string, method: 'get' | 'post' = 'g
   const scope = nock(host)
   return function (options: IOptions = {}) {
     const interceptor = scope[method](path, options.body)
+
+    interceptor.query(true)
+
     if (options.times) {
       interceptor.times(options.times)
     }
