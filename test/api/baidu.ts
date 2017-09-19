@@ -83,7 +83,7 @@ describe('百度翻译', () => {
           expect(result.dict).toEqual(['单词属性 一；二；三；四'])
           expect(result.result).toEqual(['翻译', '结果'])
           done()
-        }, fail)
+        }, done.fail)
     })
 
     it('如果没有提供语种，则会自动尝试检测', done => {
@@ -107,7 +107,7 @@ describe('百度翻译', () => {
       }).then(uri => {
         expect(uri).toBe('https://fanyi.baidu.com/gettts?lan=en&text=test&spd=3&source=web')
         done()
-      }, fail)
+      }, done.fail)
     })
 
     it('如果没有指定语种会尝试自动检测', done => {
@@ -118,7 +118,7 @@ describe('百度翻译', () => {
           expect(uri)
             .toBe('https://fanyi.baidu.com/gettts?lan=zh&text=' + encodeURIComponent('中文') + '&spd=3&source=web')
           done()
-        }, fail)
+        }, done.fail)
     })
 
     it('支持英标', done => {
@@ -131,7 +131,7 @@ describe('百度翻译', () => {
           expect(uri)
             .toBe('https://fanyi.baidu.com/gettts?lan=uk&text=test&spd=3&source=web')
           done()
-        }, fail)
+        }, done.fail)
     })
   })
 })

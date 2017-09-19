@@ -15,10 +15,10 @@ interface IResponse {
     entries: string[]
     type: number
   }
-  translateResult: {
-    src: string
-    tgt: string
-  }[]
+  translateResult: [{
+      src: string
+      tgt: string
+    }[]]
   type: string
 }
 
@@ -119,19 +119,19 @@ function translate (options: TStringOrTranslateOptions) {
       to
     }
 
-    const s = body.smartResult
+    const { smartResult } = body
 
-    if (s) {
+    if (smartResult) {
       result.link = `https://dict.youdao.com/search?q=${encodeURIComponent(text)}&keyfrom=fanyi.smartResult`
       try {
-        result.dict = s.entries.filter(s => s).map(s => s.trim())
+        result.dict = smartResult.entries.filter(s => s).map(s => s.trim())
       } catch (e) {}
     } else {
       result.link = `http://fanyi.youdao.com/translate?i=${encodeURIComponent(text)}`
     }
 
     try {
-      result.result = body.translateResult.map(o => o.tgt.trim())
+      result.result = body.translateResult[0].map(o => o.tgt.trim())
     } catch (e) {}
 
     return result
