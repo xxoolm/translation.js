@@ -1,5 +1,6 @@
-import * as nock from 'nock'
+import mock from './utils/mock'
 import youdao from '../src/api/youdao'
+import { ERROR_CODE } from '../src/constant'
 
 function getResponse () {
   return {
@@ -10,12 +11,7 @@ function getResponse () {
   }
 }
 
-function mockTranslate () {
-  nock('https://fanyi.youdao.com')
-    .post('/translate_o')
-    .query(true)
-    .reply(200, getResponse())
-}
+const mockTranslate = mock('https://fanyi.youdao.com', '/translate_o', 'post', getResponse())
 
 describe('有道翻译', () => {
   describe('的 translate 方法', () => {
@@ -34,6 +30,47 @@ describe('有道翻译', () => {
           expect(result.result).toEqual(['试验'])
           done()
         }, done.fail)
+    })
+
+    it('网络错误时会正确报错', done => {
+      mockTranslate({ error: true })
+
+      youdao
+        .translate('test')
+        .then(() => {
+          done.fail('没有报错')
+        }, error => {
+          expect(error.code).toBe(ERROR_CODE.NETWORK_ERROR)
+          done()
+        })
+    })
+
+    it('errorCode 不为 0 时会正确报错', done => {
+      mockTranslate({ response: { errorCode: 1 } })
+
+      youdao
+        .translate('test')
+        .then(() => {
+          done.fail('没有报错')
+        }, error => {
+          expect(error.code).toBe(ERROR_CODE.API_SERVER_ERROR)
+          done()
+        })
+    })
+
+    it('若语种与目标语种中不含中文则报错', done => {
+      youdao
+        .translate({
+          text: 'x',
+          from: 'en',
+          to: 'fr'
+        })
+        .then(() => {
+          done.fail('没有报错')
+        }, error => {
+          expect(error.code).toBe(ERROR_CODE.UNSUPPORTED_LANG)
+          done()
+        })
     })
   })
 
@@ -56,6 +93,26 @@ describe('有道翻译', () => {
           expect(uri).toBe('https://dict.youdao.com/dictvoice?audio=test&le=en')
           done()
         }, done.fail)
+    })
+  })
+
+  describe('的 detect 方法', () => {
+    it('若检测不到语种会正确报错', done => {
+      mockTranslate({
+        response: {
+          errorCode: 0,
+          type: ''
+        }
+      })
+
+      youdao
+        .detect('test')
+        .then(() => {
+          done.fail('没有报错')
+        }, error => {
+          expect(error.code).toBe(ERROR_CODE.UNSUPPORTED_LANG)
+          done()
+        })
     })
   })
 })

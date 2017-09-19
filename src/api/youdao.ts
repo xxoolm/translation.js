@@ -16,9 +16,9 @@ interface IResponse {
     type: number
   }
   translateResult: [{
-      src: string
-      tgt: string
-    }[]]
+    src: string
+    tgt: string
+  }[]]
   type: string
 }
 
@@ -108,6 +108,10 @@ function translate (options: TStringOrTranslateOptions) {
   return request.then(res => {
     const body = res.body as IResponse
 
+    if (body.errorCode !== 0) {
+      throw new TranslatorError(ERROR_CODE.API_SERVER_ERROR, '有道翻译接口出错了')
+    }
+
     let [from, to] = body.type.split('2')
     from = languageListInvert[from]
     to = languageListInvert[to]
@@ -142,7 +146,13 @@ function translate (options: TStringOrTranslateOptions) {
 
 function detect (options: TStringOrTranslateOptions) {
   const { text } = transformOptions(options)
-  return translate(text).then(result => result.from)
+  return translate(text).then(result => {
+    const { from } = result
+    if (!from) {
+      throw new TranslatorError(ERROR_CODE.UNSUPPORTED_LANG, '有道翻译不支持这个语种')
+    }
+    return from
+  })
 }
 
 function audio (options: TStringOrTranslateOptions) {
@@ -154,11 +164,7 @@ function audio (options: TStringOrTranslateOptions) {
       detect(text).then(res, rej)
     }
   }).then((from: string) => {
-    const lang = languageList[from]
-    if (!lang) {
-      throw new TranslatorError(ERROR_CODE.UNSUPPORTED_LANG, '有道翻译不支持这个语种')
-    }
-    return `https://dict.youdao.com/dictvoice?audio=${encodeURIComponent(text)}&le=${lang}`
+    return `https://dict.youdao.com/dictvoice?audio=${encodeURIComponent(text)}&le=${languageList[from]}`
   })
 }
 

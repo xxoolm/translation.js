@@ -37,17 +37,6 @@ function getBaiDuResponse () {
   }
 }
 
-const translateMockObj = {
-  response: getBaiDuResponse()
-}
-
-const detectMockObj = {
-  response: {
-    error: 0,
-    lan: 'zh'
-  }
-}
-
 const mockTranslate = mock('https://fanyi.baidu.com', '/v2transapi', 'post', getBaiDuResponse())
 const mockDetect = mock('https://fanyi.baidu.com', '/langdetect', 'post', {
   error: 0,
