@@ -133,12 +133,12 @@ function audio (options: TStringOrTranslateOptions) {
       detect(text).then(res, rej)
     }
   }).then((from: string) => {
+    let lang
     if (from === 'en-GB') {
-      return 'uk'
+      lang = 'uk'
     } else {
-      return languageList[from]
+      lang = languageList[from]
     }
-  }).then((lang: string) => {
     if (lang) {
       return getAudioURI(text, lang)
     }
