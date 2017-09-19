@@ -1,5 +1,11 @@
 # translation.js
 
+[![Build Status](https://img.shields.io/travis/Selection-Translator/translation.js/master.svg?style=flat-square)](https://travis-ci.org/Selection-Translator/translation.js)
+[![Coverage Status](https://img.shields.io/coveralls/Selection-Translator/translation.js/master.svg?style=flat-square)](https://coveralls.io/github/Selection-Translator/translation.js?branch=master)
+[![dependencies Status](https://img.shields.io/david/Selection-Translator/translation.js.svg?style=flat-square)](https://david-dm.org/Selection-Translator/translation.js)
+[![devDependencies Status](https://img.shields.io/david/dev/Selection-Translator/translation.js.svg?style=flat-square)](https://david-dm.org/Selection-Translator/translation.js?type=dev)
+[![NPM Version](https://img.shields.io/npm/v/translation.js.svg?style=flat-square)](https://www.npmjs.com/package/translation.js)
+
 translation.js 整合了[谷歌翻译](https://translate.google.cn/)、[百度翻译](https://fanyi.baidu.com/)与[有道翻译](http://fanyi.youdao.com/)的网页翻译接口，让你方便的在这些翻译接口之间切换，并获取相同数据结构的翻译结果。
 
 ## 特点
@@ -37,7 +43,7 @@ import { translate, detect, audio } from 'translation.js'
 
 ## 使用
 
-#### 获取翻译结果
+### 获取翻译结果
 
 获取一段文本的翻译结果可以用 `translate()` 方法：
 
@@ -49,6 +55,37 @@ tjs
   })
 ```
 
+其中 `result` 的结构示例如下：
+
+```js
+{
+  text: 'test', // 此次查询的文本
+  raw: { ... }, // 接口返回的原本的数据
+  link: 'https://translate.google.cn/#en/zh/test', // 在线翻译地址
+  from: 'en', // 文本的源语种
+  to: 'zh-CN', // 文本的目标语种
+  // 单词的音标，目前只有用百度翻译英文单词才可能有
+  phonetic: [
+    { 
+      name: '美',
+      ttsURI: 'https://fanyi.baidu.com/gettts?lan=en&text=test&spd=3&source=web',
+      value: 'test'
+    },
+    {
+      name: '英',
+      ttsURI: 'https://fanyi.baidu.com/gettts?lan=en-GB&text=test&spd=3&source=web',
+      value: 'test
+    }
+  ],
+  // 单词的详细释义，翻译英文单词时才可能有
+  dict: ['n. 试验；测验；考验；化验', 'vt. 测验；考验；考查；勘探', 'vi. 受试验；受测验；受考验；测得结果' ],
+  // 一般翻译结果，数组里的每一项是一个段落的翻译
+  result: ['测试'] 
+}
+```
+
+**注：translation.js 统一使用 [ISO-639-1 标准](https://zh.wikipedia.org/wiki/ISO_639-1)作为语种格式，任何地方出现的语种都遵循这个标准。**
+
 翻译结果默认来自谷歌翻译，你也可以指定要从哪个接口获取结果：
 
 ```js
@@ -58,7 +95,7 @@ tjs.translate({
 })
 ```
 
-#### 检测语种
+### 检测语种
 
 检测一段文本的语种可以使用 `detect()` 方法：
 
@@ -81,7 +118,7 @@ tjs.detect({
 
 **注：建议一直使用谷歌翻译检测语种，因为它支持的语种是最多的，其他接口可能不支持你所检测的文本的语种。**
 
-#### 获取文本的语音朗读地址
+### 获取文本的语音朗读地址
 
 使用 `audio()` 方法可以获取到文本的语音朗读地址：
 
@@ -115,7 +152,7 @@ tjs.audio({
 })
 ```
 
-#### 源语种与目标语种
+### 源语种与目标语种
 
 `translate()` 方法支持 `from` 与 `to` 属性，用于指定源语种与目标语种：
 
@@ -130,11 +167,9 @@ tjs.translate({
 
 一般情况下，你不需要设置 `from`，接口会为你自动检测，但还是建议尽量声明 `from` 以跳过自动检测语种的步骤。
 
-注：translation.js 统一使用 [ISO-639-1 标准](https://zh.wikipedia.org/wiki/ISO_639-1)作为语种格式，任何地方出现的语种都遵循这个标准。
+### 使用谷歌国际翻译接口
 
-#### 使用谷歌国际翻译接口
-
-默认情况下，translation.js 从 translate.google**.cn** 获取翻译结果、语种检测及语音地址，但**如果你的运行环境支持**，你也可以从 translate.google**.com** 获取数据：
+默认情况下，translation.js 从 translate.google.**cn** 获取翻译结果、语种检测及语音地址，但**如果你的运行环境支持**，你也可以从 translate.google.**com** 获取数据：
 
 ```js
 tjs.translate({
@@ -153,11 +188,25 @@ tjs.audio({
 })
 ```
 
-#### 翻译结果的数据结构
+### 错误处理
 
-#### 错误处理
+每一个方法都可能抛出错误，抛出的错误是一个 `Error` 对象，你可以检查它的 `code` 属性判断错误原因：
 
-#### 添加自定义翻译接口
+```js
+tjs.translate('test').catch(error => {
+  console.log(error.code)
+})
+```
+
+`code` 可能有下面几个值：
+
+```
+NETWORK_ERROR - 网络错误，可能是运行环境没有网络连接造成的
+API_SERVER_ERROR - 网页翻译接口返回了错误的数据
+UNSUPPORTED_LANG - 接口不支持的语种
+NO_THIS_API - 没有找到你需要的接口
+NETWORK_TIMEOUT - 查询网页接口是超时了。由于目前没有设置超时时间，所以暂时不会出现这个错误
+```
 
 ## 许可
 

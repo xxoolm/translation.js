@@ -5,35 +5,20 @@ import google from './api/google'
 import { ERROR_CODE } from './constant'
 import { transformOptions, TranslatorError } from './utils'
 
-interface IAPIS {
-  [apiId: string]: IAPI[]
-}
-
 const defaultAPI = 'google'
 
-const apis: IAPIS = {}
+const apis: { [apiId: string]: IAPI } = {}
 
 add(baidu)
 add(youdao)
 add(google)
 
 function getAPI (id: string) {
-  const apiArr = apis[id]
-  if (apiArr && apiArr.length) {
-    const api = apiArr.shift()
-    apiArr.push((api as IAPI))
-    return api
-  }
+  return apis[id]
 }
 
-export {
-  getAPI as get
-}
-
-export function add (api: IAPI) {
-  const { id } = api
-  const apiArr = apis[id] || (apis[id] = [])
-  apiArr.push(api)
+function add (api: IAPI) {
+  apis[api.id] = api
 }
 
 function call (method: 'translate' | 'detect' | 'audio', options: TStringOrTranslateOptions) {
