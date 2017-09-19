@@ -112,22 +112,22 @@ function translate (options: TStringOrTranslateOptions) {
     from = languageListInvert[from]
     to = languageListInvert[to]
 
+    const { smartResult } = body
+
     const result: ITranslateResult = {
       raw: body,
       text,
       from,
-      to
+      to,
+      link: smartResult
+        ? `https://dict.youdao.com/search?q=${encodeURIComponent(text)}&keyfrom=fanyi.smartResult`
+        : `http://fanyi.youdao.com/translate?i=${encodeURIComponent(text)}`
     }
 
-    const { smartResult } = body
-
     if (smartResult) {
-      result.link = `https://dict.youdao.com/search?q=${encodeURIComponent(text)}&keyfrom=fanyi.smartResult`
       try {
         result.dict = smartResult.entries.filter(s => s).map(s => s.trim())
       } catch (e) {}
-    } else {
-      result.link = `http://fanyi.youdao.com/translate?i=${encodeURIComponent(text)}`
     }
 
     try {

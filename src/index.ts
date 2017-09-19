@@ -9,6 +9,8 @@ interface IAPIS {
   [apiId: string]: IAPI[]
 }
 
+const defaultAPI = 'google'
+
 const apis: IAPIS = {}
 
 add(baidu)
@@ -35,8 +37,8 @@ export function add (api: IAPI) {
 }
 
 function call (method: 'translate' | 'detect' | 'audio', options: TStringOrTranslateOptions) {
-  const { api: apiID } = transformOptions(options)
-  const api = getAPI(apiID || 'baidu')
+  const { api: apiID = defaultAPI } = transformOptions(options)
+  const api = getAPI(apiID)
   if (api) {
     const func = api[method]
     if (func) {
