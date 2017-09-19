@@ -6,9 +6,7 @@
 import { get } from 'superagent'
 import { transformSuperAgentError } from './utils'
 
-const window = {
-  TKK: '0'
-}
+let tk = ''
 
 // region 复制过来的代码，做了一些修改确保 typescript 不会报错
 /* tslint:disable */
@@ -19,9 +17,9 @@ function sM (a: any) {
   if (null !== yr)
     b = yr
   else {
-    b = (yr = window.TKK || '') || ''
+    b = (yr = tk || '') || ''
   }
-  var d  = ['t', 'k']
+  var d = ['t', 'k']
   var c1 = '&' + d.join('') + '='
   d = b.split('.')
   b = Number(d[0]) || 0
@@ -65,7 +63,7 @@ export default function (text: string, com: any) {
     const now = Math.floor(Date.now() / 3600000)
 
     // token 每小时才刷新一次，如果没过期则直接使用上次更新的 token
-    if (Number(window.TKK.split('.')[0]) === now) {
+    if (Number(tk.split('.')[0]) === now) {
       resolve()
     } else {
       // 从谷歌翻译的网页上获取到最新的 token
@@ -75,7 +73,7 @@ export default function (text: string, com: any) {
           // 函数体不接收 ASCII 码，所以这里要手动转换一遍
           const code = match[1].replace(/\\x3d/g, '=').replace(/\\x27/g, '\'')
           try {
-            window.TKK = new Function(code)()
+            tk = new Function(code)()
           } catch (e) {}
         }
         resolve()
