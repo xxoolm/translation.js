@@ -4,7 +4,7 @@ import {
   ILanguageList,
   ISuperAgentResponseError,
   TStringOrTranslateOptions
-} from '../Interfaces'
+} from '../interfaces'
 import { ERROR_CODE } from '../constant'
 import { invert, transformSuperAgentError, TranslatorError, getValue, transformOptions } from '../utils'
 import { post } from 'superagent'
