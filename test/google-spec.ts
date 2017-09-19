@@ -1,7 +1,5 @@
 import * as nock from 'nock'
-import google from '../../src/api/google'
-
-nock.disableNetConnect()
+import google from '../src/api/google'
 
 function getResponse () {
   return [

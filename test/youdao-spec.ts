@@ -1,7 +1,5 @@
 import * as nock from 'nock'
-import youdao from '../../src/api/youdao'
-
-nock.disableNetConnect()
+import youdao from '../src/api/youdao'
 
 function getResponse () {
   return {

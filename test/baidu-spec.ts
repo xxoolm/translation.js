@@ -1,7 +1,5 @@
 import * as nock from 'nock'
-import baidu from '../../src/api/baidu'
-
-nock.disableNetConnect()
+import baidu from '../src/api/baidu'
 
 function getBaiDuResponse () {
   return {
