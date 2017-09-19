@@ -48,13 +48,16 @@ const detectMockObj = {
   }
 }
 
-const mockTranslate = mock('https://fanyi.baidu.com', '/v2transapi', 'post')
-const mockDetect = mock('https://fanyi.baidu.com', '/langdetect', 'post')
+const mockTranslate = mock('https://fanyi.baidu.com', '/v2transapi', 'post', getBaiDuResponse())
+const mockDetect = mock('https://fanyi.baidu.com', '/langdetect', 'post', {
+    error: 0,
+    lan: 'zh'
+  })
 
 describe('百度翻译', () => {
   describe('的 translate 方法', () => {
     it('会尝试分析单词释义与一般结果', done => {
-      mockTranslate(translateMockObj)
+      mockTranslate()
 
       baidu
         .translate({
@@ -85,15 +88,15 @@ describe('百度翻译', () => {
     })
 
     it('如果没有提供语种，则会自动尝试检测', done => {
-      mockDetect(detectMockObj)
+      mockDetect()
 
-      mockTranslate(Object.assign({
+      mockTranslate({
         body: (body: string) => {
           expect(body.includes('from=zh')).toBeTruthy()
           done()
           return true
         }
-      }, translateMockObj))
+      })
 
       baidu.translate('中文')
     })
@@ -125,7 +128,7 @@ describe('百度翻译', () => {
     })
 
     it('如果没有指定语种会尝试自动检测', done => {
-      mockDetect(detectMockObj)
+      mockDetect()
 
       baidu
         .audio('中文')
