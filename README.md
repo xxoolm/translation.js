@@ -14,7 +14,7 @@ translation.js 整合了[谷歌翻译](https://translate.google.cn/)、[百度�
 
 translateion.js 能同时在 NodeJS 和浏览器端运行，但由于浏览器端[同源策略](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Access_control_CORS)的限制，这些网页接口只能在允许跨域的运行环境使用，Chrome 扩展/应用则是其中之一。
 
-注：为了能在 Chrome 扩展/应用中使用 translation.js，请阅读后面的[在 Chrome 扩展/应用中使用](#useage-in-chrome)一节。
+注：为了能在 Chrome 扩展/应用中使用 translation.js，请阅读最后面的「在 Chrome 扩展/应用中使用」一节。
 
 ### 一致的参数与数据结构
 
@@ -186,6 +186,69 @@ tjs.audio({
   text: 'test',
   com: true
 })
+```
+
+## 在 Chrome 扩展/应用中使用
+
+### 1. 声明跨域权限
+
+最简单的方式就是申请 `<all_urls>` 权限：
+
+```json
+{
+  "permissions": [
+    "<all_urls>"
+  ]
+}
+```
+
+或者，你至少需要申请这些网址的访问权限：
+
+```json
+{
+  "permissions": [
+    // 百度翻译的接口
+    "https://fanyi.baidu.com/langdetect",
+    "https://fanyi.baidu.com/v2transapi",
+    // 谷歌（中国）翻译的接口
+    "https://translate.google.cn/",
+    "https://translate.google.cn/translate_a/single",
+    // 如果你需要使用谷歌国际翻译接口则添加下面两项
+    "https://translate.google.com/",
+    "https://translate.google.com/translate_a/single",
+    // 有道翻译的接口
+    "https://fanyi.youdao.com/translate_o"
+  ]
+}
+```
+
+### 2. 给有道翻译接口添加 Referer 请求头
+
+有道网页翻译接口会验证 `Referer` 请求头判断接口请求是否来自网页。由于浏览器不允许为 XMLHTTPRequest 对象设置 `Referer` 请求头，所以这一步只能在扩展程序里做。
+
+你需要申请 `webRequest` 与 `webRequestBlocking` 权限，然后在你的[后台脚本](https://developer.chrome.com/extensions/event_pages)中添加下面这段代码：
+
+```js
+chrome.webRequest.onBeforeSendHeaders.addListener(
+  ({ requestHeaders }) => {
+    const r = {
+      name: 'Referer',
+      value: 'https://fanyi.youdao.com'
+    }
+    const index = requestHeaders.findIndex(({ name }) => name.toLowerCase() === 'referer')
+    if (index >= 0) {
+      requestHeaders.splice(index, 1, r)
+    } else {
+      requestHeaders.push(r)
+    }
+    return { requestHeaders }
+  },
+  {
+    urls: ['https://fanyi.youdao.com/translate_o'],
+    types: ['xmlhttprequest']
+  },
+  ['blocking', 'requestHeaders']
+)
 ```
 
 ### 错误处理

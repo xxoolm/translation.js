@@ -25,12 +25,7 @@ function call (method: 'translate' | 'detect' | 'audio', options: TStringOrTrans
   const { api: apiID = defaultAPI } = transformOptions(options)
   const api = getAPI(apiID)
   if (api) {
-    const func = api[method]
-    if (func) {
-      return func.call(api, options)
-    } else {
-      return Promise.reject(new TranslatorError(ERROR_CODE.NO_THIS_METHOD, `${apiID} 不支持 ${method} 方法。`))
-    }
+    return api[method](options)
   } else {
     return Promise.reject(new TranslatorError(ERROR_CODE.NO_THIS_API, `找不到 "${apiID}" 接口。`))
   }
