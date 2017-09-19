@@ -74,7 +74,7 @@ tjs
     {
       name: '英',
       ttsURI: 'https://fanyi.baidu.com/gettts?lan=en-GB&text=test&spd=3&source=web',
-      value: 'test
+      value: 'test'
     }
   ],
   // 单词的详细释义，翻译英文单词时才可能有
@@ -134,7 +134,7 @@ tjs
 
 这个方法同样支持使用 `api` 属性指定语音朗读地址的接口。另外，你可以使用 `from` 参数指定文本的语种，这样会跳过检测语种的步骤（通常是一次 HTTP 请求）。
 
-百度翻译支持英标与美标读音：
+另外，百度翻译支持英标与美标读音：
 
 ```js
 // 获取美式读音
@@ -169,7 +169,7 @@ tjs.translate({
 
 ### 使用谷歌国际翻译接口
 
-默认情况下，translation.js 从 translate.google.**cn** 获取翻译结果、语种检测及语音地址，但**如果你的运行环境支持**，你也可以从 translate.google.**com** 获取数据：
+默认情况下，translation.js 从 translate.google.**_cn_** 获取翻译结果、语种检测及语音地址，但**如果你的运行环境支持**，你也可以从 translate.google.**_com_** 获取数据：
 
 ```js
 tjs.translate({
@@ -204,7 +204,7 @@ tjs.audio({
 
 或者，你至少需要申请这些网址的访问权限：
 
-```json
+```js
 {
   "permissions": [
     // 百度翻译的接口
@@ -224,7 +224,7 @@ tjs.audio({
 
 ### 2. 给有道翻译接口添加 Referer 请求头
 
-有道网页翻译接口会验证 `Referer` 请求头判断接口请求是否来自网页。由于浏览器不允许为 XMLHTTPRequest 对象设置 `Referer` 请求头，所以这一步只能在扩展程序里做。
+有道网页翻译接口会验证 `Referer` 请求头判断对接口的访问是否来自网页。由于浏览器不允许为 XMLHTTPRequest 对象设置 `Referer` 请求头，所以这一步只能在扩展程序里做。
 
 你需要申请 `webRequest` 与 `webRequestBlocking` 权限，然后在你的[后台脚本](https://developer.chrome.com/extensions/event_pages)中添加下面这段代码：
 
@@ -268,7 +268,7 @@ NETWORK_ERROR - 网络错误，可能是运行环境没有网络连接造成的
 API_SERVER_ERROR - 网页翻译接口返回了错误的数据
 UNSUPPORTED_LANG - 接口不支持的语种
 NO_THIS_API - 没有找到你需要的接口
-NETWORK_TIMEOUT - 查询网页接口是超时了。由于目前没有设置超时时间，所以暂时不会出现这个错误
+NETWORK_TIMEOUT - 查询网页接口超时了。由于目前没有设置超时时间，所以暂时不会出现这个错误
 ```
 
 ## 许可
