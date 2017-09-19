@@ -78,7 +78,7 @@ function translate (options: TStringOrTranslateOptions) {
 
   // 有道网页翻译的接口的语种与目标语种中必须有一个是中文
   if (!((from === 'AUTO' && to === 'AUTO') || (from === 'zh-CHS' || to === 'zh-CHS'))) {
-    return Promise.reject(new TranslatorError(ERROR_CODE.UNSUPPORTED_LANG))
+    return Promise.reject(new TranslatorError(ERROR_CODE.UNSUPPORTED_LANG, '有道翻译的源语种与目标语种中必须有一个是中文，或者两个都是 AUTO'))
   }
 
   const request = post(translateAPI)
@@ -156,7 +156,7 @@ function audio (options: TStringOrTranslateOptions) {
   }).then((from: string) => {
     const lang = languageList[from]
     if (!lang) {
-      throw new TranslatorError(ERROR_CODE.UNSUPPORTED_LANG)
+      throw new TranslatorError(ERROR_CODE.UNSUPPORTED_LANG, '有道翻译不支持这个语种')
     }
     return `https://dict.youdao.com/dictvoice?audio=${encodeURIComponent(text)}&le=${lang}`
   })

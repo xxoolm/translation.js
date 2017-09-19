@@ -42,10 +42,10 @@ function call (method: 'translate' | 'detect' | 'audio', options: TStringOrTrans
     if (func) {
       return func.call(api, options)
     } else {
-      return Promise.reject(new TranslatorError(ERROR_CODE.NO_THIS_METHOD))
+      return Promise.reject(new TranslatorError(ERROR_CODE.NO_THIS_METHOD, `${apiID} 不支持 ${method} 方法。`))
     }
   } else {
-    return Promise.reject(new TranslatorError(ERROR_CODE.NO_THIS_API))
+    return Promise.reject(new TranslatorError(ERROR_CODE.NO_THIS_API, `找不到 "${apiID}" 接口。`))
   }
 }
 

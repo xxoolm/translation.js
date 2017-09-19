@@ -108,7 +108,7 @@ function detect (options: TStringOrTranslateOptions) {
         const iso689lang = languageListInvert[body.lan]
         if (iso689lang) return iso689lang
       }
-      throw new TranslatorError(ERROR_CODE.UNSUPPORTED_LANG)
+      throw new TranslatorError(ERROR_CODE.UNSUPPORTED_LANG, '百度翻译不支持这个语种')
     }, (error: ISuperAgentResponseError) => {
       throw transformSuperAgentError(error)
     })
@@ -142,7 +142,7 @@ function audio (options: TStringOrTranslateOptions) {
     if (lang) {
       return getAudioURI(text, lang)
     }
-    throw new TranslatorError(ERROR_CODE.UNSUPPORTED_LANG)
+    throw new TranslatorError(ERROR_CODE.UNSUPPORTED_LANG, '百度翻译不支持这个语种')
   })
 }
 

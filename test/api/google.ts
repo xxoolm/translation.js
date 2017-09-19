@@ -685,6 +685,7 @@ function getResponse () {
 
 function mockTranslate (com?: boolean) {
   const scope = nock(`https://translate.google.${com ? 'com' : 'cn'}`)
+
   scope
     .get('/translate_a/single')
     .times(Infinity)

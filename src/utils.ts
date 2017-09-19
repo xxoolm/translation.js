@@ -54,11 +54,11 @@ export class TranslatorError extends Error {
 
 export function transformSuperAgentError (error: ISuperAgentResponseError) {
   if (error.timeout) {
-    return new TranslatorError(ERROR_CODE.NETWORK_TIMEOUT)
+    return new TranslatorError(ERROR_CODE.NETWORK_TIMEOUT, '查询超时')
   } else if (!error.status || !error.response) {
-    return new TranslatorError(ERROR_CODE.NETWORK_ERROR)
+    return new TranslatorError(ERROR_CODE.NETWORK_ERROR, '没有网络连接')
   } else {
-    return new TranslatorError(ERROR_CODE.API_SERVER_ERROR)
+    return new TranslatorError(ERROR_CODE.API_SERVER_ERROR, '接口服务器出错了')
   }
 }
 
