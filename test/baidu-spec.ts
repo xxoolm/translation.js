@@ -1,5 +1,6 @@
-import * as nock from 'nock'
 import baidu from '../src/api/baidu'
+import { ERROR_CODE } from '../src/constant'
+import mock from './utils/mock'
 
 function getBaiDuResponse () {
   return {
@@ -36,25 +37,24 @@ function getBaiDuResponse () {
   }
 }
 
-function mockTranslate (body?: (body: string) => boolean) {
-  nock('https://fanyi.baidu.com')
-    .post('/v2transapi', body)
-    .reply(200, getBaiDuResponse())
+const translateMockObj = {
+  response: getBaiDuResponse()
 }
 
-function mockDetect (lan = 'zh') {
-  nock('https://fanyi.baidu.com')
-    .post('/langdetect')
-    .reply(200, {
-      error: 0,
-      lan
-    })
+const detectMockObj = {
+  response: {
+    error: 0,
+    lan: 'zh'
+  }
 }
+
+const mockTranslate = mock('https://fanyi.baidu.com', '/v2transapi', 'post')
+const mockDetect = mock('https://fanyi.baidu.com', '/langdetect', 'post')
 
 describe('百度翻译', () => {
   describe('的 translate 方法', () => {
     it('会尝试分析单词释义与一般结果', done => {
-      mockTranslate()
+      mockTranslate(translateMockObj)
 
       baidu
         .translate({
@@ -85,15 +85,31 @@ describe('百度翻译', () => {
     })
 
     it('如果没有提供语种，则会自动尝试检测', done => {
-      mockDetect()
+      mockDetect(detectMockObj)
 
-      mockTranslate(body => {
-        expect(body.includes('from=zh')).toBeTruthy()
-        done()
-        return true
-      })
+      mockTranslate(Object.assign({
+        body: (body: string) => {
+          expect(body.includes('from=zh')).toBeTruthy()
+          done()
+          return true
+        }
+      }, translateMockObj))
 
       baidu.translate('中文')
+    })
+
+    it('没有网络时会正确报错', done => {
+      // 模拟没有网络的情况
+      mockTranslate({ error: 'x' })
+
+      baidu
+        .translate({ text: 'x', from: 'en' })
+        .then(() => {
+          done.fail('没有报错')
+        }, error => {
+          expect(error.code).toBe(ERROR_CODE.NETWORK_ERROR)
+          done()
+        })
     })
   })
 
@@ -109,7 +125,8 @@ describe('百度翻译', () => {
     })
 
     it('如果没有指定语种会尝试自动检测', done => {
-      mockDetect()
+      mockDetect(detectMockObj)
+
       baidu
         .audio('中文')
         .then(uri => {
@@ -117,6 +134,17 @@ describe('百度翻译', () => {
             .toBe('https://fanyi.baidu.com/gettts?lan=zh&text=' + encodeURIComponent('中文') + '&spd=3&source=web')
           done()
         }, done.fail)
+    })
+
+    it('没有网络时会正确报错', done => {
+      mockDetect({ error: 'x' })
+
+      baidu.audio('x').then(() => {
+        done.fail('没有报错')
+      }, error => {
+        expect(error.code).toBe(ERROR_CODE.NETWORK_ERROR)
+        done()
+      })
     })
 
     it('支持英标', done => {

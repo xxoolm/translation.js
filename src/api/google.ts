@@ -29,7 +29,8 @@ function translate (options: TStringOrTranslateOptions) {
           ssel: 0,
           tsel: 0,
           kc: 1
-        }).then(res => {
+        })
+        .then(res => {
           const body: any[] = res.body
 
           const googleFrom = body[2]

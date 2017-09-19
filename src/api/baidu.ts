@@ -165,60 +165,63 @@ function translate (options: TStringOrTranslateOptions) {
         transtype: 'hash',
         simple_means_flag: 3
       })
-  }).then(res => {
-    const body = (res.body as IResponse)
+      .then(res => {
+        const body = (res.body as IResponse)
 
-    const transResult = body.trans_result
-    const baiduFrom = getValue(transResult, 'from', 'auto')
-    const baiduTo = getValue(transResult, 'to', 'auto')
+        const transResult = body.trans_result
+        const baiduFrom = getValue(transResult, 'from', 'auto')
+        const baiduTo = getValue(transResult, 'to', 'auto')
 
-    const result: ITranslateResult = {
-      text,
-      raw: body,
-      link: link + `/#${baiduFrom}/${baiduTo}/${encodeURIComponent(text)}`,
-      from: languageListInvert[baiduFrom],
-      to: languageListInvert[baiduTo]
-    }
+        const result: ITranslateResult = {
+          text,
+          raw: body,
+          link: link + `/#${baiduFrom}/${baiduTo}/${encodeURIComponent(text)}`,
+          from: languageListInvert[baiduFrom],
+          to: languageListInvert[baiduTo]
+        }
 
-    const symbols: IResponseSymbol = getValue(body, ['dict_result', 'simple_means', 'symbols', '0'])
+        const symbols: IResponseSymbol = getValue(body, ['dict_result', 'simple_means', 'symbols', '0'])
 
-    if (symbols) {
-      // region 解析音标
-      const phonetic = []
-      const { ph_am, ph_en } = symbols
-      if (ph_am) {
-        phonetic.push({
-          name: '美',
-          ttsURI: getAudioURI(text, 'en'),
-          value: ph_am
-        })
-      }
-      if (ph_en) {
-        phonetic.push({
-          name: '英',
-          ttsURI: getAudioURI(text, 'en-GB'),
-          value: ph_en
-        })
-      }
-      if (phonetic.length) {
-        result.phonetic = phonetic
-      }
-      // endregion
+        if (symbols) {
+          // region 解析音标
+          const phonetic = []
+          const { ph_am, ph_en } = symbols
+          if (ph_am) {
+            phonetic.push({
+              name: '美',
+              ttsURI: getAudioURI(text, 'en'),
+              value: ph_am
+            })
+          }
+          if (ph_en) {
+            phonetic.push({
+              name: '英',
+              ttsURI: getAudioURI(text, 'en-GB'),
+              value: ph_en
+            })
+          }
+          if (phonetic.length) {
+            result.phonetic = phonetic
+          }
+          // endregion
 
-      // 解析词典数据
-      try {
-        result.dict = symbols.parts.map(part => {
-          return part.part + ' ' + part.means.join('；')
-        })
-      } catch (e) {}
-    }
+          // 解析词典数据
+          try {
+            result.dict = symbols.parts.map(part => {
+              return part.part + ' ' + part.means.join('；')
+            })
+          } catch (e) {}
+        }
 
-    // 解析普通的翻译结果
-    try {
-      result.result = transResult.data.map(d => d.dst)
-    } catch (e) {}
+        // 解析普通的翻译结果
+        try {
+          result.result = transResult.data.map(d => d.dst)
+        } catch (e) {}
 
-    return result
+        return result
+      }, superAgentError => {
+        throw transformSuperAgentError(superAgentError)
+      })
   })
 }
 
