@@ -1,6 +1,4 @@
 import { translate, audio, detect } from '../src/index'
-import baidu from '../src/api/baidu'
-import youdao from '../src/api/youdao'
 import google from '../src/api/google'
 import { ERROR_CODE } from '../src/constant'
 
@@ -9,9 +7,11 @@ describe('', () => {
     spyOn(google, 'translate')
     spyOn(google, 'detect')
     spyOn(google, 'audio')
+    // tslint:disable:no-floating-promises
     translate('x')
     detect('x')
     audio('x')
+    // tslint:enable
     expect(google.translate).toHaveBeenCalled()
     expect(google.detect).toHaveBeenCalled()
     expect(google.audio).toHaveBeenCalled()

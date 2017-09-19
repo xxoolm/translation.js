@@ -87,6 +87,7 @@ describe('百度翻译', () => {
         }
       })
 
+      // tslint:disable-next-line:no-floating-promises
       baidu.translate('中文')
     })
 
