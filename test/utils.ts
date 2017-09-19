@@ -1,4 +1,6 @@
-import { getValue, invert, transformOptions } from '../src/utils'
+import { getValue, invert, transformOptions, transformSuperAgentError } from '../src/utils'
+import { ISuperAgentResponseError } from '../src/interfaces'
+import { ERROR_CODE } from '../src/constant'
 
 describe('utils 中的', () => {
   it('invert 方法会反转对象的键和值', () => {
@@ -42,5 +44,11 @@ describe('utils 中的', () => {
     }
 
     expect(transformOptions(o)).toBe(o)
+  })
+
+  it('transformSuperAgentError 方法会判断错误类型', () => {
+    expect(transformSuperAgentError({ timeout: true } as ISuperAgentResponseError).code).toBe(ERROR_CODE.NETWORK_TIMEOUT)
+    expect(transformSuperAgentError({} as ISuperAgentResponseError).code).toBe(ERROR_CODE.NETWORK_ERROR)
+    expect(transformSuperAgentError({ status: 500, response: {} } as ISuperAgentResponseError).code).toBe(ERROR_CODE.API_SERVER_ERROR)
   })
 })
