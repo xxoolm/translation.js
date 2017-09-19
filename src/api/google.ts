@@ -31,12 +31,15 @@ function translate (options: TStringOrTranslateOptions) {
           kc: 1
         }).then(res => {
           const body: any[] = res.body
+
+          const googleFrom = body[2]
+
           const result: ITranslateResult = {
             text,
             raw: body,
-            from: body[2],
+            from: googleFrom,
             to,
-            link: `https://translate.google.${com ? 'com' : 'cn'}/#${from}/${to}/${encodeURIComponent(text)}`
+            link: `https://translate.google.${com ? 'com' : 'cn'}/#${googleFrom}/${to}/${encodeURIComponent(text)}`
           }
 
           try {
