@@ -8,17 +8,20 @@
   },
   "main": "dist/translator.common.js",
   "module": "dist/translator.esm.js",
+  "unpkg": "dist/translator.js",
   "types": "declaration/src/index.d.ts",
   "files": [
     "src",
     "dist",
-    "declaration"
+    "declaration/src"
   ],
   "scripts": {
     "dev": "rollup -c build/dev.js -w",
     "lint": "tslint --type-check --project tsconfig.json 'src/**/*.ts' 'test/**/*.ts'",
-    "build": "node build/build.js",
-    "test": "nyc jasmine JASMINE_CONFIG_PATH=jasmine.json"
+    "build": "node build/build",
+    "pretest": "node build/replace-es6-import",
+    "test": "nyc jasmine JASMINE_CONFIG_PATH=jasmine.json",
+    "posttest": "node build/revert-es6-import"
   },
   "nyc": {
     "require": [
