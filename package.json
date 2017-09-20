@@ -19,7 +19,9 @@
     "dev": "rollup -c build/dev.js -w",
     "lint": "tslint --type-check --project tsconfig.json 'src/**/*.ts' 'test/**/*.ts'",
     "build": "node build/build.js",
-    "test": "nyc jasmine JASMINE_CONFIG_PATH=jasmine.json"
+    "pretest": "sed -i '' \"s/import md5 from 'blueimp-md5'/import md5 = require('blueimp-md5')/\" src/api/youdao.ts",
+    "test": "nyc jasmine JASMINE_CONFIG_PATH=jasmine.json",
+    "posttest": "sed -i '' \"s/import md5 = require('blueimp-md5')/import md5 from 'blueimp-md5'/\" src/api/youdao.ts"
   },
   "nyc": {
     "require": [
