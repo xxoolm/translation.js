@@ -21,7 +21,8 @@
     "build": "node build/build",
     "pretest": "node build/replace-es6-import",
     "test": "nyc jasmine JASMINE_CONFIG_PATH=jasmine.json",
-    "posttest": "node build/revert-es6-import"
+    "posttest": "node build/revert-es6-import",
+    "prepublishOnly": "npm run lint && npm test && npm run build"
   },
   "nyc": {
     "require": [
