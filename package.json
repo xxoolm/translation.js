@@ -18,10 +18,10 @@
   "scripts": {
     "dev": "rollup -c build/dev.js -w",
     "lint": "tslint --type-check --project tsconfig.json 'src/**/*.ts' 'test/**/*.ts'",
-    "build": "node build/build.js",
-    "pretest": "sed -i '' \"s/import md5 from 'blueimp-md5'/import md5 = require('blueimp-md5')/\" src/api/youdao.ts",
+    "build": "node build/build",
+    "pretest": "node build/replace-es6-import",
     "test": "nyc jasmine JASMINE_CONFIG_PATH=jasmine.json",
-    "posttest": "sed -i '' \"s/import md5 = require('blueimp-md5')/import md5 from 'blueimp-md5'/\" src/api/youdao.ts"
+    "posttest": "node build/revert-es6-import"
   },
   "nyc": {
     "require": [
