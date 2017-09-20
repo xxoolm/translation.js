@@ -12,7 +12,7 @@
   "files": [
     "src",
     "dist",
-    "declaration"
+    "declaration/src"
   ],
   "scripts": {
     "dev": "rollup -c build/dev.js -w",
