@@ -14,7 +14,7 @@ translation.js 整合了[谷歌翻译](https://translate.google.cn/)、[百度�
 
 translateion.js 能同时在 Node.js 和浏览器端运行，但由于浏览器端[同源策略](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Access_control_CORS)的限制，这些网页接口只能在允许跨域的运行环境使用，Chrome 扩展/应用则是其中之一。
 
-注：为了能在 Chrome 扩展/应用中使用 translation.js，请阅读最后面的「在 Chrome 扩展/应用中使用」一节。
+**注意**：为了能在 Chrome 扩展/应用中使用 translation.js，请阅读最后面的「在 Chrome 扩展/应用中使用」一节。
 
 ### 一致的参数与数据结构
 
@@ -43,9 +43,9 @@ import * as tjs from 'translation.js'
 import { translate, detect, audio } from 'translation.js'
 ```
 
-### 使用 &lt;script&;gt 标签
+### 使用 &lt;script&gt; 标签
 
-在 Chrome 扩展/应用中使用 &lt;script&;gt 标签引用时，你需要先下载下面三个文件到你的项目里：
+在 Chrome 扩展/应用中使用 &lt;script&gt; 标签引用时，你需要先下载下面三个文件到你的项目里：
 
 - [superagent.js](https://unpkg.com/superagent/superagent.js)
 - [md5.min.js](https://unpkg.com/blueimp-md5/js/md5.min.js)
@@ -58,7 +58,7 @@ import { translate, detect, audio } from 'translation.js'
 <script src="path/to/superagent.js"></script>
 <script src="path/to/md5.min.js"></script>
 <!-- 然后引用 translator.js -->
-<script src="path/to/translator.min.js"></script>-->
+<script src="path/to/translator.min.js"></script>
 ```
 
 然后就可以使用全局变量 `window.tjs` 调用方法了。
