@@ -41,7 +41,7 @@ import * as tjs from 'translation.js'
 import { translate, detect, audio } from 'translation.js'
 ```
 
-注：translation.js 暂不支持直接使用 &lt;script> 标签应用，在 Chrome 扩展/应用中使用时请考虑用 Webpack 之类的模块打包工具。
+**注：translation.js 暂不支持直接使用 &lt;script> 标签引用，在 Chrome 扩展/应用中使用时请考虑用 Webpack 之类的模块打包工具。**
 
 ## 使用
 
