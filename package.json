@@ -8,6 +8,7 @@
   },
   "main": "dist/translator.common.js",
   "module": "dist/translator.esm.js",
+  "unpkg": "dist/translator.js",
   "types": "declaration/src/index.d.ts",
   "files": [
     "src",

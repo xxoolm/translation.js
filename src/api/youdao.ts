@@ -1,3 +1,6 @@
+// NodeJS 只需要一行代码：
+// require('crypto').createHash('md5').update('text to hash').digest('hex')
+import md5 from 'blueimp-md5'
 import { post } from 'superagent'
 import {
   ITranslateOptions, // tslint:disable-line:no-unused-variable
@@ -21,11 +24,6 @@ interface IResponse {
   }[]]
   type: string
 }
-
-// NodeJS 只需要一行代码：
-// require('crypto').createHash('md5').update('text to hash').digest('hex')
-// TODO 在 typescript 里引用 CommonJS 模块有点问题
-const md5 = require('blueimp-md5')
 
 const link = 'https://fanyi.youdao.com'
 const translateAPI = link + '/translate_o?smartresult=dict&smartresult=rule&sessionFrom=null'

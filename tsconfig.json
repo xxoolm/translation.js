@@ -1,16 +1,13 @@
 {
   "compilerOptions": {
-    // `module` 是给 jasmine 设置的。
-    // rollup-plugin-typescript2 插件会强制将它设为 "es2015"
+    // `"module": "commonjs"` 是跑测试时给 ts-node 设置的。
+    // 打包时，rollup-plugin-typescript2 插件会强制将它设为 "es2015"。
     "module": "commonjs",
     "moduleResolution": "node",
     "strict": true,
     "declaration": true,
     "declarationDir": "declaration",
-    "target": "es2015"
-  },
-  "include": [
-    "src/**/*.ts",
-    "test/**/*.ts"
-  ]
+    "target": "es2015",
+    "allowSyntheticDefaultImports": true
+  }
 }

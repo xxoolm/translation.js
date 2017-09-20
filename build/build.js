@@ -8,7 +8,7 @@ fs.emptyDirSync(path.resolve(__dirname, '../declaration'))
 
 // 编译 js
 const rollup = require('rollup')
-// const uglifyJS = require('uglify-js')
+const uglifyJS = require('uglify-js')
 const buble = require('rollup-plugin-buble')
 
 rollup.rollup({
@@ -34,15 +34,16 @@ rollup.rollup({
   })
 
   // 输出 umd 格式
-  // bundle.generate({
-  //   format: 'umd',
-  //   name: config.name,
-  //   globals: {
-  //     superagent: 'superagent'
-  //   },
-  //   banner: config.banner
-  // }).then(({ code }) => {
-  //   fs.writeFile(config.umdOutputPath, code)
-  //   fs.writeFile(config.umdMinOutputPath, uglifyJS.minify(code, { output: { comments: /^!/ } }).code)
-  // })
+  bundle.generate({
+    format: 'umd',
+    name: config.name,
+    globals: {
+      superagent: 'superagent',
+      'blueimp-md5': 'md5'
+    },
+    banner: config.banner
+  }).then(({ code }) => {
+    fs.writeFile(config.umdOutputPath, code)
+    fs.writeFile(config.umdMinOutputPath, uglifyJS.minify(code, { output: { comments: /^!/ } }).code)
+  })
 })
