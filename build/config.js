@@ -4,7 +4,7 @@ const pkg = require('../package.json')
 
 module.exports = {
   input: path.resolve(__dirname, '../src/index.ts'),
-  name: 'Translator',
+  name: 'tjs',
   tp: typescript({
     useTsconfigDeclarationDir: true
   }),

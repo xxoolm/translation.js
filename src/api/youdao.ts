@@ -24,6 +24,7 @@ interface IResponse {
 
 // NodeJS 只需要一行代码：
 // require('crypto').createHash('md5').update('text to hash').digest('hex')
+// TODO 在 typescript 里引用 CommonJS 模块有点问题
 const md5 = require('blueimp-md5')
 
 const link = 'https://fanyi.youdao.com'

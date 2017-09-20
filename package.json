@@ -8,7 +8,6 @@
   },
   "main": "dist/translator.common.js",
   "module": "dist/translator.esm.js",
-  "unpkg": "dist/translator.js",
   "types": "declaration/src/index.d.ts",
   "files": [
     "src",
@@ -49,7 +48,7 @@
     "fs-extra": "^4.0.2",
     "jasmine": "^2.8.0",
     "jasmine-core": "^2.8.0",
-    "nock": "^9.0.14",
+    "nock": "^9.0.17",
     "nyc": "^11.2.1",
     "rollup": "^0.50.0",
     "rollup-plugin-buble": "^0.15.0",
