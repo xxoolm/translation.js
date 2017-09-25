@@ -38,6 +38,9 @@ const tjs = require('translation.js').default
 
 // ES6 中
 import tjs from 'translation.js'
+
+// 也可以直接引用方法
+import { translate, detect, audio } from 'translation.js'
 ```
 
 ### 使用 &lt;script&gt; 标签
