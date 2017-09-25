@@ -6,7 +6,10 @@ module.exports = {
   input: path.resolve(__dirname, '../src/index.ts'),
   name: 'tjs',
   tp: typescript(),
-  external: Object.keys(pkg.dependencies),
+  external: [
+    'superagent',
+    path.resolve(__dirname, '../src/adapters/md5/node.ts')
+  ],
   umdOutputPath: path.resolve(__dirname, '../dist/translator.js'),
   umdMinOutputPath: path.resolve(__dirname, '../dist/translator.min.js'),
   banner: [

@@ -18,11 +18,11 @@ rollup.rollup({
 }).then(bundle => {
   // 输出 umd 格式
   bundle.generate({
-    format: 'umd',
+    format: 'iife',
     name: config.name,
     globals: {
       superagent: 'superagent',
-      'blueimp-md5': 'md5'
+      [path.resolve(__dirname, '../src/adapters/md5/node.ts')]: 'md5'
     },
     banner: config.banner
   }).then(({ code }) => {

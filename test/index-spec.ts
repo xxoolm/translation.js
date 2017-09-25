@@ -1,6 +1,8 @@
-import { translate, audio, detect } from '../src/index'
+import tjs from '../src/index'
 import google from '../src/api/google'
 import { ERROR_CODE } from '../src/constant'
+
+const { translate, audio, detect } = tjs
 
 describe('', () => {
   it('默认情况下使用谷歌翻译接口', () => {

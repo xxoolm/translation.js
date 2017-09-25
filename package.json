@@ -23,6 +23,9 @@
     "posttest": "node build/revert-es6-import",
     "prepublishOnly": "npm run lint && npm test && npm run build"
   },
+  "browser": {
+    "./libs/adapters/md5/node.js": "blueimp-md5"
+  },
   "nyc": {
     "require": [
       "ts-node/register"
