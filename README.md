@@ -34,7 +34,7 @@ npm install translation.js
 
 ```js
 // CommonJS 中
-const tjs = require('translation.js')
+const tjs = require('translation.js').default
 
 // ES6 中
 import tjs from 'translation.js'
