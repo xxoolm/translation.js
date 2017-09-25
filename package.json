@@ -12,12 +12,15 @@
   "files": [
     "src",
     "dist",
+    "libs",
     "declaration"
   ],
   "scripts": {
     "dev": "tsc -w -p tsconfig.build.json",
     "lint": "tslint --type-check --project tsconfig.json",
-    "build": "tsc -p tsconfig.build.json && node build/build",
+    "build": "npm run build:nodejs && npm run build:browser",
+    "build:browser": "node build/build",
+    "build:nodejs": "tsc -p tsconfig.build.json",
     "test": "nyc jasmine JASMINE_CONFIG_PATH=jasmine.json",
     "prepublishOnly": "npm run lint && npm test && npm run build"
   },
