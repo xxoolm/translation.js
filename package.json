@@ -18,9 +18,7 @@
     "dev": "tsc -w -p tsconfig.build.json",
     "lint": "tslint --type-check --project tsconfig.json",
     "build": "tsc -p tsconfig.build.json && node build/build",
-    "pretest": "node build/replace-es6-import",
     "test": "nyc jasmine JASMINE_CONFIG_PATH=jasmine.json",
-    "posttest": "node build/revert-es6-import",
     "prepublishOnly": "npm run lint && npm test && npm run build"
   },
   "browser": {
