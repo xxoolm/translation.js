@@ -1,4 +1,9 @@
-import { IAPI, ITranslateResult, TStringOrTranslateOptions } from './interfaces'
+import {
+  ITranslateOptions, // tslint:disable-line:no-unused-variable
+  IAPI,
+  ITranslateResult,
+  TStringOrTranslateOptions
+} from './interfaces'
 import baidu from './api/baidu'
 import youdao from './api/youdao'
 import google from './api/google'
