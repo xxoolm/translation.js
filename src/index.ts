@@ -1,4 +1,9 @@
-import { IAPI, ITranslateResult, TStringOrTranslateOptions } from './interfaces'
+import {
+  ITranslateOptions, // tslint:disable-line:no-unused-variable
+  IAPI,
+  ITranslateResult,
+  TStringOrTranslateOptions
+} from './interfaces'
 import baidu from './api/baidu'
 import youdao from './api/youdao'
 import google from './api/google'
@@ -31,14 +36,14 @@ function call (method: 'translate' | 'detect' | 'audio', options: TStringOrTrans
   }
 }
 
-export function translate (options: TStringOrTranslateOptions) {
-  return (call('translate', options) as Promise<ITranslateResult>)
-}
-
-export function detect (options: TStringOrTranslateOptions) {
-  return (call('detect', options) as Promise<string>)
-}
-
-export function audio (options: TStringOrTranslateOptions) {
-  return (call('audio', options) as Promise<string>)
+export default {
+  translate (options: TStringOrTranslateOptions) {
+    return (call('translate', options) as Promise<ITranslateResult>)
+  },
+  detect (options: TStringOrTranslateOptions) {
+    return (call('detect', options) as Promise<string>)
+  },
+  audio (options: TStringOrTranslateOptions) {
+    return (call('audio', options) as Promise<string>)
+  }
 }

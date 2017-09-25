@@ -1,6 +1,7 @@
 /node_modules/
 /dist/
 /dev.js
+/libs/
 /.*/
 /coverage/
 .DS_Store

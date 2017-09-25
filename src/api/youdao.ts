@@ -1,6 +1,4 @@
-// NodeJS 只需要一行代码：
-// require('crypto').createHash('md5').update('text to hash').digest('hex')
-import md5 from 'blueimp-md5'
+import md5 from '../adapters/md5/node'
 import { post } from 'superagent'
 import {
   ITranslateOptions, // tslint:disable-line:no-unused-variable

@@ -37,10 +37,7 @@ npm install translation.js
 const tjs = require('translation.js')
 
 // ES6 中
-import * as tjs from 'translation.js'
-
-// 你也可以只引用你用得到的方法
-import { translate, detect, audio } from 'translation.js'
+import tjs from 'translation.js'
 ```
 
 ### 使用 &lt;script&gt; 标签
