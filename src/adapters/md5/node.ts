@@ -1,5 +1,5 @@
-import * as crypto from 'crypto'
+import { createHash } from 'crypto'
 
 export default function (text: string) {
-  return crypto.createHash('md5').update(text).digest('hex')
+  return createHash('md5').update(text).digest('hex')
 }
