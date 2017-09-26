@@ -34,10 +34,10 @@ npm install translation.js
 
 ```js
 // CommonJS 中
-const tjs = require('translation.js').default
+const tjs = require('translation.js')
 
 // ES6 中
-import tjs from 'translation.js'
+import * as tjs from 'translation.js'
 
 // 也可以直接引用方法
 import { translate, detect, audio } from 'translation.js'
