@@ -1,6 +1,7 @@
 import baidu from '../src/api/baidu'
 import { ERROR_CODE } from '../src/constant'
 import mock from './utils/mock'
+import { IStringObject } from '../src/interfaces'
 
 function getBaiDuResponse () {
   return {
@@ -80,8 +81,8 @@ describe('百度翻译', () => {
       mockDetect()
 
       mockTranslate({
-        body: (body: string) => {
-          expect(body.includes('from=zh')).toBeTruthy()
+        body: (body: IStringObject) => {
+          expect(body.from).toBe('zh')
           done()
           return true
         }

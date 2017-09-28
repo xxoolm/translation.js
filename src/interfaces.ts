@@ -52,8 +52,19 @@ export interface ILanguageList {
   readonly [prop: string]: string
 }
 
-export interface ISuperAgentResponseError extends Error {
-  readonly timeout?: boolean
-  readonly status?: number
-  readonly response?: Response
+export interface IRequestOptions {
+  url: string
+  query?: IStringOrStringArrayObject
+  method?: string
+  body?: IAnyObject
+  type?: string
+  headers?: IStringObject
+}
+
+export interface IStringObject {
+  [prop: string]: string
+}
+
+export interface IStringOrStringArrayObject {
+  [prop: string]: string | string[]
 }

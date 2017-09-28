@@ -1,13 +1,12 @@
 import md5 from '../adapters/md5/node'
-import { post } from 'superagent'
+import request from '../adapters/http/node'
 import {
   ITranslateOptions, // tslint:disable-line:no-unused-variable
   ILanguageList,
   ITranslateResult,
-  TStringOrTranslateOptions,
-  ISuperAgentResponseError
+  TStringOrTranslateOptions
 } from '../interfaces'
-import { invert, transformSuperAgentError, TranslatorError, transformOptions } from '../utils'
+import { invert, TranslatorError, transformOptions } from '../utils'
 import { ERROR_CODE } from '../constant'
 
 interface IResponse {
@@ -16,10 +15,12 @@ interface IResponse {
     entries: string[]
     type: number
   }
-  translateResult: [{
-    src: string
-    tgt: string
-  }[]]
+  translateResult: [
+    {
+      src: string
+      tgt: string
+    }[]
+    ]
   type: string
 }
 
@@ -78,10 +79,11 @@ function translate (options: TStringOrTranslateOptions) {
     return Promise.reject(new TranslatorError(ERROR_CODE.UNSUPPORTED_LANG, '有道翻译的源语种与目标语种中必须有一个是中文，或者两个都是 AUTO'))
   }
 
-  const request = post(translateAPI)
-    .type('form')
-    .send(sign(text))
-    .send({
+  return request({
+    method: 'post',
+    url: translateAPI,
+    type: 'form',
+    body: Object.assign(sign(text), {
       i: text,
       from,
       to,
@@ -91,20 +93,11 @@ function translate (options: TStringOrTranslateOptions) {
       keyfrom: 'fanyi.web',
       action: 'FY_BY_CLICKBUTTION',
       typoResult: 'true'
-    })
-
-  // 在 NodeJS 端才设置请求头，避免浏览器控制台输出错误信息
-  // tslint:disable-next-line:strict-type-predicates
-  if (typeof window === 'undefined') {
-    // 必须要设置 Referer 才能查询到数据，
-    // 由于浏览器不允许设置这个请求头，所以在扩展程序中需要用到 onBeforeSendHeaders 事件修改：
-    // https://developer.chrome.com/extensions/webRequest#event-onBeforeSendHeaders
-    request.set('Referer', link)
-  }
-
-  return request.then(res => {
-    const body = res.body as IResponse
-
+    }),
+    headers: typeof window === 'undefined'
+      ? { Referer: link }
+      : undefined
+  }).then((body: IResponse) => {
     if (body.errorCode !== 0) {
       throw new TranslatorError(ERROR_CODE.API_SERVER_ERROR, '有道翻译接口出错了')
     }
@@ -136,8 +129,6 @@ function translate (options: TStringOrTranslateOptions) {
     } catch (e) {}
 
     return result
-  }, (error: ISuperAgentResponseError) => {
-    throw transformSuperAgentError(error)
   })
 }
 
