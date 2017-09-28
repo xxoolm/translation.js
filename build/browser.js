@@ -13,7 +13,6 @@ const md5Adapter = path.resolve(__dirname, '../src/adapters/md5/node.ts')
 rollup.rollup({
   input: path.resolve(__dirname, '../src/index.ts'),
   external: [
-    'superagent',
     md5Adapter
   ],
   plugins: [
@@ -25,7 +24,6 @@ rollup.rollup({
     format: 'iife',
     name: 'tjs',
     globals: {
-      superagent: 'superagent',
       [md5Adapter]: 'md5'
     },
     banner: [
