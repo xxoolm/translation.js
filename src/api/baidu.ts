@@ -104,7 +104,8 @@ function detect (options: TStringOrTranslateOptions) {
     url: link + '/langdetect',
     body: {
       query: text.slice(0, 73)
-    }
+    },
+    type: 'form'
   }).then((body: IDetectResult) => {
     if (body.error === 0) {
       const iso689lang = languageListInvert[body.lan]
@@ -155,7 +156,7 @@ function translate (options: TStringOrTranslateOptions) {
   }).then((from: string) => {
     return request({
       url: link + '/v2transapi',
-      type: 'from',
+      type: 'form',
       method: 'post',
       body: {
         from: from && languageList[from] || 'auto',

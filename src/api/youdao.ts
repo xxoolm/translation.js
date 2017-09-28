@@ -25,7 +25,7 @@ interface IResponse {
 }
 
 const link = 'https://fanyi.youdao.com'
-const translateAPI = link + '/translate_o?smartresult=dict&smartresult=rule&sessionFrom=null'
+const translateAPI = link + '/translate_o?smartresult=dict&smartresult=rule'
 
 const languageList: ILanguageList = {
   en: 'en',
@@ -91,7 +91,7 @@ function translate (options: TStringOrTranslateOptions) {
       doctype: 'json',
       version: '2.1',
       keyfrom: 'fanyi.web',
-      action: 'FY_BY_CLICKBUTTION',
+      action: 'FY_BY_REALTIME',
       typoResult: 'true'
     }),
     // tslint:disable-next-line:strict-type-predicates

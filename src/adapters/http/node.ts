@@ -12,7 +12,10 @@ export default function (options: IRequestOptions) {
   const urlObj = parse(options.url, true)
   const qs = stringify(Object.assign(urlObj.query, options.query))
 
-  const headers: IStringObject = {}
+  const headers: IStringObject = {
+    'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36'
+  }
+
   let body: string
 
   if (method === 'post') {
