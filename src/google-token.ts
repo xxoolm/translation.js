@@ -3,8 +3,7 @@
  * 做了一些修改以适应本项目
  */
 
-import { get } from 'superagent'
-import { transformSuperAgentError } from './utils'
+import request from './adapters/http/node'
 
 let tk = ''
 
@@ -67,8 +66,10 @@ export default function (text: string, com: any) {
       resolve()
     } else {
       // 从谷歌翻译的网页上获取到最新的 token
-      get('https://translate.google.' + (com ? 'com' : 'cn')).then(res => {
-        const match = res.text.match(/TKK=eval\('\(\(function\(\){(.*?)}\)\(\)\)'\);/)
+      request({
+        url: 'https://translate.google.' + (com ? 'com' : 'cn')
+      }).then((text: string) => {
+        const match = text.match(/TKK=eval\('\(\(function\(\){(.*?)}\)\(\)\)'\);/)
         if (match) {
           // 函数体不接收 ASCII 码，所以这里要手动转换一遍
           const code = match[1].replace(/\\x3d/g, '=').replace(/\\x27/g, '\'')
@@ -77,9 +78,7 @@ export default function (text: string, com: any) {
           } catch (e) {}
         }
         resolve()
-      }, error => {
-        reject(transformSuperAgentError(error))
-      })
+      }, reject)
     }
   }).then(() => sM(text).replace('&tk=', ''))
 }

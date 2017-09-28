@@ -25,7 +25,8 @@
     "prepublishOnly": "npm run lint && npm test && npm run build"
   },
   "browser": {
-    "./libs/adapters/md5/node.js": "blueimp-md5"
+    "./libs/adapters/md5/node.js": "blueimp-md5",
+    "./libs/adapters/http/node.js": "./libs/adapters/http/xhr.js"
   },
   "nyc": {
     "require": [
@@ -43,10 +44,7 @@
     ]
   },
   "dependencies": {
-    "@types/blueimp-md5": "^2.7.0",
-    "@types/superagent": "^3.5.5",
-    "blueimp-md5": "^2.10.0",
-    "superagent": "^3.6.0"
+    "blueimp-md5": "^2.10.0"
   },
   "devDependencies": {
     "@types/jasmine": "^2.6.0",

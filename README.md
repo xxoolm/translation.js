@@ -45,9 +45,8 @@ import { translate, detect, audio } from 'translation.js'
 
 ### 使用 &lt;script&gt; 标签
 
-在 Chrome 扩展/应用中使用 &lt;script&gt; 标签引用时，你需要先下载下面三个文件到你的项目里：
+在 Chrome 扩展/应用中使用 &lt;script&gt; 标签引用时，你需要先下载下面两个文件到你的项目里：
 
-- [superagent.js](https://unpkg.com/superagent/superagent.js)
 - [md5.min.js](https://unpkg.com/blueimp-md5/js/md5.min.js)
 - [translator.min.js](https://unpkg.com/translation.js/dist/translator.min.js)
 
@@ -55,7 +54,6 @@ import { translate, detect, audio } from 'translation.js'
 
 ```html
 <!-- 先引用 translator.js 的依赖 -->
-<script src="path/to/superagent.js"></script>
 <script src="path/to/md5.min.js"></script>
 <!-- 然后引用 translator.js -->
 <script src="path/to/translator.min.js"></script>

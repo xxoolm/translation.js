@@ -1,5 +1,3 @@
-import { Response } from 'superagent'
-
 export interface IPhonetic {
   name: string // 语种的中文名称
   ttsURI: string // 此音标对应的语音地址
@@ -52,8 +50,19 @@ export interface ILanguageList {
   readonly [prop: string]: string
 }
 
-export interface ISuperAgentResponseError extends Error {
-  readonly timeout?: boolean
-  readonly status?: number
-  readonly response?: Response
+export interface IRequestOptions {
+  url: string
+  query?: IStringOrStringArrayObject
+  method?: string
+  body?: IAnyObject
+  type?: string
+  headers?: IStringObject
+}
+
+export interface IStringObject {
+  [prop: string]: string
+}
+
+export interface IStringOrStringArrayObject {
+  [prop: string]: string | string[]
 }

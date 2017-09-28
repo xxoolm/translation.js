@@ -1,4 +1,4 @@
-import { IAnyObject, ISuperAgentResponseError, ITranslateOptions, TStringOrTranslateOptions } from './interfaces'
+import { IAnyObject, ITranslateOptions, TStringOrTranslateOptions } from './interfaces'
 import { ERROR_CODE } from './constant'
 
 /**
@@ -49,16 +49,6 @@ export class TranslatorError extends Error {
   constructor (code: ERROR_CODE, message?: string) {
     super(message)
     this.code = code
-  }
-}
-
-export function transformSuperAgentError (error: ISuperAgentResponseError) {
-  if (error.timeout) {
-    return new TranslatorError(ERROR_CODE.NETWORK_TIMEOUT, '查询超时')
-  } else if (!error.status || !error.response) {
-    return new TranslatorError(ERROR_CODE.NETWORK_ERROR, '没有网络连接')
-  } else {
-    return new TranslatorError(ERROR_CODE.API_SERVER_ERROR, '接口服务器出错了')
   }
 }
 
