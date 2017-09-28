@@ -94,6 +94,7 @@ function translate (options: TStringOrTranslateOptions) {
       action: 'FY_BY_CLICKBUTTION',
       typoResult: 'true'
     }),
+    // tslint:disable-next-line:strict-type-predicates
     headers: typeof window === 'undefined'
       ? { Referer: link }
       : undefined

@@ -1,5 +1,3 @@
-import { Response } from 'superagent'
-
 export interface IPhonetic {
   name: string // 语种的中文名称
   ttsURI: string // 此音标对应的语音地址

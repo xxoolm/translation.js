@@ -1,5 +1,4 @@
 import { getValue, invert, transformOptions } from '../src/utils'
-import { ERROR_CODE } from '../src/constant'
 
 describe('utils 中的', () => {
   it('invert 方法会反转对象的键和值', () => {
