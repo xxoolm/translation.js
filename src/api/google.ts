@@ -15,7 +15,7 @@ function translate (options: TStringOrTranslateOptions) {
       return request({
         url: 'https://translate.google.' + (com ? 'com' : 'cn') + '/translate_a/single',
         query: {
-          q: text,
+          q: text.toLowerCase(),
           sl: from,
           tl: to,
           tk,
