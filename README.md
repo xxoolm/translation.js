@@ -1,20 +1,14 @@
-# translation.js
-
-[![Build Status](https://img.shields.io/travis/Selection-Translator/translation.js/master.svg?style=flat-square)](https://travis-ci.org/Selection-Translator/translation.js)
-[![Coverage Status](https://img.shields.io/coveralls/Selection-Translator/translation.js/master.svg?style=flat-square)](https://coveralls.io/github/Selection-Translator/translation.js?branch=master)
-[![dependencies Status](https://img.shields.io/david/Selection-Translator/translation.js.svg?style=flat-square)](https://david-dm.org/Selection-Translator/translation.js)
-[![devDependencies Status](https://img.shields.io/david/dev/Selection-Translator/translation.js.svg?style=flat-square)](https://david-dm.org/Selection-Translator/translation.js?type=dev)
-[![NPM Version](https://img.shields.io/npm/v/translation.js.svg?style=flat-square)](https://www.npmjs.com/package/translation.js)
+# translation.js [![Build Status](https://img.shields.io/travis/Selection-Translator/translation.js/master.svg?style=flat-square)](https://travis-ci.org/Selection-Translator/translation.js) [![Coverage Status](https://img.shields.io/coveralls/Selection-Translator/translation.js/master.svg?style=flat-square)](https://coveralls.io/github/Selection-Translator/translation.js?branch=master) [![NPM Version](https://img.shields.io/npm/v/translation.js.svg?style=flat-square)](https://www.npmjs.com/package/translation.js)
 
 translation.js 整合了[谷歌翻译](https://translate.google.cn/)、[百度翻译](https://fanyi.baidu.com/)与[有道翻译](http://fanyi.youdao.com/)的网页翻译接口，让你方便的在这些翻译接口之间切换，并获取相同数据结构的翻译结果。
 
 ## 特点
 
-### 可在 Node.js 及 Chrome 扩展/应用中使用
+### 可在 Node.js 及 Chrome 扩展 / 应用中使用
 
-translateion.js 能同时在 Node.js 和浏览器端运行，但由于浏览器端[同源策略](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Access_control_CORS)的限制，这些网页接口只能在允许跨域的运行环境使用，Chrome 扩展/应用则是其中之一。
+translateion.js 能同时在 Node.js 和浏览器端运行，但由于浏览器端[同源策略](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Access_control_CORS)的限制，这些网页接口只能在允许跨域的运行环境使用，Chrome 扩展 / 应用则是其中之一。
 
-**注意**：为了能在 Chrome 扩展/应用中使用 translation.js，请阅读最后面的「在 Chrome 扩展/应用中使用」一节。
+**注意**：为了能在 Chrome 扩展 / 应用中使用 translation.js，请阅读最后面的「在 Chrome 扩展 / 应用中使用」一节。
 
 ### 一致的参数与数据结构
 
@@ -45,10 +39,10 @@ import { translate, detect, audio } from 'translation.js'
 
 ### 使用 &lt;script&gt; 标签
 
-在 Chrome 扩展/应用中使用 &lt;script&gt; 标签引用时，你需要先下载下面两个文件到你的项目里：
+在 Chrome 扩展 / 应用中使用 &lt;script&gt; 标签引用时，你需要先下载下面两个文件到你的项目里：
 
-- [md5.min.js](https://unpkg.com/blueimp-md5/js/md5.min.js)
-- [translator.min.js](https://unpkg.com/translation.js/dist/translator.min.js)
+* [md5.min.js](https://unpkg.com/blueimp-md5/js/md5.min.js)
+* [translator.min.js](https://unpkg.com/translation.js/dist/translator.min.js)
 
 然后在 HTML 中引用：
 
@@ -68,11 +62,9 @@ import { translate, detect, audio } from 'translation.js'
 获取一段文本的翻译结果可以用 `translate()` 方法：
 
 ```js
-tjs
-  .translate('test')
-  .then(result => {
-    console.log(result) // result 的数据结构见下文
-  })
+tjs.translate('test').then(result => {
+  console.log(result) // result 的数据结构见下文
+})
 ```
 
 其中 `result` 的结构示例如下：
@@ -86,7 +78,7 @@ tjs
   to: 'zh-CN', // 文本的目标语种
   // 单词的音标，目前只有用百度翻译英文单词才可能有
   phonetic: [
-    { 
+    {
       name: '美',
       ttsURI: 'https://fanyi.baidu.com/gettts?lan=en&text=test&spd=3&source=web',
       value: 'test'
@@ -100,7 +92,7 @@ tjs
   // 单词的详细释义，翻译英文单词时才可能有
   dict: ['n. 试验；测验；考验；化验', 'vt. 测验；考验；考查；勘探', 'vi. 受试验；受测验；受考验；测得结果' ],
   // 一般翻译结果，数组里的每一项是一个段落的翻译
-  result: ['测试'] 
+  result: ['测试']
 }
 ```
 
@@ -120,11 +112,9 @@ tjs.translate({
 检测一段文本的语种可以使用 `detect()` 方法：
 
 ```js
-tjs
-  .detect('test')
-  .then(lang => {
-    console.log(lang) // => 'en'
-  })
+tjs.detect('test').then(lang => {
+  console.log(lang) // => 'en'
+})
 ```
 
 默认情况下，语种检测的数据同样来自谷歌翻译，但你同样可以指定其他接口：
@@ -143,14 +133,14 @@ tjs.detect({
 使用 `audio()` 方法可以获取到文本的语音朗读地址：
 
 ```js
-tjs
-  .audio('test')
-  .then(uri => {
-    console.log(uri) // => 'http://tts.google.cn/.......'
-  })
+tjs.audio('test').then(uri => {
+  console.log(uri) // => 'http://tts.google.cn/.......'
+})
 ```
 
-在浏览器端，你可以使用 [`<audio>`](https://developer.mozilla.org/zh-CN/docs/Web/Guide/HTML/Using_HTML5_audio_and_video) 播放这段语音，给用户提供"朗读"功能。
+在浏览器端，你可以使用 [`<audio>`](https://developer.mozilla.org/zh-CN/docs/Web/Guide/HTML/Using_HTML5_audio_and_video) 播放这段语音，给用户提供朗读功能。
+
+**注意**：谷歌翻译的语音朗读地址只能在 Chrome 扩展 / 应用中的 `<audio>` 里直接引用，在普通网页中引用时会报 404 错误，见 #20。
 
 这个方法同样支持使用 `api` 属性指定语音朗读地址的接口。另外，你可以使用 `from` 参数指定文本的语种，这样会跳过检测语种的步骤（通常是一次 HTTP 请求）。
 
@@ -228,7 +218,7 @@ NO_THIS_API - 没有找到你需要的接口
 NETWORK_TIMEOUT - 查询网页接口超时了。由于目前没有设置超时时间，所以暂时不会出现这个错误
 ```
 
-## 在 Chrome 扩展/应用中使用
+## 在 Chrome 扩展 / 应用中使用
 
 ### 1. 声明跨域权限
 
@@ -236,9 +226,7 @@ NETWORK_TIMEOUT - 查询网页接口超时了。由于目前没有设置超时�
 
 ```json
 {
-  "permissions": [
-    "<all_urls>"
-  ]
+  "permissions": ["<all_urls>"]
 }
 ```
 
@@ -275,7 +263,9 @@ chrome.webRequest.onBeforeSendHeaders.addListener(
       name: 'Referer',
       value: 'https://fanyi.youdao.com'
     }
-    const index = requestHeaders.findIndex(({ name }) => name.toLowerCase() === 'referer')
+    const index = requestHeaders.findIndex(
+      ({ name }) => name.toLowerCase() === 'referer'
+    )
     if (index >= 0) {
       requestHeaders.splice(index, 1, r)
     } else {
