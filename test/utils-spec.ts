@@ -2,11 +2,13 @@ import { getValue, invert, transformOptions } from '../src/utils'
 
 describe('utils 中的', () => {
   it('invert 方法会反转对象的键和值', () => {
-    expect(invert({
-      a: 1,
-      b: 'x'
-    })).toEqual({
-      1: 'a',
+    expect(
+      invert({
+        a: '1',
+        b: 'x'
+      })
+    ).toEqual({
+      '1': 'a',
       x: 'b'
     })
   })

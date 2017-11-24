@@ -1,19 +1,23 @@
 import request from '../adapters/http/node'
 import {
-  ITranslateOptions, // tslint:disable-line:no-unused-variable
+  // @ts-ignore
+  ITranslateOptions,
   ITranslateResult,
   TStringOrTranslateOptions
 } from '../interfaces'
 import { transformOptions } from '../utils'
 import getGoogleToken from '../google-token'
 
-function translate (options: TStringOrTranslateOptions) {
+function translate(options: TStringOrTranslateOptions) {
   const { text, from = 'auto', to = 'zh-CN', com } = transformOptions(options)
 
   return getGoogleToken(text, com)
     .then(tk => {
       return request({
-        url: 'https://translate.google.' + (com ? 'com' : 'cn') + '/translate_a/single',
+        url:
+          'https://translate.google.' +
+          (com ? 'com' : 'cn') +
+          '/translate_a/single',
         query: {
           q: text.toLowerCase(),
           sl: from,
@@ -39,7 +43,9 @@ function translate (options: TStringOrTranslateOptions) {
         raw: body,
         from: googleFrom,
         to,
-        link: `https://translate.google.${com ? 'com' : 'cn'}/#${googleFrom}/${to}/${encodeURIComponent(text)}`
+        link: `https://translate.google.${com ? 'com' : 'cn'}/#${googleFrom}/${
+          to
+        }/${encodeURIComponent(text)}`
       }
 
       try {
@@ -59,12 +65,12 @@ function translate (options: TStringOrTranslateOptions) {
     })
 }
 
-function detect (options: TStringOrTranslateOptions) {
+function detect(options: TStringOrTranslateOptions) {
   const { text } = transformOptions(options)
   return translate(text).then(result => result.from)
 }
 
-function audio (options: TStringOrTranslateOptions) {
+function audio(options: TStringOrTranslateOptions) {
   let { text, from, com } = transformOptions(options)
   return Promise.all([
     new Promise((resolve, reject) => {
@@ -76,9 +82,11 @@ function audio (options: TStringOrTranslateOptions) {
     }),
     getGoogleToken(text, com)
   ]).then(([lang, tk]) => {
-    return `https://translate.google.${com
-      ? 'com'
-      : 'cn'}/translate_tts?ie=UTF-8&q=${encodeURIComponent(text)}&tl=${lang}&total=1&idx=0&textlen=${text.length}&tk=${tk}&client=t`
+    return `https://translate.google.${
+      com ? 'com' : 'cn'
+    }/translate_tts?ie=UTF-8&q=${encodeURIComponent(text)}&tl=${
+      lang
+    }&total=1&idx=0&textlen=${text.length}&tk=${tk}&client=t`
   })
 }
 

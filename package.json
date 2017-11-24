@@ -16,7 +16,7 @@
   ],
   "scripts": {
     "dev": "tsc -w -p tsconfig.build.json",
-    "lint": "tslint --type-check --project tsconfig.json",
+    "lint": "tslint --project tsconfig.json",
     "build": "npm run build:nodejs && npm run build:browser",
     "build:browser": "node build/browser",
     "build:nodejs": "tsc -p tsconfig.build.json",
@@ -58,6 +58,7 @@
     "rollup-pluginutils": "^2.0.1",
     "ts-node": "^3.3.0",
     "tslint": "^5.8.0",
+    "tslint-config-prettier": "^1.6.0",
     "tslint-config-standard": "^7.0.0",
     "typescript": "^2.6.1",
     "uglify-js": "^3.1.10"

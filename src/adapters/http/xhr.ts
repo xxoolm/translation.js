@@ -2,7 +2,7 @@ import { IRequestOptions, IStringOrStringArrayObject } from '../../interfaces'
 import { ERROR_CODE } from '../../constant'
 import { TranslatorError } from '../../utils'
 
-function qs (obj?: IStringOrStringArrayObject) {
+function qs(obj?: IStringOrStringArrayObject) {
   if (!obj) return ''
   const r = []
   for (let key in obj) {
@@ -12,7 +12,7 @@ function qs (obj?: IStringOrStringArrayObject) {
   return r.join('&')
 }
 
-export default function (options: IRequestOptions) {
+export default function(options: IRequestOptions) {
   const xhr = new XMLHttpRequest()
   const urlObj = new URL(options.url)
 
@@ -27,7 +27,10 @@ export default function (options: IRequestOptions) {
   if (method === 'post') {
     switch (options.type) {
       case 'form':
-        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8')
+        xhr.setRequestHeader(
+          'Content-Type',
+          'application/x-www-form-urlencoded; charset=UTF-8'
+        )
         body = qs(options.body)
         break
 

@@ -1,8 +1,9 @@
 import md5 from '../adapters/md5/node'
 import request from '../adapters/http/node'
 import {
-  ITranslateOptions, // tslint:disable-line:no-unused-variable
   ILanguageList,
+  // @ts-ignore
+  ITranslateOptions,
   ITranslateResult,
   TStringOrTranslateOptions
 } from '../interfaces'
@@ -20,7 +21,7 @@ interface IResponse {
       src: string
       tgt: string
     }[]
-    ]
+  ]
   type: string
 }
 
@@ -39,14 +40,14 @@ const languageList: ILanguageList = {
 }
 
 const client = 'fanyideskweb'
-const sk = 'rY0D^0\'nM0}g5Mm1z%1G4'
+const sk = "rY0D^0'nM0}g5Mm1z%1G4"
 
 /**
  * 有道翻译接口的签名算法
  * @param {string} text
  * @return {{client: string, salt: number, sign: string}}
  */
-function sign (text: string) {
+function sign(text: string) {
   const salt = Date.now() + parseInt(String(10 * Math.random()), 10)
   return {
     client,
@@ -57,7 +58,7 @@ function sign (text: string) {
 
 const languageListInvert = invert(languageList)
 
-function translate (options: TStringOrTranslateOptions) {
+function translate(options: TStringOrTranslateOptions) {
   let { text, from, to } = transformOptions(options)
 
   text = text.slice(0, 5000)
@@ -75,8 +76,18 @@ function translate (options: TStringOrTranslateOptions) {
   }
 
   // 有道网页翻译的接口的语种与目标语种中必须有一个是中文
-  if (!((from === 'AUTO' && to === 'AUTO') || (from === 'zh-CHS' || to === 'zh-CHS'))) {
-    return Promise.reject(new TranslatorError(ERROR_CODE.UNSUPPORTED_LANG, '有道翻译的源语种与目标语种中必须有一个是中文，或者两个都是 AUTO'))
+  if (
+    !(
+      (from === 'AUTO' && to === 'AUTO') ||
+      (from === 'zh-CHS' || to === 'zh-CHS')
+    )
+  ) {
+    return Promise.reject(
+      new TranslatorError(
+        ERROR_CODE.UNSUPPORTED_LANG,
+        '有道翻译的源语种与目标语种中必须有一个是中文，或者两个都是 AUTO'
+      )
+    )
   }
 
   return request({
@@ -95,12 +106,13 @@ function translate (options: TStringOrTranslateOptions) {
       typoResult: 'true'
     }),
     // tslint:disable-next-line:strict-type-predicates
-    headers: typeof window === 'undefined'
-      ? { Referer: link }
-      : undefined
+    headers: typeof window === 'undefined' ? { Referer: link } : undefined
   }).then((body: IResponse) => {
     if (body.errorCode !== 0) {
-      throw new TranslatorError(ERROR_CODE.API_SERVER_ERROR, '有道翻译接口出错了')
+      throw new TranslatorError(
+        ERROR_CODE.API_SERVER_ERROR,
+        '有道翻译接口出错了'
+      )
     }
 
     let [from, to] = body.type.split('2')
@@ -115,7 +127,9 @@ function translate (options: TStringOrTranslateOptions) {
       from,
       to,
       link: smartResult
-        ? `https://dict.youdao.com/search?q=${encodeURIComponent(text)}&keyfrom=fanyi.smartResult`
+        ? `https://dict.youdao.com/search?q=${encodeURIComponent(
+            text
+          )}&keyfrom=fanyi.smartResult`
         : `http://fanyi.youdao.com/translate?i=${encodeURIComponent(text)}`
     }
 
@@ -133,27 +147,32 @@ function translate (options: TStringOrTranslateOptions) {
   })
 }
 
-function detect (options: TStringOrTranslateOptions) {
+function detect(options: TStringOrTranslateOptions) {
   const { text } = transformOptions(options)
   return translate(text).then(result => {
     const { from } = result
     if (!from) {
-      throw new TranslatorError(ERROR_CODE.UNSUPPORTED_LANG, '有道翻译不支持这个语种')
+      throw new TranslatorError(
+        ERROR_CODE.UNSUPPORTED_LANG,
+        '有道翻译不支持这个语种'
+      )
     }
     return from
   })
 }
 
-function audio (options: TStringOrTranslateOptions) {
+function audio(options: TStringOrTranslateOptions) {
   const { text, from } = transformOptions(options)
-  return new Promise((res, rej) => {
+  return new Promise<string>((res, rej) => {
     if (from) {
       res(from)
     } else {
       detect(text).then(res, rej)
     }
-  }).then((from: string) => {
-    return `https://dict.youdao.com/dictvoice?audio=${encodeURIComponent(text)}&le=${languageList[from]}`
+  }).then(from => {
+    return `https://dict.youdao.com/dictvoice?audio=${encodeURIComponent(
+      text
+    )}&le=${languageList[from]}`
   })
 }
 

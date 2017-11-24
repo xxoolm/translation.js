@@ -3,7 +3,7 @@ import { ERROR_CODE } from '../src/constant'
 import mock from './utils/mock'
 import { IStringObject } from '../src/interfaces'
 
-function getBaiDuResponse () {
+function getBaiDuResponse() {
   return {
     dict_result: {
       simple_means: {
@@ -38,7 +38,12 @@ function getBaiDuResponse () {
   }
 }
 
-const mockTranslate = mock('https://fanyi.baidu.com', '/v2transapi', 'post', getBaiDuResponse())
+const mockTranslate = mock(
+  'https://fanyi.baidu.com',
+  '/v2transapi',
+  'post',
+  getBaiDuResponse()
+)
 const mockDetect = mock('https://fanyi.baidu.com', '/langdetect', 'post', {
   error: 0,
   lan: 'zh'
@@ -62,12 +67,14 @@ describe('百度翻译', () => {
           expect(result.phonetic).toEqual([
             {
               name: '美',
-              ttsURI: 'https://fanyi.baidu.com/gettts?lan=en&text=test&spd=3&source=web',
+              ttsURI:
+                'https://fanyi.baidu.com/gettts?lan=en&text=test&spd=3&source=web',
               value: '美标'
             },
             {
               name: '英',
-              ttsURI: 'https://fanyi.baidu.com/gettts?lan=en-GB&text=test&spd=3&source=web',
+              ttsURI:
+                'https://fanyi.baidu.com/gettts?lan=en-GB&text=test&spd=3&source=web',
               value: '英标'
             }
           ])
@@ -96,49 +103,58 @@ describe('百度翻译', () => {
       // 模拟没有网络的情况
       mockTranslate({ error: 'x' })
 
-      baidu
-        .translate({ text: 'x', from: 'en' })
-        .then(() => {
+      baidu.translate({ text: 'x', from: 'en' }).then(
+        () => {
           done.fail('没有报错')
-        }, error => {
+        },
+        error => {
           expect(error.code).toBe(ERROR_CODE.NETWORK_ERROR)
           done()
-        })
+        }
+      )
     })
   })
 
   describe('的 audio 方法', () => {
     it('会返回在线语音的 URI', done => {
-      baidu.audio({
-        text: 'test',
-        from: 'en'
-      }).then(uri => {
-        expect(uri).toBe('https://fanyi.baidu.com/gettts?lan=en&text=test&spd=3&source=web')
-        done()
-      }, done.fail)
+      baidu
+        .audio({
+          text: 'test',
+          from: 'en'
+        })
+        .then(uri => {
+          expect(uri).toBe(
+            'https://fanyi.baidu.com/gettts?lan=en&text=test&spd=3&source=web'
+          )
+          done()
+        }, done.fail)
     })
 
     it('如果没有指定语种会尝试自动检测', done => {
       mockDetect()
 
-      baidu
-        .audio('中文')
-        .then(uri => {
-          expect(uri)
-            .toBe('https://fanyi.baidu.com/gettts?lan=zh&text=' + encodeURIComponent('中文') + '&spd=3&source=web')
-          done()
-        }, done.fail)
+      baidu.audio('中文').then(uri => {
+        expect(uri).toBe(
+          'https://fanyi.baidu.com/gettts?lan=zh&text=' +
+            encodeURIComponent('中文') +
+            '&spd=3&source=web'
+        )
+        done()
+      }, done.fail)
     })
 
     it('没有网络时会正确报错', done => {
       mockDetect({ error: 'x' })
 
-      baidu.audio('x').then(() => {
-        done.fail('没有报错')
-      }, error => {
-        expect(error.code).toBe(ERROR_CODE.NETWORK_ERROR)
-        done()
-      })
+      baidu.audio('x').then(
+        () => {
+          done.fail('没有报错')
+        },
+        error => {
+          expect(error.code).toBe(ERROR_CODE.NETWORK_ERROR)
+          done()
+        }
+      )
     })
 
     it('支持英标', done => {
@@ -148,8 +164,9 @@ describe('百度翻译', () => {
           from: 'en-GB'
         })
         .then(uri => {
-          expect(uri)
-            .toBe('https://fanyi.baidu.com/gettts?lan=uk&text=test&spd=3&source=web')
+          expect(uri).toBe(
+            'https://fanyi.baidu.com/gettts?lan=uk&text=test&spd=3&source=web'
+          )
           done()
         }, done.fail)
     })
@@ -163,14 +180,15 @@ describe('百度翻译', () => {
         }
       })
 
-      baidu
-        .detect('x')
-        .then(() => {
+      baidu.detect('x').then(
+        () => {
           done.fail('没有报错')
-        }, error => {
+        },
+        error => {
           expect(error.code).toBe(ERROR_CODE.UNSUPPORTED_LANG)
           done()
-        })
+        }
+      )
     })
   })
 })

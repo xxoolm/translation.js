@@ -7,13 +7,14 @@ import { IRequestOptions, IStringObject } from '../../interfaces'
 import { ERROR_CODE } from '../../constant'
 import { TranslatorError } from '../../utils'
 
-export default function (options: IRequestOptions) {
+export default function(options: IRequestOptions): Promise<any> {
   const { method = 'get' } = options
   const urlObj = parse(options.url, true)
   const qs = stringify(Object.assign(urlObj.query, options.query))
 
   const headers: IStringObject = {
-    'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36'
+    'User-Agent':
+      'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36'
   }
 
   let body: string
@@ -21,7 +22,8 @@ export default function (options: IRequestOptions) {
   if (method === 'post') {
     switch (options.type) {
       case 'form':
-        headers['Content-Type'] = 'application/x-www-form-urlencoded; charset=UTF-8'
+        headers['Content-Type'] =
+          'application/x-www-form-urlencoded; charset=UTF-8'
         body = stringify(options.body)
         break
 
@@ -46,7 +48,9 @@ export default function (options: IRequestOptions) {
   }
 
   return new Promise((resolve, reject) => {
-    const req = (urlObj.protocol === 'https:' ? requestHTTPs : requestHTTP)(httpOptions)
+    const req = (urlObj.protocol === 'https:' ? requestHTTPs : requestHTTP)(
+      httpOptions
+    )
 
     req.on('response', res => {
       // 内置的翻译接口都以 200 作为响应码，所以不是 200 的一律视为错误
@@ -57,7 +61,9 @@ export default function (options: IRequestOptions) {
 
       res.setEncoding('utf8')
       let rawData = ''
-      res.on('data', (chunk: string) => { rawData += chunk })
+      res.on('data', (chunk: string) => {
+        rawData += chunk
+      })
       res.on('end', () => {
         try {
           rawData = JSON.parse(rawData)
@@ -66,7 +72,7 @@ export default function (options: IRequestOptions) {
       })
     })
 
-    req.on('error', (e) => {
+    req.on('error', e => {
       reject(new TranslatorError(ERROR_CODE.NETWORK_ERROR, e.message))
     })
 

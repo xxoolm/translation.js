@@ -1,13 +1,14 @@
-import { IAnyObject, ITranslateOptions, TStringOrTranslateOptions } from './interfaces'
+import {
+  // @ts-ignore
+  ITranslateOptions,
+  TStringOrTranslateOptions,
+  ILanguageList
+} from './interfaces'
 import { ERROR_CODE } from './constant'
 
-/**
- * 反转对象
- * @param {IAnyObject} obj
- * @return {IAnyObject}
- */
-export function invert (obj: IAnyObject) {
-  const result: IAnyObject = {}
+/** 反转对象 */
+export function invert(obj: ILanguageList) {
+  const result: ILanguageList = {}
   for (let key in obj) {
     if (obj.hasOwnProperty(key)) {
       result[obj[key]] = key
@@ -23,7 +24,11 @@ export function invert (obj: IAnyObject) {
  * @param defaultValue
  * @return {any}
  */
-export function getValue (obj: any, pathArray: string | string[], defaultValue?: any) {
+export function getValue(
+  obj: any,
+  pathArray: string | string[],
+  defaultValue?: any
+) {
   if (obj == null) return defaultValue
 
   if (typeof pathArray === 'string') {
@@ -46,13 +51,13 @@ export function getValue (obj: any, pathArray: string | string[], defaultValue?:
 export class TranslatorError extends Error {
   readonly code: ERROR_CODE
 
-  constructor (code: ERROR_CODE, message?: string) {
+  constructor(code: ERROR_CODE, message?: string) {
     super(message)
     this.code = code
   }
 }
 
-export function transformOptions (options: TStringOrTranslateOptions) {
+export function transformOptions(options: TStringOrTranslateOptions) {
   if (typeof options === 'string') {
     return {
       text: options

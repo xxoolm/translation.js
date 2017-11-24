@@ -2,197 +2,60 @@ import mock from './utils/mock'
 import google from '../src/api/google'
 import { ERROR_CODE } from '../src/constant'
 
-function getResponse () {
+function getResponse() {
   return [
-    [
-      [
-        '测试',
-        'test',
-        null,
-        null,
-        2
-      ],
-      [
-        null,
-        null,
-        'Cèshì',
-        'test'
-      ]
-    ],
+    [['测试', 'test', null, null, 2], [null, null, 'Cèshì', 'test']],
     [
       [
         '名词',
+        ['测试', '试验', '试', '实验', '考试', '考验', '测验'],
         [
-          '测试',
-          '试验',
-          '试',
-          '实验',
-          '考试',
-          '考验',
-          '测验'
-        ],
-        [
-          [
-            '测试',
-            [
-              'test',
-              'examination'
-            ],
-            null,
-            0.61608213
-          ],
-          [
-            '试验',
-            [
-              'test',
-              'experiment',
-              'tentative'
-            ],
-            null,
-            0.21967085
-          ],
+          ['测试', ['test', 'examination'], null, 0.61608213],
+          ['试验', ['test', 'experiment', 'tentative'], null, 0.21967085],
           [
             '试',
-            [
-              'test',
-              'examination',
-              'experiment',
-              'exam',
-              'fitting'
-            ],
+            ['test', 'examination', 'experiment', 'exam', 'fitting'],
             null,
             0.020115795
           ],
-          [
-            '实验',
-            [
-              'experiment',
-              'test'
-            ],
-            null,
-            0.015912903
-          ],
-          [
-            '考试',
-            [
-              'examination',
-              'exam',
-              'test'
-            ],
-            null,
-            0.012588142
-          ],
-          [
-            '考验',
-            [
-              'test',
-              'trial',
-              'ordeal'
-            ],
-            null,
-            0.012588142
-          ],
-          [
-            '测验',
-            [
-              'test',
-              'quiz'
-            ],
-            null,
-            0.004559123
-          ]
+          ['实验', ['experiment', 'test'], null, 0.015912903],
+          ['考试', ['examination', 'exam', 'test'], null, 0.012588142],
+          ['考验', ['test', 'trial', 'ordeal'], null, 0.012588142],
+          ['测验', ['test', 'quiz'], null, 0.004559123]
         ],
         'test',
         1
       ],
       [
         '动词',
+        ['检验', '试', '考', '测验', '验', '考查', '尝'],
         [
-          '检验',
-          '试',
-          '考',
-          '测验',
-          '验',
-          '考查',
-          '尝'
-        ],
-        [
-          [
-            '检验',
-            [
-              'test',
-              'examine',
-              'inspect'
-            ],
-            null,
-            0.050571099
-          ],
-          [
-            '试',
-            [
-              'test',
-              'try'
-            ],
-            null,
-            0.020115795
-          ],
+          ['检验', ['test', 'examine', 'inspect'], null, 0.050571099],
+          ['试', ['test', 'try'], null, 0.020115795],
           [
             '考',
-            [
-              'test',
-              'study',
-              'examine',
-              'investigate',
-              'verify',
-              'check'
-            ],
+            ['test', 'study', 'examine', 'investigate', 'verify', 'check'],
             null,
             0.015184198
           ],
-          [
-            '测验',
-            [
-              'test',
-              'put to test'
-            ],
-            null,
-            0.004559123
-          ],
+          ['测验', ['test', 'put to test'], null, 0.004559123],
           [
             '验',
-            [
-              'test',
-              'check',
-              'verify',
-              'examine',
-              'prove',
-              'confirm'
-            ],
+            ['test', 'check', 'verify', 'examine', 'prove', 'confirm'],
             null,
             0.0010999396
           ],
           [
             '考查',
-            [
-              'test',
-              'investigate',
-              'check',
-              'study'
-            ],
+            ['test', 'investigate', 'check', 'study'],
             null,
             0.00043074254
           ],
           [
             '尝',
-            [
-              'taste',
-              'flavor',
-              'try the flavor',
-              'test',
-              'flavour'
-            ],
+            ['taste', 'flavor', 'try the flavor', 'test', 'flavour'],
             null,
-            6.3755516e-07
+            6.3755516e-7
           ]
         ],
         'test',
@@ -206,26 +69,8 @@ function getResponse () {
       [
         'test',
         null,
-        [
-          [
-            '测试',
-            1000,
-            true,
-            false
-          ],
-          [
-            '试验',
-            1000,
-            true,
-            false
-          ]
-        ],
-        [
-          [
-            0,
-            4
-          ]
-        ],
+        [['测试', 1000, true, false], ['试验', 1000, true, false]],
+        [[0, 4]],
         'test',
         0,
         0
@@ -233,12 +78,7 @@ function getResponse () {
     ],
     0.7647059,
     null,
-    [
-      ['en'],
-      null,
-      [0.7647059],
-      ['en']
-    ],
+    [['en'], null, [0.7647059], ['en']],
     null,
     null,
     [
@@ -273,44 +113,12 @@ function getResponse () {
             ],
             'm_en_us1297943.001'
           ],
-          [
-            [
-              'exam',
-              'examination',
-              'quiz'
-            ],
-            'm_en_us1297943.002'
-          ],
-          [
-            [
-              'exam',
-              'examination'
-            ],
-            ''
-          ],
-          [
-            [
-              'trial run',
-              'trial',
-              'tryout'
-            ],
-            ''
-          ],
-          [
-            ['trial'],
-            ''
-          ],
-          [
-            [
-              'trial',
-              'run'
-            ],
-            ''
-          ],
-          [
-            ['mental test'],
-            ''
-          ]
+          [['exam', 'examination', 'quiz'], 'm_en_us1297943.002'],
+          [['exam', 'examination'], ''],
+          [['trial run', 'trial', 'tryout'], ''],
+          [['trial'], ''],
+          [['trial', 'run'], ''],
+          [['mental test'], '']
         ],
         'test'
       ],
@@ -354,24 +162,9 @@ function getResponse () {
             ],
             'm_en_us1297943.010'
           ],
-          [
-            ['quiz'],
-            ''
-          ],
-          [
-            ['screen'],
-            ''
-          ],
-          [
-            [
-              'essay',
-              'try',
-              'prove',
-              'examine',
-              'try out'
-            ],
-            ''
-          ]
+          [['quiz'], ''],
+          [['screen'], ''],
+          [['essay', 'try', 'prove', 'examine', 'try out'], '']
         ],
         'test'
       ]
@@ -388,7 +181,7 @@ function getResponse () {
           [
             'a movable hearth in a reverberating furnace, used for separating gold or silver from lead.',
             'm_en_us1297943.008',
-            'When fully prepared, the test is allowed to dry, and is then placed in a furnace, constructed in all respects like a common reverberator)\' furnace, except that a space is left open in the bed of it to receive the test, and that the width of the arch is much reduced.'
+            "When fully prepared, the test is allowed to dry, and is then placed in a furnace, constructed in all respects like a common reverberator)' furnace, except that a space is left open in the bed of it to receive the test, and that the width of the arch is much reduced."
           ],
           [
             'the shell or integument of some invertebrates and protozoans, especially the chalky shell of a foraminiferan or the tough outer layer of a tunicate.',
@@ -409,16 +202,7 @@ function getResponse () {
         ],
         'test'
       ],
-      [
-        '缩写词',
-        [
-          [
-            'testator.',
-            'm_en_us1297946.001'
-          ]
-        ],
-        'test.'
-      ]
+      ['缩写词', [['testator.', 'm_en_us1297946.001']], 'test.']
     ],
     [
       [
@@ -447,7 +231,7 @@ function getResponse () {
           'm_en_us1297943.016'
         ],
         [
-          'This week\'s What\'s Your Decision will really \u003cb\u003etest\u003c/b\u003e you and show you just how hard umpiring can be.',
+          "This week's What's Your Decision will really \u003cb\u003etest\u003c/b\u003e you and show you just how hard umpiring can be.",
           null,
           null,
           null,
@@ -682,9 +466,15 @@ function getResponse () {
   ]
 }
 
-const fakeToken = ';TKK=eval(\'((function(){var a\x3d1404053479;var b\x3d2735121840;return 418275+\x27.\x27+(a+b)})())\');'
+const fakeToken =
+  ";TKK=eval('((function(){var a\x3d1404053479;var b\x3d2735121840;return 418275+\x27.\x27+(a+b)})())');"
 
-const mockTranslate = mock('https://translate.google.cn', '/translate_a/single', 'get', getResponse())
+const mockTranslate = mock(
+  'https://translate.google.cn',
+  '/translate_a/single',
+  'get',
+  getResponse()
+)
 const mockToken = mock('https://translate.google.cn', '/', 'get', fakeToken)
 
 describe('谷歌翻译', () => {
@@ -693,45 +483,48 @@ describe('谷歌翻译', () => {
       mockTranslate()
       mockToken()
 
-      google
-        .translate('test')
-        .then(result => {
-          expect(result.raw).toEqual(getResponse())
-          expect(result.text).toBe('test')
-          expect(result.to).toBe('zh-CN')
-          expect(result.link).toBe('https://translate.google.cn/#en/zh-CN/test')
-          expect(result.phonetic).toBeUndefined()
-          expect(result.dict).toEqual(['名词：测试，试验，试，实验，考试，考验，测验', '动词：检验，试，考，测验，验，考查，尝'])
-          expect(result.result).toEqual(['测试'])
-          done()
-        }, done.fail)
+      google.translate('test').then(result => {
+        expect(result.raw).toEqual(getResponse())
+        expect(result.text).toBe('test')
+        expect(result.to).toBe('zh-CN')
+        expect(result.link).toBe('https://translate.google.cn/#en/zh-CN/test')
+        expect(result.phonetic).toBeUndefined()
+        expect(result.dict).toEqual([
+          '名词：测试，试验，试，实验，考试，考验，测验',
+          '动词：检验，试，考，测验，验，考查，尝'
+        ])
+        expect(result.result).toEqual(['测试'])
+        done()
+      }, done.fail)
     })
 
     it('网络出错时会正确报错', done => {
       mockToken({ error: true })
 
-      google
-        .translate('x')
-        .then(() => {
+      google.translate('x').then(
+        () => {
           done.fail('没有报错')
-        }, error => {
+        },
+        error => {
           expect(error.code).toBe(ERROR_CODE.NETWORK_ERROR)
           done()
-        })
+        }
+      )
     })
 
     it('网络出错时会正确报错', done => {
       mockToken()
       mockTranslate({ error: true })
 
-      google
-        .translate('x')
-        .then(() => {
+      google.translate('x').then(
+        () => {
           done.fail('没有报错')
-        }, error => {
+        },
+        error => {
           expect(error.code).toBe(ERROR_CODE.NETWORK_ERROR)
           done()
-        })
+        }
+      )
     })
   })
 
@@ -740,26 +533,29 @@ describe('谷歌翻译', () => {
       mockToken()
       mockTranslate()
 
-      google.audio({
-        text: 'test',
-        from: 'en'
-      }).then(uri => {
-        expect(uri).toContain('https://translate.google.cn/translate_tts?ie=UTF-8&q=test&tl=en&total=1&idx=0&textlen=4')
-        done()
-      }, done.fail)
+      google
+        .audio({
+          text: 'test',
+          from: 'en'
+        })
+        .then(uri => {
+          expect(uri).toContain(
+            'https://translate.google.cn/translate_tts?ie=UTF-8&q=test&tl=en&total=1&idx=0&textlen=4'
+          )
+          done()
+        }, done.fail)
     })
 
     it('如果没有指定语种会尝试自动检测', done => {
       mockToken({ times: 2 })
       mockTranslate()
 
-      google
-        .audio('test')
-        .then(uri => {
-          expect(uri)
-            .toContain('https://translate.google.cn/translate_tts?ie=UTF-8&q=test&tl=en&total=1&idx=0&textlen=4')
-          done()
-        }, done.fail)
+      google.audio('test').then(uri => {
+        expect(uri).toContain(
+          'https://translate.google.cn/translate_tts?ie=UTF-8&q=test&tl=en&total=1&idx=0&textlen=4'
+        )
+        done()
+      }, done.fail)
     })
   })
 })

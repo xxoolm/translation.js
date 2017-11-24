@@ -140,7 +140,7 @@ tjs.audio('test').then(uri => {
 
 在浏览器端，你可以使用 [`<audio>`](https://developer.mozilla.org/zh-CN/docs/Web/Guide/HTML/Using_HTML5_audio_and_video) 播放这段语音，给用户提供朗读功能。
 
-**注意**：谷歌翻译的语音朗读地址只能在 Chrome 扩展 / 应用中的 `<audio>` 里直接引用，在普通网页中引用时会报 404 错误，见 #20。
+**注意**：谷歌翻译的语音朗读地址只能在 Chrome 扩展 / 应用中的 `<audio>` 里直接引用，在普通网页中引用时会报 404 错误，见 [#20](/issues/20)。
 
 这个方法同样支持使用 `api` 属性指定语音朗读地址的接口。另外，你可以使用 `from` 参数指定文本的语种，这样会跳过检测语种的步骤（通常是一次 HTTP 请求）。
 

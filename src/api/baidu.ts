@@ -1,5 +1,6 @@
 import {
-  ITranslateOptions, // tslint:disable-line:no-unused-variable
+  // @ts-ignore
+  ITranslateOptions,
   ITranslateResult,
   ILanguageList,
   TStringOrTranslateOptions
@@ -26,11 +27,13 @@ interface IResponseSymbol {
 
 // 将百度翻译接口的部分有用的数据标注出来
 interface IResponse {
-  dict_result: { // 针对英语单词会提供词典数据。若当前翻译没有词典数据，则这个属性是一个空数组
+  dict_result: {
+    // 针对英语单词会提供词典数据。若当前翻译没有词典数据，则这个属性是一个空数组
     simple_means?: {
       symbols: [IResponseSymbol] // 虽然这是一个数组，但是它一直都只有一个元素
 
-      exchange: { // 单词的其他变形
+      exchange: {
+        // 单词的其他变形
         word_done: '' | string[] // 过去分词
         word_er: '' | string[]
         word_est: '' | string[]
@@ -96,7 +99,7 @@ const languageListInvert = invert(languageList)
 
 const link = 'https://fanyi.baidu.com'
 
-function detect (options: TStringOrTranslateOptions) {
+function detect(options: TStringOrTranslateOptions) {
   const { text } = transformOptions(options)
 
   return request({
@@ -111,12 +114,18 @@ function detect (options: TStringOrTranslateOptions) {
       const iso689lang = languageListInvert[body.lan]
       if (iso689lang) return iso689lang
     }
-    throw new TranslatorError(ERROR_CODE.UNSUPPORTED_LANG, '百度翻译不支持这个语种')
+    throw new TranslatorError(
+      ERROR_CODE.UNSUPPORTED_LANG,
+      '百度翻译不支持这个语种'
+    )
   })
 }
 
-function getAudioURI (text: string, lang: string) {
-  return link + `/gettts?lan=${lang}&text=${encodeURIComponent(text)}&spd=3&source=web`
+function getAudioURI(text: string, lang: string) {
+  return (
+    link +
+    `/gettts?lan=${lang}&text=${encodeURIComponent(text)}&spd=3&source=web`
+  )
 }
 
 /**
@@ -124,16 +133,16 @@ function getAudioURI (text: string, lang: string) {
  * @param {string} options
  * @return {string|void}
  */
-function audio (options: TStringOrTranslateOptions) {
+function audio(options: TStringOrTranslateOptions) {
   const { text, from } = transformOptions(options)
 
-  return new Promise((res, rej) => {
+  return new Promise<string>((res, rej) => {
     if (from) {
       res(from)
     } else {
       detect(text).then(res, rej)
     }
-  }).then((from: string) => {
+  }).then(from => {
     let lang
     if (from === 'en-GB') {
       lang = 'uk'
@@ -144,23 +153,23 @@ function audio (options: TStringOrTranslateOptions) {
   })
 }
 
-function translate (options: TStringOrTranslateOptions) {
+function translate(options: TStringOrTranslateOptions) {
   let { from, to, text } = transformOptions(options)
 
-  return new Promise((res, rej) => {
+  return new Promise<string>((res, rej) => {
     if (from) {
       res(from)
     } else {
       detect(text).then(res, rej)
     }
-  }).then((from: string) => {
+  }).then(from => {
     return request({
       url: link + '/v2transapi',
       type: 'form',
       method: 'post',
       body: {
-        from: from && languageList[from] || 'auto',
-        to: to && languageList[to] || 'zh', // 非标准接口一定要提供目标语种
+        from: (from && languageList[from]) || 'auto',
+        to: (to && languageList[to]) || 'zh', // 非标准接口一定要提供目标语种
         query: text,
         transtype: 'hash',
         simple_means_flag: 3
@@ -178,7 +187,12 @@ function translate (options: TStringOrTranslateOptions) {
         to: languageListInvert[baiduTo]
       }
 
-      const symbols: IResponseSymbol = getValue(body, ['dict_result', 'simple_means', 'symbols', '0'])
+      const symbols: IResponseSymbol = getValue(body, [
+        'dict_result',
+        'simple_means',
+        'symbols',
+        '0'
+      ])
 
       if (symbols) {
         // region 解析音标

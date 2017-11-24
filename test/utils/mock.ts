@@ -8,9 +8,14 @@ export interface IOptions {
   times?: number
 }
 
-export default function (host: string, path: string, method: 'get' | 'post' = 'get', response?: any) {
+export default function(
+  host: string,
+  path: string,
+  method: 'get' | 'post' = 'get',
+  response?: any
+) {
   const scope = nock(host)
-  return function (options: IOptions = {}) {
+  return function(options: IOptions = {}) {
     const interceptor = scope[method](path, options.body)
 
     interceptor.query(true)
