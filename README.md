@@ -254,32 +254,13 @@ NETWORK_TIMEOUT - 查询网页接口超时了。由于目前没有设置超时�
 
 有道网页翻译接口会验证 `Referer` 请求头判断对接口的访问是否来自网页。由于浏览器不允许为 XMLHTTPRequest 对象设置 `Referer` 请求头，所以这一步只能在扩展程序里做。
 
-你需要申请 `webRequest` 与 `webRequestBlocking` 权限，然后在你的[后台脚本](https://developer.chrome.com/extensions/event_pages)中添加下面这段代码：
+你需要申请 `webRequest` 与 `webRequestBlocking` 权限，然后在你的[后台脚本](https://developer.chrome.com/extensions/event_pages)中引用这个模块：
 
 ```js
-chrome.webRequest.onBeforeSendHeaders.addListener(
-  ({ requestHeaders }) => {
-    const r = {
-      name: 'Referer',
-      value: 'https://fanyi.youdao.com'
-    }
-    const index = requestHeaders.findIndex(
-      ({ name }) => name.toLowerCase() === 'referer'
-    )
-    if (index >= 0) {
-      requestHeaders.splice(index, 1, r)
-    } else {
-      requestHeaders.push(r)
-    }
-    return { requestHeaders }
-  },
-  {
-    urls: ['https://fanyi.youdao.com/translate_o'],
-    types: ['xmlhttprequest']
-  },
-  ['blocking', 'requestHeaders']
-)
+import 'translation.js/chrome-youdao'
 ```
+
+或者直接将 [chrome-youdao.js](chrome-youdao.js) 复制到你的项目中并引用。
 
 ## 许可
 
