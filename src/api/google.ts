@@ -9,7 +9,8 @@ import { transformOptions } from '../utils'
 import getGoogleToken from '../google-token'
 
 function translate(options: TStringOrTranslateOptions) {
-  const { text, from = 'auto', to = 'zh-CN', com } = transformOptions(options)
+  let { text, from = 'auto', to = 'zh-CN', com } = transformOptions(options)
+  text = text.toLowerCase()
 
   return getGoogleToken(text, com)
     .then(tk => {
@@ -19,19 +20,19 @@ function translate(options: TStringOrTranslateOptions) {
           (com ? 'com' : 'cn') +
           '/translate_a/single',
         query: {
-          q: text.toLowerCase(),
+          client: 't',
           sl: from,
           tl: to,
+          hl: to,
           tk,
-          client: 't',
-          hl: 'zh-CN',
           dt: ['at', 'bd', 'ex', 'ld', 'md', 'qca', 'rw', 'rm', 'ss', 't'],
           ie: 'UTF-8',
           oe: 'UTF-8',
-          otf: '2',
+          otf: '1',
           ssel: '0',
           tsel: '0',
-          kc: '1'
+          kc: '7',
+          q: text
         }
       })
     })
@@ -43,9 +44,9 @@ function translate(options: TStringOrTranslateOptions) {
         raw: body,
         from: googleFrom,
         to,
-        link: `https://translate.google.${com ? 'com' : 'cn'}/#${googleFrom}/${
-          to
-        }/${encodeURIComponent(text)}`
+        link: `https://translate.google.${
+          com ? 'com' : 'cn'
+        }/#${googleFrom}/${to}/${encodeURIComponent(text)}`
       }
 
       try {
@@ -84,9 +85,9 @@ function audio(options: TStringOrTranslateOptions) {
   ]).then(([lang, tk]) => {
     return `https://translate.google.${
       com ? 'com' : 'cn'
-    }/translate_tts?ie=UTF-8&q=${encodeURIComponent(text)}&tl=${
-      lang
-    }&total=1&idx=0&textlen=${text.length}&tk=${tk}&client=t`
+    }/translate_tts?ie=UTF-8&q=${encodeURIComponent(
+      text
+    )}&tl=${lang}&total=1&idx=0&textlen=${text.length}&tk=${tk}&client=t`
   })
 }
 
