@@ -1,18 +1,18 @@
-import request from '../adapters/http/node'
+import request from '../../adapters/http/node'
 import {
   // @ts-ignore
   ITranslateOptions,
   ITranslateResult,
   TStringOrTranslateOptions
-} from '../interfaces'
-import { transformOptions } from '../utils'
-import getGoogleToken from '../google-token'
+} from '../../interfaces'
+import { transformOptions } from '../../utils'
+import sign from './sign'
 
 function translate(options: TStringOrTranslateOptions) {
   let { text, from = 'auto', to = 'zh-CN', com } = transformOptions(options)
   text = text.toLowerCase()
 
-  return getGoogleToken(text, com)
+  return sign(text, com)
     .then(tk => {
       return request({
         url:
@@ -81,7 +81,7 @@ function audio(options: TStringOrTranslateOptions) {
         detect(text).then(resolve, reject)
       }
     }),
-    getGoogleToken(text, com)
+    sign(text, com)
   ]).then(([lang, tk]) => {
     return `https://translate.google.${
       com ? 'com' : 'cn'

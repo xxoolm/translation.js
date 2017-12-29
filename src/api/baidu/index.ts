@@ -4,10 +4,16 @@ import {
   ITranslateResult,
   ILanguageList,
   TStringOrTranslateOptions
-} from '../interfaces'
-import { ERROR_CODE } from '../constant'
-import { invert, TranslatorError, getValue, transformOptions } from '../utils'
-import request from '../adapters/http/node'
+} from '../../interfaces'
+import { ERROR_CODE } from '../../constant'
+import {
+  invert,
+  TranslatorError,
+  getValue,
+  transformOptions
+} from '../../utils'
+import request from '../../adapters/http/node'
+import sign from './sign'
 
 // 百度语种检测接口返回的结构
 interface IDetectResult {
@@ -163,75 +169,87 @@ function translate(options: TStringOrTranslateOptions) {
       detect(text).then(res, rej)
     }
   }).then(from => {
-    return request({
-      url: link + '/v2transapi',
-      type: 'form',
-      method: 'post',
-      body: {
-        from: (from && languageList[from]) || 'auto',
-        to: (to && languageList[to]) || 'zh', // 非标准接口一定要提供目标语种
-        query: text,
-        transtype: 'hash',
-        simple_means_flag: 3
-      }
-    }).then((body: IResponse) => {
-      const transResult = body.trans_result
-      const baiduFrom = getValue(transResult, 'from', 'auto')
-      const baiduTo = getValue(transResult, 'to', 'auto')
+    return sign(text)
+      .then(tokenAndSign => {
+        return request({
+          url: link + '/v2transapi',
+          type: 'form',
+          method: 'post',
+          body: Object.assign(
+            {
+              from: 'en' || (from && languageList[from]) || 'auto',
+              to: 'zh' || (to && languageList[to]) || 'zh', // 非标准接口一定要提供目标语种
+              query: text,
+              transtype: 'translang',
+              simple_means_flag: 3
+            },
+            tokenAndSign
+          ),
+          headers: {
+            // 请求接口时需要带上这两个请求头
+            'X-Requested-With': 'XMLHttpRequest',
+            Cookie: 'BAIDUID=0F8E1A72A51EE47B7CA0A81711749C00:FG=1;'
+          }
+        })
+      })
+      .then((body: IResponse) => {
+        const transResult = body.trans_result
+        const baiduFrom = getValue(transResult, 'from', 'auto')
+        const baiduTo = getValue(transResult, 'to', 'auto')
 
-      const result: ITranslateResult = {
-        text,
-        raw: body,
-        link: link + `/#${baiduFrom}/${baiduTo}/${encodeURIComponent(text)}`,
-        from: languageListInvert[baiduFrom],
-        to: languageListInvert[baiduTo]
-      }
-
-      const symbols: IResponseSymbol = getValue(body, [
-        'dict_result',
-        'simple_means',
-        'symbols',
-        '0'
-      ])
-
-      if (symbols) {
-        // region 解析音标
-        const phonetic = []
-        const { ph_am, ph_en } = symbols
-        if (ph_am) {
-          phonetic.push({
-            name: '美',
-            ttsURI: getAudioURI(text, 'en'),
-            value: ph_am
-          })
+        const result: ITranslateResult = {
+          text,
+          raw: body,
+          link: link + `/#${baiduFrom}/${baiduTo}/${encodeURIComponent(text)}`,
+          from: languageListInvert[baiduFrom],
+          to: languageListInvert[baiduTo]
         }
-        if (ph_en) {
-          phonetic.push({
-            name: '英',
-            ttsURI: getAudioURI(text, 'en-GB'),
-            value: ph_en
-          })
-        }
-        if (phonetic.length) {
-          result.phonetic = phonetic
-        }
-        // endregion
 
-        // 解析词典数据
+        const symbols: IResponseSymbol = getValue(body, [
+          'dict_result',
+          'simple_means',
+          'symbols',
+          '0'
+        ])
+
+        if (symbols) {
+          // region 解析音标
+          const phonetic = []
+          const { ph_am, ph_en } = symbols
+          if (ph_am) {
+            phonetic.push({
+              name: '美',
+              ttsURI: getAudioURI(text, 'en'),
+              value: ph_am
+            })
+          }
+          if (ph_en) {
+            phonetic.push({
+              name: '英',
+              ttsURI: getAudioURI(text, 'en-GB'),
+              value: ph_en
+            })
+          }
+          if (phonetic.length) {
+            result.phonetic = phonetic
+          }
+          // endregion
+
+          // 解析词典数据
+          try {
+            result.dict = symbols.parts.map(part => {
+              return part.part + ' ' + part.means.join('；')
+            })
+          } catch (e) {}
+        }
+
+        // 解析普通的翻译结果
         try {
-          result.dict = symbols.parts.map(part => {
-            return part.part + ' ' + part.means.join('；')
-          })
+          result.result = transResult.data.map(d => d.dst)
         } catch (e) {}
-      }
 
-      // 解析普通的翻译结果
-      try {
-        result.result = transResult.data.map(d => d.dst)
-      } catch (e) {}
-
-      return result
-    })
+        return result
+      })
   })
 }
 
