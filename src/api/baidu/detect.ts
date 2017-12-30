@@ -1,3 +1,4 @@
+import { StringOrTranslateOptions } from '../types'
 import request from '../../utils/make-request'
 import getError, { ERROR_CODE } from '../../utils/error'
 import { root, custom2standard } from './state'

@@ -1,3 +1,4 @@
+import { StringOrTranslateOptions } from '../types'
 import detect from './detect'
 import { root, standard2custom } from './state'
 import getError, { ERROR_CODE } from '../../utils/error'
@@ -29,7 +30,7 @@ export default async function(options: StringOrTranslateOptions) {
   if (from === 'en-GB') {
     lang = 'uk'
   } else {
-    lang = standard2custom[from!]
+    lang = standard2custom[from]
     if (!lang) throw getError(ERROR_CODE.UNSUPPORTED_LANG)
   }
   return getAudioURI(text, lang)

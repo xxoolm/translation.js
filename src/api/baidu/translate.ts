@@ -1,3 +1,4 @@
+import { StringOrTranslateOptions, TranslateResult } from '../types'
 import { standard2custom, root, Cookie, custom2standard } from './state'
 import getValue from '../../utils/get'
 import request from '../../utils/make-request'

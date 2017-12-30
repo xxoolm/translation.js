@@ -1,3 +1,4 @@
+import { StringObject } from '../../types'
 import invert from '../../utils/invert'
 export const root = 'https://fanyi.baidu.com'
 // TODO: 暂时先写死一个 Cookie，后面有时间了改为在百度接口返回 997 错误码的时候自动获取。

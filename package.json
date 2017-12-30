@@ -14,7 +14,7 @@
     "declaration"
   ],
   "scripts": {
-    "lint": "tslint --project tsconfig.json",
+    "lint": "tslint --project tsconfig.json -t verbose",
     "build": "node build/build"
   },
   "dependencies": {

@@ -1,25 +1,12 @@
-/**
- * 当前是否是 Node.js 运行环境。
- * 打包时会替换成正确的值。
- */
-declare const IS_NODE: boolean
-
-// TODO: 将这些放在项目中
-
-/** 键和值都是字符串的对象 */
-interface StringObject {
-  [prop: string]: string
-}
-
 /** 单个音标的数据结构 */
-interface Phonetic {
+export interface Phonetic {
   name: string // 语种的中文名称
   ttsURI: string // 此音标对应的语音地址
   value: string // 此语种对应的音标值
 }
 
 /** 统一的查询结果的数据结构 */
-interface TranslateResult {
+export interface TranslateResult {
   text: string // 此次查询的文本
   raw: any // 翻译接口提供的原始的、未经转换的查询结果
   link: string // 此翻译接口的在线查询地址
@@ -31,7 +18,7 @@ interface TranslateResult {
 }
 
 /** 统一的查询参数结构 */
-interface TranslateOptions {
+export interface TranslateOptions {
   text: string
   // 待翻译文本的源语种
   from?: string
@@ -40,17 +27,4 @@ interface TranslateOptions {
 }
 
 /** 查询参数，既可以是字符串，也可以是对象 */
-type StringOrTranslateOptions = string | TranslateOptions
-
-interface StringArrayObject {
-  [key: string]: string | string[]
-}
-
-interface RequestOptions {
-  url: string
-  query?: StringArrayObject
-  method?: 'get' | 'post'
-  body?: object
-  type?: 'form' | 'json'
-  headers?: StringObject
-}
+export type StringOrTranslateOptions = string | TranslateOptions

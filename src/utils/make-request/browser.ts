@@ -1,3 +1,4 @@
+import { StringArrayObject, RequestOptions } from './types'
 import getError, { ERROR_CODE } from '../error'
 
 /**

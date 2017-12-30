@@ -1,3 +1,5 @@
+import { StringObject } from '../../types'
+import { RequestOptions } from './types'
 import { request as requestHTTP } from 'http'
 import { request as requestHTTPs } from 'https'
 import { parse } from 'url'
