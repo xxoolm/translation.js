@@ -1,3 +1,4 @@
+// TODO: 换回原来的接口，无需 token，json 格式也很正常。原来的接口来自官方的谷歌翻译扩展。
 import request from '../../adapters/http/node'
 import {
   // @ts-ignore
@@ -33,6 +34,11 @@ function translate(options: TStringOrTranslateOptions) {
           tsel: '0',
           kc: '7',
           q: text
+        },
+        headers: {
+          // 一些用户将系统或浏览器语言设置为英文后，浏览器会自动将 Accept-Language 改为 en，
+          // 导致自动翻译的目标语言总是英文。这里强制永远使用中文
+          'Accept-Language': 'zh-CN,zh;q=0.8,en;q=0.6'
         }
       })
     })

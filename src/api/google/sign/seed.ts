@@ -10,6 +10,7 @@ export default function(com?: boolean): Promise<string> {
   return new Promise((resolve, reject) => {
     const now = Math.floor(Date.now() / 3600000)
 
+    // TODO: 同百度翻译一样，在接口 403 时才重新获取，不要通过时间判断。
     // seed 每小时刷新一次，如果没过期则直接使用上次更新的 seed
     if (Number(seed.split('.')[0]) === now) {
       resolve(seed)

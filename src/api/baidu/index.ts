@@ -3,9 +3,10 @@ import {
   ITranslateOptions,
   ITranslateResult,
   ILanguageList,
-  TStringOrTranslateOptions
+  TStringOrTranslateOptions,
+  IStringObject
 } from '../../interfaces'
-import { ERROR_CODE } from '../../constant'
+import { ERROR_CODE, IS_NODE } from '../../constant'
 import {
   invert,
   TranslatorError,
@@ -13,6 +14,7 @@ import {
   transformOptions
 } from '../../utils'
 import request from '../../adapters/http/node'
+import cookie from './cookie'
 import sign from './sign'
 
 // 百度语种检测接口返回的结构
@@ -160,6 +162,15 @@ function audio(options: TStringOrTranslateOptions) {
   })
 }
 
+const headers: IStringObject = {
+  // 请求接口时需要带上这两个请求头
+  'X-Requested-With': 'XMLHttpRequest'
+}
+
+if (IS_NODE) {
+  headers.Cookie = cookie
+}
+
 function translate(options: TStringOrTranslateOptions) {
   let { from, to, text } = transformOptions(options)
 
@@ -186,11 +197,7 @@ function translate(options: TStringOrTranslateOptions) {
             },
             tokenAndSign
           ),
-          headers: {
-            // 请求接口时需要带上这两个请求头
-            'X-Requested-With': 'XMLHttpRequest',
-            Cookie: 'BAIDUID=0F8E1A72A51EE47B7CA0A81711749C00:FG=1;'
-          }
+          headers
         })
       })
       .then((body: IResponse) => {
