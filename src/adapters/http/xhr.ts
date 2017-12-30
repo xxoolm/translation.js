@@ -1,8 +1,10 @@
-import { IRequestOptions, IStringOrStringArrayObject } from '../../interfaces'
-import { ERROR_CODE } from '../../constant'
-import { TranslatorError } from '../../utils'
+import getError, { ERROR_CODE } from '../../utils/error'
 
-function qs(obj?: IStringOrStringArrayObject) {
+/**
+ * 将对象转换成查询字符串
+ * TODO: 使用 noshjs 中的方法
+ */
+function qs(obj?: StringArrayObject) {
   if (!obj) return ''
   const r = []
   for (let key in obj) {
@@ -12,11 +14,11 @@ function qs(obj?: IStringOrStringArrayObject) {
   return r.join('&')
 }
 
-export default function(options: IRequestOptions) {
+export default function(options: RequestOptions): Promise<any> {
   const xhr = new XMLHttpRequest()
   const urlObj = new URL(options.url)
 
-  urlObj.search = (urlObj.search ? '' : '?') + qs(options.query)
+  urlObj.search += (urlObj.search ? '&' : '?') + qs(options.query)
 
   const { method = 'get' } = options
 
@@ -31,7 +33,7 @@ export default function(options: IRequestOptions) {
           'Content-Type',
           'application/x-www-form-urlencoded; charset=UTF-8'
         )
-        body = qs(options.body)
+        body = qs(options.body as StringArrayObject)
         break
 
       case 'json':
@@ -52,7 +54,8 @@ export default function(options: IRequestOptions) {
   return new Promise((resolve, reject) => {
     xhr.onload = () => {
       if (xhr.status !== 200) {
-        reject(new TranslatorError(ERROR_CODE.API_SERVER_ERROR))
+        reject(getError(ERROR_CODE.API_SERVER_ERROR))
+        return
       }
       const res = xhr.responseText
       try {
@@ -63,7 +66,7 @@ export default function(options: IRequestOptions) {
     }
 
     xhr.onerror = e => {
-      reject(new TranslatorError(ERROR_CODE.NETWORK_ERROR, e.message))
+      reject(getError(ERROR_CODE.NETWORK_ERROR, e.message))
     }
 
     xhr.send(body)

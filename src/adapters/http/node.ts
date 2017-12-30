@@ -3,16 +3,14 @@ import { request as requestHTTPs } from 'https'
 import { parse } from 'url'
 import { stringify } from 'querystring'
 
-import { IRequestOptions, IStringObject } from '../../interfaces'
-import { ERROR_CODE } from '../../constant'
-import { TranslatorError } from '../../utils'
+import getError, { ERROR_CODE } from '../../utils/error'
 
-export default function(options: IRequestOptions): Promise<any> {
+export default function(options: RequestOptions): Promise<any> {
   const { method = 'get' } = options
   const urlObj = parse(options.url, true)
   const qs = stringify(Object.assign(urlObj.query, options.query))
 
-  const headers: IStringObject = {
+  const headers: StringObject = {
     'User-Agent':
       'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36'
   }
@@ -49,31 +47,30 @@ export default function(options: IRequestOptions): Promise<any> {
 
   return new Promise((resolve, reject) => {
     const req = (urlObj.protocol === 'https:' ? requestHTTPs : requestHTTP)(
-      httpOptions
+      httpOptions,
+      res => {
+        // 内置的翻译接口都以 200 作为响应码，所以不是 200 的一律视为错误
+        if (res.statusCode !== 200) {
+          reject(getError(ERROR_CODE.API_SERVER_ERROR))
+          return
+        }
+
+        res.setEncoding('utf8')
+        let rawData = ''
+        res.on('data', (chunk: string) => {
+          rawData += chunk
+        })
+        res.on('end', () => {
+          try {
+            rawData = JSON.parse(rawData)
+          } catch (e) {}
+          resolve(rawData || undefined)
+        })
+      }
     )
 
-    req.on('response', res => {
-      // 内置的翻译接口都以 200 作为响应码，所以不是 200 的一律视为错误
-      if (res.statusCode !== 200) {
-        reject(new TranslatorError(ERROR_CODE.API_SERVER_ERROR))
-        return
-      }
-
-      res.setEncoding('utf8')
-      let rawData = ''
-      res.on('data', (chunk: string) => {
-        rawData += chunk
-      })
-      res.on('end', () => {
-        try {
-          rawData = JSON.parse(rawData)
-        } catch (e) {}
-        resolve(rawData || undefined)
-      })
-    })
-
     req.on('error', e => {
-      reject(new TranslatorError(ERROR_CODE.NETWORK_ERROR, e.message))
+      reject(getError(ERROR_CODE.NETWORK_ERROR, e.message))
     })
 
     req.end(body)

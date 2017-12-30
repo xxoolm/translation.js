@@ -1,6 +1,6 @@
 {
   "name": "translation.js",
-  "version": "0.6.8",
+  "version": "0.7.0",
   "description": "集成多种翻译引擎、提供统一的翻译接口。",
   "repository": {
     "type": "git",
@@ -11,61 +11,29 @@
   "types": "declaration/index.d.ts",
   "files": [
     "dist",
-    "libs",
-    "declaration",
-    "chrome-youdao.js"
+    "declaration"
   ],
   "scripts": {
     "start": "tsc -w -p tsconfig.build.json",
-    "lint": "tslint --project tsconfig.json",
-    "build": "npm run build:nodejs && npm run build:browser",
-    "build:browser": "node build/browser",
-    "build:nodejs": "tsc -p tsconfig.build.json",
-    "test": "nyc jasmine JASMINE_CONFIG_PATH=jasmine.json",
-    "prepublishOnly": "npm run lint && npm test && npm run build"
+    "lint": "tslint --project tsconfig.json"
   },
   "browser": {
-    "./libs/adapters/md5/node.js": "./libs/adapters/md5/browser.js",
     "./libs/adapters/http/node.js": "./libs/adapters/http/xhr.js"
   },
-  "nyc": {
-    "require": [
-      "ts-node/register"
-    ],
-    "include": [
-      "src/**/*.ts"
-    ],
-    "extension": [
-      ".ts"
-    ],
-    "reporter": [
-      "html",
-      "lcov"
-    ]
-  },
   "dependencies": {
-    "@types/blueimp-md5": "^2.7.0",
-    "blueimp-md5": "^2.10.0"
+    "@types/node": "^8.5.2",
+    "tslib": "^1.8.1"
   },
   "devDependencies": {
-    "@types/jasmine": "^2.8.2",
-    "@types/nock": "^9.1.0",
-    "coveralls": "^3.0.0",
     "fs-extra": "^5.0.0",
-    "jasmine": "^2.8.0",
-    "nock": "^9.1.5",
-    "nyc": "^11.3.0",
-    "rollup": "^0.52.3",
+    "rollup": "^0.53.1",
+    "rollup-plugin-replace": "^2.0.0",
     "rollup-plugin-typescript2": "^0.9.0",
-    "rollup-pluginutils": "^2.0.1",
-    "ts-node": "^4.0.2",
     "tslint": "^5.8.0",
     "tslint-config-prettier": "^1.6.0",
     "tslint-config-standard": "^7.0.0",
-    "typescript": "^2.6.2",
-    "uglify-js": "^3.2.2"
+    "typescript": "^2.6.2"
   },
-  "author": "Milk Lee <milk.lee@qq.com>",
   "homepage": "https://github.com/Selection-Translator/translation.js#readme",
   "license": "MIT"
 }

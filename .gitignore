@@ -3,7 +3,5 @@
 /dev.js
 /libs/
 /.*/
-/coverage/
 .DS_Store
-/coverage/
 /declaration/
