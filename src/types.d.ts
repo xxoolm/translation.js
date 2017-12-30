@@ -4,6 +4,8 @@
  */
 declare const IS_NODE: boolean
 
+// TODO: 将这些放在项目中
+
 /** 键和值都是字符串的对象 */
 interface StringObject {
   [prop: string]: string

@@ -6,16 +6,16 @@
     "type": "git",
     "url": "https://github.com/Selection-Translator/translation.js.git"
   },
-  "main": "libs/index.js",
-  "unpkg": "dist/translator.js",
+  "main": "dist/tmw.c.js",
+  "module": "dist/tmw.es.js",
   "types": "declaration/index.d.ts",
   "files": [
     "dist",
     "declaration"
   ],
   "scripts": {
-    "start": "tsc -w -p tsconfig.build.json",
-    "lint": "tslint --project tsconfig.json"
+    "lint": "tslint --project tsconfig.json",
+    "build": "node build/build"
   },
   "browser": {
     "./libs/adapters/http/node.js": "./libs/adapters/http/xhr.js"
