@@ -14,7 +14,7 @@ export interface TranslateResult {
   to: string // 由翻译接口提供的目标语种，注意可能会与查询对象的 to 不同
   phonetic?: string | Phonetic[] // 若有多个音标（例如美音和英音），则使用数组描述
   dict?: string[] // 如果查询的是英文单词，有的翻译接口（例如有道翻译）会返回这个单词的详细释义
-  result?: string[] // 翻译结果，可以有多条（一个段落对应一个翻译结果）；如果已经有 dict 了则不会有
+  result?: string[] // 翻译结果，可以有多条（一个段落对应一个翻译结果）
 }
 
 /** 统一的查询参数结构 */

@@ -7,7 +7,10 @@ export const root = 'https://fanyi.baidu.com'
 // 第二次请求接口时访问 fanyi.baidu.com 就会给正确的 token
 export const Cookie = 'BAIDUID=0F8E1A72A51EE47B7CA0A81711749C00:FG=1;'
 
-/** 百度支持的语种到百度自定义的语种名的映射 */
+/**
+ * 百度支持的语种到百度自定义的语种名的映射，去掉了文言文。
+ * @see http://api.fanyi.baidu.com/api/trans/product/apidoc#languageList
+ */
 export const standard2custom: StringObject = {
   en: 'en',
   th: 'th',
@@ -27,10 +30,9 @@ export const standard2custom: StringObject = {
   hu: 'hu',
   de: 'de',
   it: 'it',
-  // zh: 'zh',
   'zh-CN': 'zh',
   'zh-TW': 'cht',
-  'zh-HK': 'yue',
+  // 'zh-HK': 'yue',
   ja: 'jp',
   ko: 'kor',
   es: 'spa',

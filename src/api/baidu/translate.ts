@@ -25,7 +25,7 @@ export default async function(options: StringOrTranslateOptions) {
   }
 
   if (!to) {
-    to = from.indexOf('zh') === 0 ? 'en' : 'zh-CN'
+    to = from.startsWith('zh') ? 'en' : 'zh-CN'
   }
 
   const customFromLang = standard2custom[from]
@@ -146,12 +146,10 @@ function transformRaw(text: string, body: Response) {
     } catch (e) {}
   }
 
-  if (!result.dict) {
-    // 解析普通的翻译结果
-    try {
-      result.result = transResult.data.map(d => d.dst)
-    } catch (e) {}
-  }
+  // 解析普通的翻译结果
+  try {
+    result.result = transResult.data.map(d => d.dst)
+  } catch (e) {}
 
   if (!result.dict && !result.result) {
     throw getError(ERROR_CODE.API_SERVER_ERROR)
