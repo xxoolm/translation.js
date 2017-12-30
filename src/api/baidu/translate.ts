@@ -1,6 +1,6 @@
 import { standard2custom, root, Cookie, custom2standard } from './state'
 import getValue from '../../utils/get'
-import request from '../../adapters/http/node'
+import request from '../../utils/make-request'
 import sign from './sign'
 import getError, { ERROR_CODE } from '../../utils/error'
 import { getAudioURI } from './audio'

@@ -1,4 +1,4 @@
-import request from '../../../adapters/http/node'
+import request from '../../../utils/make-request'
 import { Cookie } from '../state'
 import getError, { ERROR_CODE } from '../../../utils/error'
 

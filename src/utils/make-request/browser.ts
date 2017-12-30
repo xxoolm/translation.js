@@ -1,4 +1,4 @@
-import getError, { ERROR_CODE } from '../../utils/error'
+import getError, { ERROR_CODE } from '../error'
 
 /**
  * 将对象转换成查询字符串

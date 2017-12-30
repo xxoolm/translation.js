@@ -17,9 +17,6 @@
     "lint": "tslint --project tsconfig.json",
     "build": "node build/build"
   },
-  "browser": {
-    "./libs/adapters/http/node.js": "./libs/adapters/http/xhr.js"
-  },
   "dependencies": {
     "@types/node": "^8.5.2",
     "tslib": "^1.8.1"

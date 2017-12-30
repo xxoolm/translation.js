@@ -3,7 +3,7 @@ import { request as requestHTTPs } from 'https'
 import { parse } from 'url'
 import { stringify } from 'querystring'
 
-import getError, { ERROR_CODE } from '../../utils/error'
+import getError, { ERROR_CODE } from '../error'
 
 export default function(options: RequestOptions): Promise<any> {
   const { method = 'get' } = options
