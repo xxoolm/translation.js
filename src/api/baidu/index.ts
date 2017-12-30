@@ -33,6 +33,7 @@ interface IResponseSymbol {
 
 // 将百度翻译接口的部分有用的数据标注出来
 interface IResponse {
+  error?: number // 查询失败时会有这个属性。997 表示 token 有误，此时应该获取 BAIDUID 后重试
   dict_result: {
     // 针对英语单词会提供词典数据。若当前翻译没有词典数据，则这个属性是一个空数组
     simple_means?: {
