@@ -9,7 +9,8 @@ fs.emptyDirSync('./dist')
 fs.emptyDirSync('./declaration')
 
 const adapters = {
-  '/make-request': './src/utils/make-request/browser.ts'
+  '/make-request': './src/utils/make-request/browser.ts',
+  '/md5': './src/utils/md5/browser.ts'
 }
 
 function roll(browser) {
