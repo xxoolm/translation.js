@@ -52,18 +52,18 @@ export default function(options: RequestOptions): Promise<any> {
     }
   }
 
+  xhr.responseType = options.responseType || 'json'
+
   return new Promise((resolve, reject) => {
     xhr.onload = () => {
-      if (xhr.status !== 200) {
+      // 如果 responseType 设为 json 但服务器返回的数据无法解析成 json，
+      // 则 response 是 null，其他无法解析的情况也是同理。
+      // 另外，responseText 只能在 responseType 是 '' 或 'text' 访问。
+      if (xhr.status !== 200 || xhr.response === null) {
         reject(getError(ERROR_CODE.API_SERVER_ERROR))
         return
       }
-      const res = xhr.responseText
-      try {
-        resolve(JSON.parse(res))
-      } catch (e) {
-        resolve(res)
-      }
+      resolve(xhr.response)
     }
 
     xhr.onerror = e => {

@@ -3,7 +3,7 @@ import detect from './detect'
 import { StringObject } from '../../types'
 import getError, { ERROR_CODE } from '../../utils/error'
 
-const standard2custom: StringObject = {
+export const standard2custom: StringObject = {
   en: 'eng',
   ja: 'jap',
   ko: 'ko',

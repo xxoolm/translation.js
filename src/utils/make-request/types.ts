@@ -11,4 +11,5 @@ export interface RequestOptions {
   body?: object
   type?: 'form' | 'json'
   headers?: StringObject
+  responseType?: 'document' | 'json' | 'text'
 }
