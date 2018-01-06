@@ -1,11 +1,11 @@
-import { StringOrGoogleTranslateOptions, GoogleTranslateOptions } from './types'
+import { StringOrTranslateOptions, TranslateOptions } from '../types'
 import { TranslateResult } from '../types'
 import request from '../../utils/make-request'
 import { getRoot } from './state'
 import detect from './detect'
 import getError, { ERROR_CODE } from '../../utils/error'
 
-export default async function(options: StringOrGoogleTranslateOptions) {
+export default async function(options: StringOrTranslateOptions) {
   let { text, com = false, from = '', to = '' } =
     typeof options === 'string' ? { text: options } : options
 
@@ -68,7 +68,7 @@ interface RawResult {
   }[]
 }
 
-function transformRaw(rawRes: RawResult, queryObj: GoogleTranslateOptions) {
+function transformRaw(rawRes: RawResult, queryObj: TranslateOptions) {
   let { text, to } = queryObj
   const realFrom = rawRes.src || queryObj.from!
 
