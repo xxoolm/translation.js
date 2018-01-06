@@ -2,4 +2,4 @@ import * as baidu from './api/baidu'
 import * as google from './api/google'
 import * as youdao from './api/youdao'
 
-export { baidu, google }
+export { baidu, google, youdao }
