@@ -1,4 +1,4 @@
-import { StringOrGoogleTranslateOptions } from './types'
+import { StringOrTranslateOptions } from '../types'
 import { getRoot } from './state'
 
 import request from '../../utils/make-request'
@@ -8,7 +8,7 @@ interface DetectResult {
   src?: string
 }
 
-export default async function(options: StringOrGoogleTranslateOptions) {
+export default async function(options: StringOrTranslateOptions) {
   const { text, com = false } =
     typeof options === 'string' ? { text: options } : options
 
