@@ -10,20 +10,24 @@
   "module": "dist/tmw.es.js",
   "browser": "dist/tmw.browser.es.js",
   "types": "declaration/index.d.ts",
-  "files": ["dist", "declaration"],
+  "files": [
+    "dist",
+    "declaration"
+  ],
   "scripts": {
     "lint": "tslint --project tsconfig.json -t verbose",
-    "build": "node build/build"
+    "build": "node build/build",
+    "prepublishOnly": "npm run build"
   },
   "dependencies": {
     "@types/blueimp-md5": "^2.7.0",
-    "@types/node": "^8.5.2",
+    "@types/node": "^9.3.0",
     "blueimp-md5": "^2.10.0",
     "tslib": "^1.8.1"
   },
   "devDependencies": {
     "fs-extra": "^5.0.0",
-    "rollup": "^0.53.1",
+    "rollup": "^0.53.3",
     "rollup-plugin-replace": "^2.0.0",
     "rollup-plugin-typescript2": "^0.9.0",
     "tslint": "^5.8.0",
