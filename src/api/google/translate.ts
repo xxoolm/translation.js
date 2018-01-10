@@ -20,7 +20,7 @@ export default async function(options: StringOrTranslateOptions) {
     await request({
       url: getRoot(com) + '/translate_a/single',
       headers: {
-        // 保证目标语种不受操作系统或浏览器的设置影响
+        // TODO: 保证目标语种不受操作系统或浏览器的设置影响，直接设置成 zh-CN 仍然有问题，需要看一下 0.6.x 的代码
         'Accept-Language': 'zh-CN,zh;q=0.9,en-GB;q=0.8,en;q=0.7'
       },
       query: {

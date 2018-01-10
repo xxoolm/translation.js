@@ -1,4 +1,4 @@
-# translation.js [![Build Status](https://img.shields.io/travis/Selection-Translator/translation.js/master.svg?style=flat-square)](https://travis-ci.org/Selection-Translator/translation.js) [![Coverage Status](https://img.shields.io/coveralls/Selection-Translator/translation.js/master.svg?style=flat-square)](https://coveralls.io/github/Selection-Translator/translation.js?branch=master) [![NPM Version](https://img.shields.io/npm/v/translation.js.svg?style=flat-square)](https://www.npmjs.com/package/translation.js)
+# translation.js [![NPM Version](https://img.shields.io/npm/v/translation.js.svg?style=flat-square)](https://www.npmjs.com/package/translation.js)
 
 translation.js 整合了[谷歌翻译](https://translate.google.cn/)、[百度翻译](https://fanyi.baidu.com/)与[有道翻译](http://fanyi.youdao.com/)的网页翻译接口，让你方便的在这些翻译接口之间切换，并获取相同数据结构的翻译结果。
 
@@ -28,41 +28,40 @@ npm install translation.js
 
 ```js
 // CommonJS 中
-const tjs = require('translation.js')
+const { youdao, baidu, google } = require('translation.js')
 
 // ES6 中
-import * as tjs from 'translation.js'
-
-// 也可以直接引用方法
-import { translate, detect, audio } from 'translation.js'
+import { youdao, baidu, google } from 'translation.js'
 ```
 
 ### 使用 &lt;script&gt; 标签
 
-在 Chrome 扩展 / 应用中使用 &lt;script&gt; 标签引用时，你需要先下载下面两个文件到你的项目里：
+在 Chrome 扩展 / 应用中使用 &lt;script&gt; 标签引用时，你需要先下载下面的文件到你的项目里：
 
-* [md5.min.js](https://unpkg.com/blueimp-md5/js/md5.min.js)
+* [md5.min.js](https://unpkg.com/blueimp-md5/js/md5.min.js) - 可选，如果你要用有道翻译就需要。
 * [translator.min.js](https://unpkg.com/translation.js/dist/translator.min.js)
 
 然后在 HTML 中引用：
 
 ```html
-<!-- 先引用 translator.js 的依赖 -->
+<!-- 如果你需要使用有道翻译就需要先引用 md5.min.js -->
 <script src="path/to/md5.min.js"></script>
 <!-- 然后引用 translator.js -->
 <script src="path/to/translator.min.js"></script>
+<!-- 然后你就可以从全局变量 tjs 中获取翻译对象了 -->
+<script>const { youdao, baidu, google } = window.tjs</script>
 ```
 
-然后就可以使用全局变量 `window.tjs` 调用方法了。
-
 ## 使用
+
+所有翻译对象都有相同的三个方法：`translate()`、`detect()` 和 `audio()`，下面会使用 `google` 作为示例，但同样的代码换成 `baidu` 和 `youdao` 也是一样能运行的。
 
 ### 获取翻译结果
 
 获取一段文本的翻译结果可以用 `translate()` 方法：
 
 ```js
-tjs.translate('test').then(result => {
+google.translate('test').then(result => {
   console.log(result) // result 的数据结构见下文
 })
 ```
@@ -96,33 +95,15 @@ tjs.translate('test').then(result => {
 }
 ```
 
-**注意**：translation.js 统一使用 [ISO-639-1 标准](https://zh.wikipedia.org/wiki/ISO_639-1)作为语种格式，任何地方出现的语种都遵循这个标准。
-
-翻译结果默认来自谷歌翻译，你也可以指定要从哪个接口获取结果：
-
-```js
-tjs.translate({
-  text: 'test',
-  api: 'youdao' // 从有道翻译获取结果，或者设为 'baidu' 从百度翻译获取
-})
-```
+**注意**：translation.js 中所有的语种格式都以[谷歌翻译支持的语种](https://cloud.google.com/translate/docs/languages)为准。
 
 ### 检测语种
 
 检测一段文本的语种可以使用 `detect()` 方法：
 
 ```js
-tjs.detect('test').then(lang => {
+google.detect('test').then(lang => {
   console.log(lang) // => 'en'
-})
-```
-
-默认情况下，语种检测的数据同样来自谷歌翻译，但你同样可以指定其他接口：
-
-```js
-tjs.detect({
-  text: 'test',
-  api: 'youdao' // 从有道翻译获取结果，或者设为 'baidu' 从百度翻译获取
 })
 ```
 
@@ -133,7 +114,7 @@ tjs.detect({
 使用 `audio()` 方法可以获取到文本的语音朗读地址：
 
 ```js
-tjs.audio('test').then(uri => {
+google.audio('test').then(uri => {
   console.log(uri) // => 'http://tts.google.cn/.......'
 })
 ```
@@ -142,23 +123,21 @@ tjs.audio('test').then(uri => {
 
 **注意**：谷歌翻译的语音朗读地址只能在 Chrome 扩展 / 应用中的 `<audio>` 里直接引用，在普通网页中引用时会报 404 错误，见 [#20](https://github.com/Selection-Translator/translation.js/issues/20)。
 
-这个方法同样支持使用 `api` 属性指定语音朗读地址的接口。另外，你可以使用 `from` 参数指定文本的语种，这样会跳过检测语种的步骤（通常是一次 HTTP 请求）。
+你可以使用 `from` 参数指定文本的语种，这样会跳过检测语种的步骤（通常是一次 HTTP 请求）。
 
 另外，百度翻译支持英标与美标读音：
 
 ```js
 // 获取美式读音
-tjs.audio({
+baidu.audio({
   text: 'test',
-  from: 'en',
-  api: 'baidu'
+  from: 'en'
 })
 
 // 获取英式读音
-tjs.audio({
+baidu.audio({
   text: 'test',
-  from: 'en-GB',
-  api: 'baidu'
+  from: 'en-GB'
 })
 ```
 
@@ -168,7 +147,7 @@ tjs.audio({
 
 ```js
 // 将 'test' 从英语翻译至中文
-tjs.translate({
+google.translate({
   text: 'test',
   from: 'en',
   to: 'zh-CN'
@@ -182,17 +161,17 @@ tjs.translate({
 默认情况下，translation.js 从 translate.google.**_cn_** 获取翻译结果、语种检测及语音地址，但**如果你的运行环境支持**，你也可以从 translate.google.**_com_** 获取数据：
 
 ```js
-tjs.translate({
+google.translate({
   text: 'test',
   com: true // 这一设置仅对谷歌翻译生效
 })
 
-tjs.detect({
+google.detect({
   text: 'test',
   com: true
 })
 
-tjs.audio({
+google.audio({
   text: 'test',
   com: true
 })
@@ -203,7 +182,7 @@ tjs.audio({
 每一个方法都可能抛出错误，抛出的错误是一个 `Error` 对象，你可以检查它的 `code` 属性判断错误原因：
 
 ```js
-tjs.translate('test').catch(error => {
+google.translate('test').catch(error => {
   console.log(error.code)
 })
 ```
@@ -212,9 +191,8 @@ tjs.translate('test').catch(error => {
 
 ```
 NETWORK_ERROR - 网络错误，可能是运行环境没有网络连接造成的
-API_SERVER_ERROR - 网页翻译接口返回了错误的数据
+API_SERVER_ERROR - 翻译接口返回了错误的数据
 UNSUPPORTED_LANG - 接口不支持的语种
-NO_THIS_API - 没有找到你需要的接口
 NETWORK_TIMEOUT - 查询接口时超时了
 ```
 
@@ -230,7 +208,7 @@ NETWORK_TIMEOUT - 查询接口时超时了
 }
 ```
 
-或者，你至少需要申请这些网址的访问权限：
+或者，你至少需要申请这些访问权限：
 
 ```js
 {
@@ -252,15 +230,17 @@ NETWORK_TIMEOUT - 查询接口时超时了
 
 ### 2. 给有道翻译接口添加 Referer 请求头
 
-有道网页翻译接口会验证 `Referer` 请求头判断对接口的访问是否来自网页。由于浏览器不允许为 XMLHTTPRequest 对象设置 `Referer` 请求头，所以这一步只能在扩展程序里做。
+有道翻译接口会验证 `Referer` 请求头判断对接口的访问是否来自网页，由于浏览器不允许 XMLHTTPRequest 对象设置 `Referer` 请求头，所以这一步只能在扩展程序里做。
 
-你需要申请 `webRequest` 与 `webRequestBlocking` 权限，然后在你的[后台脚本](https://developer.chrome.com/extensions/event_pages)中引用这个模块：
+你需要申请 `webRequest` 与 `webRequestBlocking` 权限，然后在你的[后台页面](https://developer.chrome.com/extensions/background_pages)中引用这个模块：
 
 ```js
 import 'translation.js/chrome-youdao'
 ```
 
 或者直接将 [chrome-youdao.js](chrome-youdao.js) 复制到你的项目中并引用。
+
+注意：一旦你声明了 `webRequest` 权限，你的扩展程序就无法运行在[事件页面](https://developer.chrome.com/extensions/event_pages)模式下了，这会让你的扩展常驻后台并持续占用系统资源。
 
 ## 许可
 
