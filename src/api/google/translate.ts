@@ -1,5 +1,8 @@
-import { StringOrTranslateOptions, TranslateOptions } from '../types'
-import { TranslateResult } from '../types'
+import {
+  StringOrTranslateOptions,
+  TranslateOptions,
+  TranslateResult
+} from '../types'
 import request from '../../utils/make-request'
 import { getRoot } from './state'
 import detect from './detect'

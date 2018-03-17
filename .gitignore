@@ -5,3 +5,4 @@
 /.*/
 .DS_Store
 /declaration/
+yarn-error.log
