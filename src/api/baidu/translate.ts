@@ -6,8 +6,9 @@ import sign from './sign'
 import getError, { ERROR_CODE } from '../../utils/error'
 import { getAudioURI } from './audio'
 import detect from './detect'
+import { StringObject } from '../../types'
 
-const headers = IS_NODE
+const headers: StringObject = IS_NODE
   ? {
       'X-Requested-With': 'XMLHttpRequest',
       Cookie
