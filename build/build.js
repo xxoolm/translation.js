@@ -13,7 +13,7 @@ const adapters = {
   '/md5': './src/utils/md5/browser.ts'
 }
 
-function roll(browser) {
+function roll(browser, traditional) {
   const plugins = [
     replace({
       IS_NODE: JSON.stringify(!browser)
@@ -37,16 +37,23 @@ function roll(browser) {
     typescript({
       useTsconfigDeclarationDir: true,
       tsconfigOverride: {
-        compilerOptions: browser
-          ? { declarationDir: 'declaration' }
-          : { declaration: false }
+        compilerOptions:
+          browser && !traditional
+            ? { declarationDir: 'declaration' }
+            : { declaration: false }
       }
     })
   )
 
   const external = ['tslib']
 
-  if (!browser) {
+  if (browser) {
+    //  给 <script> 使用的版本要将 tslib 打包进去
+    if (traditional) {
+      external.pop()
+    }
+    external.push('blueimp-md5')
+  } else {
     external.push('http', 'https', 'url', 'querystring', 'crypto')
   }
 
@@ -57,17 +64,29 @@ function roll(browser) {
       plugins
     })
     .then(bundle => {
-      bundle.write({
-        file: `./dist/tmw${browser ? '.browser' : ''}.c.js`,
-        format: 'cjs'
-      })
+      if (traditional) {
+        bundle.write({
+          name: 'tjs',
+          globals: {
+            'blueimp-md5': 'md5'
+          },
+          file: `./dist/tjs.browser.js`,
+          format: 'iife'
+        })
+      } else {
+        bundle.write({
+          file: `./dist/tjs.${browser ? 'browser' : 'node'}.common.js`,
+          format: 'cjs'
+        })
 
-      bundle.write({
-        file: `./dist/tmw${browser ? '.browser' : ''}.es.js`,
-        format: 'es'
-      })
+        bundle.write({
+          file: `./dist/tjs.${browser ? 'browser' : 'node'}.es.js`,
+          format: 'es'
+        })
+      }
     })
 }
 
 roll(false)
 roll(true)
+roll(true, true)

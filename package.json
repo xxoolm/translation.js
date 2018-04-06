@@ -6,9 +6,9 @@
     "type": "git",
     "url": "https://github.com/Selection-Translator/translation.js.git"
   },
-  "main": "dist/tmw.c.js",
-  "module": "dist/tmw.es.js",
-  "browser": "dist/tmw.browser.es.js",
+  "main": "dist/tjs.node.common.js",
+  "module": "dist/tjs.node.es.js",
+  "browser": "dist/tjs.browser.es.js",
   "types": "declaration/index.d.ts",
   "files": [
     "dist",

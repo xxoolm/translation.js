@@ -9,7 +9,8 @@
       "es2015",
       "dom"
     ],
-    "importHelpers": true
+    "importHelpers": true,
+    "allowSyntheticDefaultImports": true
   },
   "include": [
     "src/**/*.ts"
