@@ -44,10 +44,16 @@ function roll(browser) {
     })
   )
 
+  const external = ['tslib']
+
+  if (!browser) {
+    external.push('http', 'https', 'url', 'querystring', 'crypto')
+  }
+
   rollup
     .rollup({
       input: './src/index.ts',
-      external: ['tslib'],
+      external,
       plugins
     })
     .then(bundle => {
