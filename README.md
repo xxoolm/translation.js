@@ -8,7 +8,7 @@ translation.js 整合了[谷歌翻译](https://translate.google.cn/)、[百度�
 
 translateion.js 能同时在 Node.js 和浏览器端运行，但由于浏览器端[同源策略](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Access_control_CORS)的限制，这些网页接口只能在允许跨域的运行环境使用，Chrome 扩展 / 应用则是其中之一。
 
-**注意**：为了能在 Chrome 扩展 / 应用中使用 translation.js，请阅读最后面的「在 Chrome 扩展 / 应用中使用」一节。
+**注意**：为了能在 Chrome 扩展 / 应用中使用 translation.js，请阅读[在 Chrome 扩展 / 应用中使用](#在-chrome-扩展--应用中使用)。
 
 ### 一致的参数与数据结构
 
