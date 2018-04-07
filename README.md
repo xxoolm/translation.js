@@ -46,7 +46,7 @@ import { youdao, baidu, google } from 'translation.js'
 ```html
 <!-- 如果你需要使用有道翻译就需要先引用 md5.min.js -->
 <script src="path/to/md5.min.js"></script>
-<!-- 然后引用 translator.js -->
+<!-- 然后引用 tjs.browser.js -->
 <script src="path/to/tjs.browser.js"></script>
 <!-- 然后你就可以从全局变量 tjs 中获取翻译对象了 -->
 <script>const { youdao, baidu, google } = window.tjs</script>
@@ -198,7 +198,7 @@ NETWORK_TIMEOUT - 查询接口时超时了
 
 ## 在 Chrome 扩展 / 应用中使用
 
-### 1. 声明跨域权限
+### 1. 声明网络权限
 
 最简单的方式就是申请 `<all_urls>` 权限：
 

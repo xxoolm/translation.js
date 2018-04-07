@@ -13,7 +13,8 @@
   "types": "declaration/index.d.ts",
   "files": [
     "dist",
-    "declaration"
+    "declaration",
+    "chrome-youdao.js"
   ],
   "scripts": {
     "lint": "tslint --project tsconfig.json -t verbose",
