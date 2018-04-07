@@ -9,6 +9,7 @@
   "main": "dist/tjs.node.common.js",
   "module": "dist/tjs.node.es.js",
   "browser": "dist/tjs.browser.es.js",
+  "unpkg": "dist/tjs.browser.js",
   "types": "declaration/index.d.ts",
   "files": [
     "dist",
