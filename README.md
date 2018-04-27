@@ -223,7 +223,7 @@ NETWORK_TIMEOUT - 查询接口时超时了
     "https://translate.google.com/",
     "https://translate.google.com/translate_a/single",
     // 有道翻译的接口
-    "https://fanyi.youdao.com/translate_o"
+    "http://fanyi.youdao.com/translate_o"
   ]
 }
 ```

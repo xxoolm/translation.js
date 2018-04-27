@@ -37,7 +37,7 @@ const standard2custom: StringObject = {
 
 const custom2standard = invert(standard2custom)
 
-const link = 'https://fanyi.youdao.com'
+const link = 'http://fanyi.youdao.com'
 const translateAPI = link + '/translate_o?smartresult=dict&smartresult=rule'
 
 // 有道跟百度一样，通过添加一个 Cookie 鉴别请求是否来自网页

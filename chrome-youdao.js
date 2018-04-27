@@ -3,7 +3,7 @@ chrome.webRequest.onBeforeSendHeaders.addListener(
     var requestHeaders = info.requestHeaders
     var r = {
       name: 'Referer',
-      value: 'https://fanyi.youdao.com'
+      value: 'http://fanyi.youdao.com'
     }
     var index = requestHeaders.findIndex(function(header) {
       return header.name.toLowerCase() === 'referer'
@@ -16,7 +16,7 @@ chrome.webRequest.onBeforeSendHeaders.addListener(
     return { requestHeaders: requestHeaders }
   },
   {
-    urls: ['https://fanyi.youdao.com/translate_o'],
+    urls: ['http://fanyi.youdao.com/translate_o'],
     types: ['xmlhttprequest']
   },
   ['blocking', 'requestHeaders']
