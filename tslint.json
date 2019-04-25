@@ -1,6 +1,8 @@
 {
+  "rulesDirectory": ["tslint-plugin-prettier"],
   "extends": ["tslint-config-standard", "tslint-config-prettier"],
   "rules": {
-    "no-empty": [true, "allow-empty-catch"]
+    "no-empty": [true, "allow-empty-catch"],
+    "prettier": true
   }
 }

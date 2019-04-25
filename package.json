@@ -23,19 +23,21 @@
   },
   "dependencies": {
     "@types/blueimp-md5": "^2.7.0",
-    "@types/node": "^9.3.0",
+    "@types/node": "^11.13.7",
     "blueimp-md5": "^2.10.0",
-    "tslib": "^1.8.1"
+    "tslib": "^1.9.3"
   },
   "devDependencies": {
-    "fs-extra": "^5.0.0",
-    "rollup": "^0.57.0",
-    "rollup-plugin-replace": "^2.0.0",
-    "rollup-plugin-typescript2": "^0.12.0",
-    "tslint": "^5.8.0",
-    "tslint-config-prettier": "^1.6.0",
-    "tslint-config-standard": "^7.0.0",
-    "typescript": "^2.6.2"
+    "fs-extra": "^7.0.1",
+    "prettier": "^1.17.0",
+    "rollup": "^1.10.1",
+    "rollup-plugin-replace": "^2.2.0",
+    "rollup-plugin-typescript2": "^0.21.0",
+    "tslint": "^5.16.0",
+    "tslint-config-prettier": "^1.18.0",
+    "tslint-config-standard": "^8.0.1",
+    "tslint-plugin-prettier": "^2.0.1",
+    "typescript": "^3.4.5"
   },
   "homepage": "https://github.com/Selection-Translator/translation.js#readme",
   "license": "MIT"

@@ -1,11 +1,12 @@
-import { StringArrayObject, RequestOptions } from './types'
+import { RequestOptions } from './types'
+import { ParsedUrlQueryInput } from 'querystring'
 import getError, { ERROR_CODE } from '../error'
 
 /**
  * 将对象转换成查询字符串
  * TODO: 使用 noshjs 中的方法
  */
-function qs(obj?: StringArrayObject) {
+function qs(obj?: ParsedUrlQueryInput) {
   if (!obj) return ''
   const r = []
   for (let key in obj) {
@@ -34,7 +35,7 @@ export default function(options: RequestOptions): Promise<any> {
           'Content-Type',
           'application/x-www-form-urlencoded; charset=UTF-8'
         )
-        body = qs(options.body as StringArrayObject)
+        body = qs(options.body)
         break
 
       case 'json':
@@ -66,8 +67,8 @@ export default function(options: RequestOptions): Promise<any> {
       resolve(xhr.response)
     }
 
-    xhr.onerror = e => {
-      reject(getError(ERROR_CODE.NETWORK_ERROR, e.message))
+    xhr.onerror = () => {
+      reject(getError(ERROR_CODE.NETWORK_ERROR, '网络错误'))
     }
 
     xhr.send(body)

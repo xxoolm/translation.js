@@ -1,14 +1,11 @@
+import { ParsedUrlQueryInput, ParsedUrlQuery } from 'querystring'
 import { StringObject } from '../../types'
-
-export interface StringArrayObject {
-  [key: string]: string | string[]
-}
 
 export interface RequestOptions {
   url: string
-  query?: StringArrayObject
+  query?: ParsedUrlQuery
   method?: 'get' | 'post'
-  body?: object
+  body?: ParsedUrlQueryInput
   type?: 'form' | 'json'
   headers?: StringObject
   responseType?: 'document' | 'json' | 'text'
