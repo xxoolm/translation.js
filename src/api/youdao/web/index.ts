@@ -1,9 +1,5 @@
 import invert from '../../../utils/invert'
-import {
-  TranslateOptions,
-  TranslateResult,
-  StringOrTranslateOptions
-} from '../../types'
+import { TranslateResult, StringOrTranslateOptions } from '../../types'
 import { StringObject } from '../../../types'
 import request from '../../../utils/make-request'
 import getError, { ERROR_CODE } from '../../../utils/error'
