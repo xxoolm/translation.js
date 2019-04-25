@@ -1,18 +1,23 @@
 import md5 from '../../../utils/md5'
 
 const client = 'fanyideskweb'
-const sk = "rY0D^0'nM0}g5Mm1z%1G4"
+const navigatorAppVersion = IS_NODE
+  ? '5.0 (Macintosh; Intel Mac OS X 10_14_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.103 Safari/537.36'
+  : navigator.appVersion
+const bv = md5(navigatorAppVersion)
 
 /**
  * 有道翻译接口的签名算法
- * @param {string} text
- * @return {{client: string, salt: number, sign: string}}
+ * @param text
  */
 export default function(text: string) {
-  const salt = Date.now() + parseInt(String(10 * Math.random()), 10)
+  const ts = Date.now() + ''
+  const salt = ts + parseInt(10 * Math.random() + '', 10)
   return {
     client,
+    ts,
+    bv,
     salt,
-    sign: md5(client + text + salt + sk)
+    sign: md5(client + text + salt + '@6f#X3=cCuncYssPsuRUE')
   }
 }
