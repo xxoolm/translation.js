@@ -38,7 +38,7 @@ import { youdao, baidu, google } from 'translation.js'
 
 在 Chrome 扩展 / 应用中使用 &lt;script&gt; 标签引用时，你需要先下载下面的文件到你的项目里：
 
-* [md5.min.js](https://unpkg.com/blueimp-md5/js/md5.min.js) - 可选，如果你要用有道翻译就需要。
+* [md5.min.js](https://unpkg.com/blueimp-md5/js/md5.min.js)
 * [tjs.browser.js](https://unpkg.com/translation.js/dist/tjs.browser.js)
 
 然后在 HTML 中引用：
