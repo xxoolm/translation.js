@@ -19,5 +19,5 @@ chrome.webRequest.onBeforeSendHeaders.addListener(
     urls: ['http://fanyi.youdao.com/translate_o*'],
     types: ['xmlhttprequest']
   },
-  ['blocking', 'requestHeaders']
+  ['blocking', 'requestHeaders', 'extraHeaders']
 )
