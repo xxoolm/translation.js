@@ -1,4 +1,5 @@
 import { StringOrTranslateOptions } from '../types'
+import sign from './sign'
 import { getRoot } from './state'
 import detect from './detect'
 
@@ -10,7 +11,10 @@ export default async function(options: StringOrTranslateOptions) {
     from = await detect(text)
   }
 
-  return `${getRoot(
+  return `${getRoot(com)}/translate_tts?ie=UTF-8&q=${encodeURIComponent(
+    text
+  )}&tl=${from}&total=1&idx=0&textlen=${text.length}&tk=${await sign(
+    text,
     com
-  )}/translate_tts?ie=UTF-8&client=gtx&tl=${from}&q=${encodeURIComponent(text)}`
+  )}&client=webapp&prev=input`
 }
