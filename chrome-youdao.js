@@ -1,3 +1,10 @@
+var options = ['blocking', 'requestHeaders']
+var matches = /Chrome\/(\d+)/.exec(navigator.userAgent)
+var chromeVersion = matches && Number(matches[1])
+if (chromeVersion > 71) {
+  options.push('extraHeaders')
+}
+
 chrome.webRequest.onBeforeSendHeaders.addListener(
   function(info) {
     var requestHeaders = info.requestHeaders
@@ -19,5 +26,5 @@ chrome.webRequest.onBeforeSendHeaders.addListener(
     urls: ['http://fanyi.youdao.com/translate_o*'],
     types: ['xmlhttprequest']
   },
-  ['blocking', 'requestHeaders', 'extraHeaders']
+  options
 )
