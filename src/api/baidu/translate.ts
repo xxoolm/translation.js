@@ -59,7 +59,8 @@ export default async function(options: StringOrTranslateOptions) {
 
 interface ResponseSymbol {
   parts: {
-    part: string // 单词属性，例如 'n.'、'vi.' 等
+    part?: string // 单词属性，例如 'n.'、'vi.' 等
+    part_name?: string // 部分单词没有 part，只有 part_name，例如 “Referer”
     means: string[] // 此单词属性下单词的释义
   }[]
   ph_am: string // 美国音标
@@ -142,7 +143,7 @@ function transformRaw(text: string, body: Response) {
     // 解析词典数据
     try {
       result.dict = symbols.parts.map(part => {
-        return part.part + ' ' + part.means.join('；')
+        return (part.part ? part.part + ' ' : '') + part.means.join('；')
       })
     } catch (e) {}
   }
