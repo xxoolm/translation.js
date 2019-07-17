@@ -18,6 +18,6 @@ export default function(text: string) {
     ts,
     bv,
     salt,
-    sign: md5(client + text + salt + '@6f#X3=cCuncYssPsuRUE')
+    sign: md5(client + text + salt + '97_3(jkMYg@T[KZQmqjTK')
   }
 }
