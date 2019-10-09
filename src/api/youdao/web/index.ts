@@ -124,7 +124,9 @@ function transformRaw(body: WebResult, text: string) {
   }
 
   try {
-    result.result = body.translateResult[0].map(o => o.tgt.trim())
+    result.result = body.translateResult.map(part => {
+      return part.map(o => o.tgt.trim()).join('')
+    })
   } catch (e) {}
 
   return result
